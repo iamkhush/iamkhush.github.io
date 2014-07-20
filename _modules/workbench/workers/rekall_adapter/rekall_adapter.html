@@ -1,0 +1,352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>workbench.workers.rekall_adapter.rekall_adapter &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="../../../../index.html">Workbench</a></h2>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../running.html">Running WorkBench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../workbench.clients.html">workbench.clients package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../workbench.server.html">workbench.server package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../workbench.workers.html">workbench.workers package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <h1>Source code for workbench.workers.rekall_adapter.rekall_adapter</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;rekall_adapter: Helps Workbench utilize the Rekall Memory Forensic Framework.</span>
+<span class="sd">    See Google Github: http://github.com/google/rekall</span>
+<span class="sd">    All credit for good stuff goes to them, all credit for bad stuff goes to us. :).</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">rekall</span> <span class="kn">import</span> <span class="n">plugins</span>
+<span class="kn">from</span> <span class="nn">rekall</span> <span class="kn">import</span> <span class="n">session</span>
+<span class="kn">from</span> <span class="nn">rekall.plugins.addrspaces</span> <span class="kn">import</span> <span class="n">standard</span>
+<span class="kn">from</span> <span class="nn">rekall.ui.renderer</span> <span class="kn">import</span> <span class="n">BaseRenderer</span>
+<span class="kn">from</span> <span class="nn">rekall.ui.renderer</span> <span class="kn">import</span> <span class="n">Formatter</span>
+<span class="kn">import</span> <span class="nn">StringIO</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+<span class="kn">import</span> <span class="nn">msgpack</span>
+<span class="kn">import</span> <span class="nn">pytz</span>
+<span class="kn">import</span> <span class="nn">gevent</span>
+<span class="k">def</span> <span class="nf">gsleep</span><span class="p">():</span>
+<div class="viewcode-block" id="gsleep"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.gsleep">[docs]</a>    <span class="k">print</span> <span class="s">&#39;*** Gevent Sleep ***&#39;</span>
+    <span class="n">gevent</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">RekallAdapter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></div>
+<div class="viewcode-block" id="RekallAdapter"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.RekallAdapter">[docs]</a>    <span class="sd">&quot;&quot;&quot;RekallAdapter: Helps utilize the Rekall Memory Forensic Framework.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_bytes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialization.&quot;&quot;&quot;</span>
+
+        <span class="n">gsleep</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">MemS</span> <span class="o">=</span> <span class="n">MemSession</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span>
+        <span class="n">gsleep</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">renderer</span> <span class="o">=</span> <span class="n">WorkbenchRenderer</span><span class="p">()</span>
+        <span class="n">gsleep</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">MemS</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span>
+        <span class="n">gsleep</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">get_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="RekallAdapter.get_session"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.RekallAdapter.get_session">[docs]</a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span>
+
+    <span class="k">def</span> <span class="nf">get_renderer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="RekallAdapter.get_renderer"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.RekallAdapter.get_renderer">[docs]</a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">renderer</span>
+
+
+<span class="k">class</span> <span class="nc">MemSession</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="MemSession"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.MemSession">[docs]</a>    <span class="sd">&quot;&quot;&quot;MemSession: Helps utilize the Rekall Memory Forensic Framework.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_bytes</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a Rekall session from raw_bytes.&quot;&quot;&quot;</span>
+
+        <span class="c"># Spin up the logging</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">()</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">ERROR</span><span class="p">)</span>
+
+        <span class="c"># Open up a rekall session</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="n">session</span><span class="o">.</span><span class="n">Session</span><span class="p">(</span><span class="n">profile_path</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;http://profiles.rekall-forensic.com&quot;</span><span class="p">])</span>
+
+        <span class="c"># Set up a memory space for our raw memory image</span>
+        <span class="k">with</span> <span class="n">s</span><span class="p">:</span>
+            <span class="n">mem_file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">physical_address_space</span> <span class="o">=</span> <span class="n">standard</span><span class="o">.</span><span class="n">FDAddressSpace</span><span class="p">(</span><span class="n">fhandle</span><span class="o">=</span><span class="n">mem_file</span><span class="p">,</span> <span class="n">session</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+            <span class="n">profile</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">GetParameter</span><span class="p">(</span><span class="s">&quot;profile&quot;</span><span class="p">)</span>
+
+        <span class="c"># Store session handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">session</span> <span class="o">=</span> <span class="n">s</span>
+
+        <span class="c"># Serialize the session (testing for now)</span>
+        
+        <span class="c"># if self.session.state.dirty or self.session.state.cache.dirty:</span>
+        <span class="c">#     print &#39;Saving %s&#39; % (str(self.session.state.session_filename))</span>
+        <span class="c">#     print &#39;Method %s&#39; % (str(self.session.SaveToFile))</span>
+        <span class="c">#     # self.session.SaveToFile(self.session.state.session_filename)        </span>
+        <span class="c"># packed = msgpack.packb(self.session, use_bin_type=True)</span>
+        <span class="c"># print &#39;Size of packed session %d&#39; % packed.sized</span>
+        <span class="c"># self.session = msgpack.unpackb(packed, encoding=&#39;utf-8&#39;)</span>
+
+        
+
+    <span class="k">def</span> <span class="nf">get_session</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MemSession.get_session"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.MemSession.get_session">[docs]</a>        <span class="sd">&quot;&quot;&quot;Get the current session handle.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span>
+
+    <span class="sd">&#39;&#39;&#39; All of this code is currently not used &#39;&#39;&#39;</span></div>
+    <span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">    def SaveToFile(self, filename):</span>
+<span class="sd">        with open(filename, &quot;wb&quot;) as fd:</span>
+<span class="sd">            logging.info(&quot;Saving session to %s&quot;, filename)</span>
+<span class="sd">            json.dump(self.Serialize(), fd)</span>
+
+<span class="sd">    def LoadFromFile(self, filename):</span>
+<span class="sd">        lexicon, data = json.load(open(filename, &quot;rb&quot;))</span>
+<span class="sd">        logging.info(&quot;Loaded session from %s&quot;, filename)</span>
+
+<span class="sd">        self.Unserialize(lexicon, data)</span>
+
+<span class="sd">    def Unserialize(self, lexicon, data):</span>
+<span class="sd">        decoder = json_renderer.JsonDecoder(self)</span>
+<span class="sd">        decoder.SetLexicon(lexicon)</span>
+<span class="sd">        self.state = Configuration(**decoder.Decode(data))</span>
+<span class="sd">        self.UpdateFromConfigObject()</span>
+
+<span class="sd">    def Serialize(self):</span>
+<span class="sd">        encoder = json_renderer.JsonEncoder()</span>
+<span class="sd">        data = encoder.Encode(self.state)</span>
+<span class="sd">        return encoder.GetLexicon(), data</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+
+<span class="k">class</span> <span class="nc">WorkbenchRenderer</span><span class="p">(</span><span class="n">BaseRenderer</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkbenchRenderer"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer">[docs]</a>    <span class="sd">&quot;&quot;&quot;Workbench Renderer: Extends BaseRenderer and simply populates local python</span>
+<span class="sd">        data structures, not meant to be serialized or sent over the network.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_section</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_headers</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header_types</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">incoming_section</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span> <span class="o">=</span> <span class="n">Formatter</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="WorkbenchRenderer.start"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.start">[docs]</a>        <span class="sd">&quot;&quot;&quot;Start method: initial data structures and store some meta data.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;sections&#39;</span><span class="p">:{}}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">(</span><span class="s">&#39;Info&#39;</span><span class="p">)</span>        
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span><span class="p">[</span><span class="s">&#39;plugin_name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">plugin_name</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkbenchRenderer.end"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.end">[docs]</a>        <span class="sd">&quot;&quot;&quot;Just a stub method.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">format</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">formatstring</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkbenchRenderer.format"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.format">[docs]</a>
+        <span class="c"># Make a new section</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">incoming_section</span><span class="p">:</span>
+            <span class="n">section_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">formatstring</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">section</span><span class="p">(</span><span class="n">section_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">incoming_section</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;Format called with </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">formatstring</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkbenchRenderer.section"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.section">[docs]</a>
+        <span class="c"># Check for weird case where an section call is made wit</span>
+        <span class="c"># no name and then a format call is made</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">incoming_section</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="k">return</span>
+
+        <span class="c"># Create a new section and make it the active one</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_section</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span><span class="p">[</span><span class="s">&#39;sections&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">active_section</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span> 
+
+    <span class="k">def</span> <span class="nf">report_error</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkbenchRenderer.report_error"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.report_error">[docs]</a>        <span class="k">print</span> <span class="s">&#39;Error Message: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">message</span>
+
+    <span class="k">def</span> <span class="nf">table_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkbenchRenderer.table_header"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.table_header">[docs]</a>        <span class="bp">self</span><span class="o">.</span><span class="n">active_headers</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header_types</span> <span class="o">=</span> <span class="p">[</span><span class="n">col</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">columns</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">table_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkbenchRenderer.table_row"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.table_row">[docs]</a>        <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span><span class="p">[</span><span class="s">&#39;sections&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">active_section</span><span class="p">]</span><span class="o">.</span> \
+            <span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cast_row</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_headers</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">header_types</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">write_data_stream</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkbenchRenderer.write_data_stream"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.write_data_stream">[docs]</a>        <span class="sd">&quot;&quot;&quot;Just a stub method.&quot;&quot;&quot;</span>
+        <span class="k">print</span> <span class="s">&#39;Calling write_data_stream on WorkbenchRenderer does nothing&#39;</span>
+
+    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkbenchRenderer.flush"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.flush">[docs]</a>        <span class="sd">&quot;&quot;&quot;Just a stub method.&quot;&quot;&quot;</span>
+        <span class="k">print</span> <span class="s">&#39;Calling flush on WorkbenchRenderer does nothing&#39;</span>
+
+    <span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkbenchRenderer.render"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.render">[docs]</a>        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="n">plugin_name</span><span class="o">=</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">plugin</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_data</span>
+
+    <span class="k">def</span> <span class="nf">_cast_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">data_types</span><span class="p">):</span></div>
+        <span class="sd">&quot;&quot;&quot;Internal method that makes sure that the row elements</span>
+<span class="sd">            are properly cast into the correct types, instead of</span>
+<span class="sd">            just treating everything like a string from the csv file</span>
+<span class="sd">       .&quot;&quot;&quot;</span>
+        <span class="n">output_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">dtype</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">keys</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">data_types</span><span class="p">):</span>
+            <span class="n">output_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cast_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">output_dict</span>
+
+    <span class="k">def</span> <span class="nf">_cast_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">dtype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Internal method that makes sure any dictionary elements</span>
+<span class="sd">            are properly cast into the correct types, instead of</span>
+<span class="sd">            just treating everything like a string from the csv file</span>
+<span class="sd">       .&quot;&quot;&quot;</span>
+
+        <span class="c"># Try to convert to a datetime</span>
+        <span class="k">if</span> <span class="s">&#39;time&#39;</span> <span class="ow">in</span> <span class="n">dtype</span><span class="p">:</span>
+            <span class="n">date_time</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">as_datetime</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">date_time</span> <span class="o">==</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">(</span><span class="mi">1970</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">tzinfo</span><span class="o">=</span><span class="n">pytz</span><span class="o">.</span><span class="n">utc</span><span class="p">):</span> <span class="c"># Special case</span>
+                <span class="k">return</span> <span class="s">&#39;-&#39;</span>
+            <span class="k">return</span> <span class="n">date_time</span>
+
+        <span class="c"># Rekall puts a bunch of data_modeling semantics that we&#39;re just ignoring for now :(</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="c"># Try conversion to basic types</span>
+        <span class="n">tests</span> <span class="o">=</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">test</span> <span class="ow">in</span> <span class="n">tests</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">test</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                <span class="k">continue</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="c"># Unit test: Create the class, the proper input and run the execute() method for a test</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span></div>
+<div class="viewcode-block" id="test"><a class="viewcode-back" href="../../../../workbench.workers.rekall_adapter.html#workbench.workers.rekall_adapter.rekall_adapter.test">[docs]</a>    <span class="sd">&quot;&quot;&quot;rekall_adapter.py: Test.&quot;&quot;&quot;</span>
+
+    <span class="c"># Do we have the memory forensics file?</span>
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span> <span class="s">&#39;../../data/memory_images/exemplar4.vmem&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">data_path</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&#39;Not finding exemplar4.mem... Downloading now...&#39;</span>
+        <span class="kn">import</span> <span class="nn">urllib</span>
+        <span class="n">urllib</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="s">&#39;http://s3-us-west-2.amazonaws.com/workbench-data/memory_images/exemplar4.vmem&#39;</span><span class="p">,</span> <span class="n">data_path</span><span class="p">)</span>
+
+    <span class="c"># Did we properly download the memory file?</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">data_path</span><span class="p">):</span>
+        <span class="k">print</span> <span class="s">&#39;Could not open exemplar4.vmem&#39;</span>
+        <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+
+    <span class="c"># Got the file, now process it</span>
+    <span class="n">raw_bytes</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="n">adapter</span> <span class="o">=</span> <span class="n">RekallAdapter</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">get_session</span><span class="p">()</span>
+    <span class="n">renderer</span> <span class="o">=</span> <span class="n">adapter</span><span class="o">.</span><span class="n">get_renderer</span><span class="p">()</span>
+
+    <span class="c"># Create any kind of plugin supported by this session</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">imageinfo</span><span class="p">())</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s">&#39;Error&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">pslist</span><span class="p">())</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s">&#39;Error&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="n">renderer</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">plugins</span><span class="o">.</span><span class="n">dlllist</span><span class="p">())</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">assert</span> <span class="s">&#39;Error&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">output</span>
+
+
+    <span class="c"># Code coverage: These calls are simply for code coverage</span>
+    <span class="n">renderer</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">)</span>
+    <span class="n">renderer</span><span class="o">.</span><span class="n">section</span><span class="p">()</span>
+    <span class="n">renderer</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;foo&#39;</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span></div>
+    <span class="n">test</span><span class="p">()</span>
+</pre></div>
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Workbench 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

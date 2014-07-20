@@ -1,0 +1,1507 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>workbench.workers package &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="index.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="index.html">Workbench</a></h2>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running WorkBench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workbench.clients.html">workbench.clients package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <div class="section" id="workbench-workers-package">
+<h1>workbench.workers package<a class="headerlink" href="#workbench-workers-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workbench.workers.rekall_adapter.html">workbench.workers.rekall_adapter package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="workbench.workers.rekall_adapter.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.workers.rekall_adapter.html#module-workbench.workers.rekall_adapter.rekall_adapter">workbench.workers.rekall_adapter.rekall_adapter module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.workers.rekall_adapter.html#module-workbench.workers.rekall_adapter">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-workbench.workers.json_meta">
+<span id="workbench-workers-json-meta-module"></span><h2>workbench.workers.json_meta module<a class="headerlink" href="#module-workbench.workers.json_meta" title="Permalink to this headline">¶</a></h2>
+<p>JSON Meta worker</p>
+<dl class="class">
+<dt id="workbench.workers.json_meta.JSONMetaData">
+<em class="property">class </em><tt class="descclassname">workbench.workers.json_meta.</tt><tt class="descname">JSONMetaData</tt><a class="reference internal" href="_modules/workbench/workers/json_meta.html#JSONMetaData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.json_meta.JSONMetaData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker computes meta-data for json files.</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.json_meta.JSONMetaData.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample', 'meta']</em><a class="headerlink" href="#workbench.workers.json_meta.JSONMetaData.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.json_meta.JSONMetaData.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/json_meta.html#JSONMetaData.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.json_meta.JSONMetaData.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.json_meta.test">
+<tt class="descclassname">workbench.workers.json_meta.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/json_meta.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.json_meta.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>json_meta.py: Test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.log_meta">
+<span id="workbench-workers-log-meta-module"></span><h2>workbench.workers.log_meta module<a class="headerlink" href="#module-workbench.workers.log_meta" title="Permalink to this headline">¶</a></h2>
+<p>Logfile Meta worker</p>
+<dl class="class">
+<dt id="workbench.workers.log_meta.LogMetaData">
+<em class="property">class </em><tt class="descclassname">workbench.workers.log_meta.</tt><tt class="descname">LogMetaData</tt><a class="reference internal" href="_modules/workbench/workers/log_meta.html#LogMetaData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.log_meta.LogMetaData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker computes a meta-data for log files.</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.log_meta.LogMetaData.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample', 'meta']</em><a class="headerlink" href="#workbench.workers.log_meta.LogMetaData.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.log_meta.LogMetaData.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/log_meta.html#LogMetaData.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.log_meta.LogMetaData.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.log_meta.test">
+<tt class="descclassname">workbench.workers.log_meta.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/log_meta.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.log_meta.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>log_meta.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.mem_base">
+<span id="workbench-workers-mem-base-module"></span><h2>workbench.workers.mem_base module<a class="headerlink" href="#module-workbench.workers.mem_base" title="Permalink to this headline">¶</a></h2>
+<p>Memory Image base worker. This worker utilizes the Rekall Memory Forensic Framework.
+See Google Github: <a class="reference external" href="http://github.com/google/rekall">http://github.com/google/rekall</a>
+All credit for good stuff goes to them, all credit for bad stuff goes to us. :)</p>
+<dl class="class">
+<dt id="workbench.workers.mem_base.MemoryImageBase">
+<em class="property">class </em><tt class="descclassname">workbench.workers.mem_base.</tt><tt class="descname">MemoryImageBase</tt><a class="reference internal" href="_modules/workbench/workers/mem_base.html#MemoryImageBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_base.MemoryImageBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker computes meta-data for memory image files.</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.mem_base.MemoryImageBase.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.mem_base.MemoryImageBase.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.mem_base.MemoryImageBase.set_plugin_name">
+<tt class="descname">set_plugin_name</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_base.html#MemoryImageBase.set_plugin_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_base.MemoryImageBase.set_plugin_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the name of the plugin to be used</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.mem_base.MemoryImageBase.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_base.html#MemoryImageBase.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_base.MemoryImageBase.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute method</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.mem_base.test">
+<tt class="descclassname">workbench.workers.mem_base.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_base.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_base.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>mem_base.py: Test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.mem_connscan">
+<span id="workbench-workers-mem-connscan-module"></span><h2>workbench.workers.mem_connscan module<a class="headerlink" href="#module-workbench.workers.mem_connscan" title="Permalink to this headline">¶</a></h2>
+<p>Memory Image ConnScan worker. This worker utilizes the Rekall Memory Forensic Framework.
+See Google Github: <a class="reference external" href="http://github.com/google/rekall">http://github.com/google/rekall</a>
+All credit for good stuff goes to them, all credit for bad stuff goes to us. :)</p>
+<dl class="class">
+<dt id="workbench.workers.mem_connscan.MemoryImageConnScan">
+<em class="property">class </em><tt class="descclassname">workbench.workers.mem_connscan.</tt><tt class="descname">MemoryImageConnScan</tt><a class="reference internal" href="_modules/workbench/workers/mem_connscan.html#MemoryImageConnScan"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_connscan.MemoryImageConnScan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#workbench.workers.mem_base.MemoryImageBase" title="workbench.workers.mem_base.MemoryImageBase"><tt class="xref py py-class docutils literal"><span class="pre">workbench.workers.mem_base.MemoryImageBase</span></tt></a></p>
+<p>This worker computes connscan-data for memory image files.</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.mem_connscan.MemoryImageConnScan.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.mem_connscan.MemoryImageConnScan.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.mem_connscan.MemoryImageConnScan.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_connscan.html#MemoryImageConnScan.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_connscan.MemoryImageConnScan.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.mem_connscan.test">
+<tt class="descclassname">workbench.workers.mem_connscan.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_connscan.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_connscan.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>mem_connscan.py: Test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.mem_dlllist">
+<span id="workbench-workers-mem-dlllist-module"></span><h2>workbench.workers.mem_dlllist module<a class="headerlink" href="#module-workbench.workers.mem_dlllist" title="Permalink to this headline">¶</a></h2>
+<p>Memory Image DllList worker. This worker utilizes the Rekall Memory Forensic Framework.
+See Google Github: <a class="reference external" href="http://github.com/google/rekall">http://github.com/google/rekall</a>
+All credit for good stuff goes to them, all credit for bad stuff goes to us. :)</p>
+<dl class="class">
+<dt id="workbench.workers.mem_dlllist.MemoryImageDllList">
+<em class="property">class </em><tt class="descclassname">workbench.workers.mem_dlllist.</tt><tt class="descname">MemoryImageDllList</tt><a class="reference internal" href="_modules/workbench/workers/mem_dlllist.html#MemoryImageDllList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_dlllist.MemoryImageDllList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#workbench.workers.mem_base.MemoryImageBase" title="workbench.workers.mem_base.MemoryImageBase"><tt class="xref py py-class docutils literal"><span class="pre">workbench.workers.mem_base.MemoryImageBase</span></tt></a></p>
+<p>This worker computes dlllist for memory image files.</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.mem_dlllist.MemoryImageDllList.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.mem_dlllist.MemoryImageDllList.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="staticmethod">
+<dt id="workbench.workers.mem_dlllist.MemoryImageDllList.safe_key">
+<em class="property">static </em><tt class="descname">safe_key</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_dlllist.html#MemoryImageDllList.safe_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_dlllist.MemoryImageDllList.safe_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.mem_dlllist.MemoryImageDllList.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_dlllist.html#MemoryImageDllList.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_dlllist.MemoryImageDllList.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.mem_dlllist.test">
+<tt class="descclassname">workbench.workers.mem_dlllist.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_dlllist.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_dlllist.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>mem_dlllist.py: Test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.mem_meta">
+<span id="workbench-workers-mem-meta-module"></span><h2>workbench.workers.mem_meta module<a class="headerlink" href="#module-workbench.workers.mem_meta" title="Permalink to this headline">¶</a></h2>
+<p>Memory Image Meta worker. This worker utilizes the Rekall Memory Forensic Framework.
+See Google Github: <a class="reference external" href="http://github.com/google/rekall">http://github.com/google/rekall</a>
+All credit for good stuff goes to them, all credit for bad stuff goes to us. :)</p>
+<dl class="class">
+<dt id="workbench.workers.mem_meta.MemoryImageMeta">
+<em class="property">class </em><tt class="descclassname">workbench.workers.mem_meta.</tt><tt class="descname">MemoryImageMeta</tt><a class="reference internal" href="_modules/workbench/workers/mem_meta.html#MemoryImageMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_meta.MemoryImageMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#workbench.workers.mem_base.MemoryImageBase" title="workbench.workers.mem_base.MemoryImageBase"><tt class="xref py py-class docutils literal"><span class="pre">workbench.workers.mem_base.MemoryImageBase</span></tt></a></p>
+<p>This worker computes meta-data for memory image files.</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.mem_meta.MemoryImageMeta.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.mem_meta.MemoryImageMeta.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.mem_meta.MemoryImageMeta.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_meta.html#MemoryImageMeta.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_meta.MemoryImageMeta.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.mem_meta.test">
+<tt class="descclassname">workbench.workers.mem_meta.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_meta.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_meta.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>mem_meta.py: Test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.mem_procdump">
+<span id="workbench-workers-mem-procdump-module"></span><h2>workbench.workers.mem_procdump module<a class="headerlink" href="#module-workbench.workers.mem_procdump" title="Permalink to this headline">¶</a></h2>
+<p>Memory Image ProcDump worker. This worker utilizes the Rekall Memory Forensic Framework.
+See Google Github: <a class="reference external" href="http://github.com/google/rekall">http://github.com/google/rekall</a>
+All credit for good stuff goes to them, all credit for bad stuff goes to us. :)</p>
+<dl class="class">
+<dt id="workbench.workers.mem_procdump.MemoryImageProcDump">
+<em class="property">class </em><tt class="descclassname">workbench.workers.mem_procdump.</tt><tt class="descname">MemoryImageProcDump</tt><a class="reference internal" href="_modules/workbench/workers/mem_procdump.html#MemoryImageProcDump"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_procdump.MemoryImageProcDump" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker dumps process pe files from memory image files.</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.mem_procdump.MemoryImageProcDump.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.mem_procdump.MemoryImageProcDump.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.mem_procdump.MemoryImageProcDump.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_procdump.html#MemoryImageProcDump.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_procdump.MemoryImageProcDump.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute method</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.mem_procdump.MemoryImageProcDump.make_temp_directory">
+<tt class="descname">make_temp_directory</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_procdump.html#MemoryImageProcDump.make_temp_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_procdump.MemoryImageProcDump.make_temp_directory" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.mem_procdump.MemoryImageProcDump.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_procdump.html#MemoryImageProcDump.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_procdump.MemoryImageProcDump.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class Cleanup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.mem_procdump.test">
+<tt class="descclassname">workbench.workers.mem_procdump.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_procdump.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_procdump.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>mem_procdump.py: Test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.mem_pslist">
+<span id="workbench-workers-mem-pslist-module"></span><h2>workbench.workers.mem_pslist module<a class="headerlink" href="#module-workbench.workers.mem_pslist" title="Permalink to this headline">¶</a></h2>
+<p>Memory Image PSList worker. This worker utilizes the Rekall Memory Forensic Framework.
+See Google Github: <a class="reference external" href="http://github.com/google/rekall">http://github.com/google/rekall</a>
+All credit for good stuff goes to them, all credit for bad stuff goes to us. :)</p>
+<dl class="class">
+<dt id="workbench.workers.mem_pslist.MemoryImagePSList">
+<em class="property">class </em><tt class="descclassname">workbench.workers.mem_pslist.</tt><tt class="descname">MemoryImagePSList</tt><a class="reference internal" href="_modules/workbench/workers/mem_pslist.html#MemoryImagePSList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_pslist.MemoryImagePSList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#workbench.workers.mem_base.MemoryImageBase" title="workbench.workers.mem_base.MemoryImageBase"><tt class="xref py py-class docutils literal"><span class="pre">workbench.workers.mem_base.MemoryImageBase</span></tt></a></p>
+<p>This worker computes pslist-data for memory image files.</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.mem_pslist.MemoryImagePSList.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.mem_pslist.MemoryImagePSList.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.mem_pslist.MemoryImagePSList.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_pslist.html#MemoryImagePSList.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_pslist.MemoryImagePSList.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.mem_pslist.test">
+<tt class="descclassname">workbench.workers.mem_pslist.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/mem_pslist.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.mem_pslist.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>mem_pslist.py: Test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.meta">
+<span id="workbench-workers-meta-module"></span><h2>workbench.workers.meta module<a class="headerlink" href="#module-workbench.workers.meta" title="Permalink to this headline">¶</a></h2>
+<p>Meta worker</p>
+<dl class="class">
+<dt id="workbench.workers.meta.MetaData">
+<em class="property">class </em><tt class="descclassname">workbench.workers.meta.</tt><tt class="descname">MetaData</tt><a class="reference internal" href="_modules/workbench/workers/meta.html#MetaData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.meta.MetaData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker computes meta data for any file type.</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.meta.MetaData.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.meta.MetaData.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.meta.MetaData.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/meta.html#MetaData.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.meta.MetaData.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>This worker computes meta data for any file type.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.meta.test">
+<tt class="descclassname">workbench.workers.meta.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/meta.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.meta.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>meta.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.meta_deep">
+<span id="workbench-workers-meta-deep-module"></span><h2>workbench.workers.meta_deep module<a class="headerlink" href="#module-workbench.workers.meta_deep" title="Permalink to this headline">¶</a></h2>
+<p>MetaDeep worker</p>
+<dl class="class">
+<dt id="workbench.workers.meta_deep.MetaDeepData">
+<em class="property">class </em><tt class="descclassname">workbench.workers.meta_deep.</tt><tt class="descname">MetaDeepData</tt><a class="reference internal" href="_modules/workbench/workers/meta_deep.html#MetaDeepData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.meta_deep.MetaDeepData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker computes deeper meta-data</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.meta_deep.MetaDeepData.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample', 'meta']</em><a class="headerlink" href="#workbench.workers.meta_deep.MetaDeepData.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.meta_deep.MetaDeepData.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/meta_deep.html#MetaDeepData.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.meta_deep.MetaDeepData.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.meta_deep.test">
+<tt class="descclassname">workbench.workers.meta_deep.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/meta_deep.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.meta_deep.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>meta_deep.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.pcap_bro">
+<span id="workbench-workers-pcap-bro-module"></span><h2>workbench.workers.pcap_bro module<a class="headerlink" href="#module-workbench.workers.pcap_bro" title="Permalink to this headline">¶</a></h2>
+<p>PcapBro worker</p>
+<dl class="class">
+<dt id="workbench.workers.pcap_bro.PcapBro">
+<em class="property">class </em><tt class="descclassname">workbench.workers.pcap_bro.</tt><tt class="descname">PcapBro</tt><a class="reference internal" href="_modules/workbench/workers/pcap_bro.html#PcapBro"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_bro.PcapBro" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker runs Bro scripts on a pcap file</p>
+<dl class="attribute">
+<dt id="workbench.workers.pcap_bro.PcapBro.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.pcap_bro.PcapBro.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_bro.PcapBro.get_bro_script_path">
+<tt class="descname">get_bro_script_path</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_bro.html#PcapBro.get_bro_script_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_bro.PcapBro.get_bro_script_path" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_bro.PcapBro.setup_pcap_inputs">
+<tt class="descname">setup_pcap_inputs</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_bro.html#PcapBro.setup_pcap_inputs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_bro.PcapBro.setup_pcap_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write the PCAPs to disk for Bro to process and return the pcap filenames</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_bro.PcapBro.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_bro.html#PcapBro.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_bro.PcapBro.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_bro.PcapBro.subprocess_manager">
+<tt class="descname">subprocess_manager</tt><big>(</big><em>exec_args</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_bro.html#PcapBro.subprocess_manager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_bro.PcapBro.subprocess_manager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bro subprocess manager</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_bro.PcapBro.make_temp_directory">
+<tt class="descname">make_temp_directory</tt><big>(</big><em>*args</em>, <em>**kwds</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_bro.html#PcapBro.make_temp_directory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_bro.PcapBro.make_temp_directory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bro temporary directory context manager</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_bro.PcapBro.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_bro.html#PcapBro.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_bro.PcapBro.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class Cleanup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pcap_bro.test">
+<tt class="descclassname">workbench.workers.pcap_bro.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_bro.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_bro.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>pcap_bro.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.pcap_graph">
+<span id="workbench-workers-pcap-graph-module"></span><h2>workbench.workers.pcap_graph module<a class="headerlink" href="#module-workbench.workers.pcap_graph" title="Permalink to this headline">¶</a></h2>
+<p>pcap_graph worker</p>
+<dl class="class">
+<dt id="workbench.workers.pcap_graph.PcapGraph">
+<em class="property">class </em><tt class="descclassname">workbench.workers.pcap_graph.</tt><tt class="descname">PcapGraph</tt><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#PcapGraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker generates a graph from a PCAP (depends on Bro)</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.pcap_graph.PcapGraph.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['pcap_bro']</em><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_graph.PcapGraph.add_node">
+<tt class="descname">add_node</tt><big>(</big><em>node_id</em>, <em>name</em>, <em>labels</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#PcapGraph.add_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cache aware add_node</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_graph.PcapGraph.add_rel">
+<tt class="descname">add_rel</tt><big>(</big><em>source_id</em>, <em>target_id</em>, <em>rel</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#PcapGraph.add_rel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph.add_rel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cache aware add_rel</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_graph.PcapGraph.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#PcapGraph.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Okay this worker is going build graphs from PCAP Bro output logs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_graph.PcapGraph.conn_log_graph">
+<tt class="descname">conn_log_graph</tt><big>(</big><em>stream</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#PcapGraph.conn_log_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph.conn_log_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build up a graph (nodes and edges from a Bro conn.log)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_graph.PcapGraph.http_log_graph">
+<tt class="descname">http_log_graph</tt><big>(</big><em>stream</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#PcapGraph.http_log_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph.http_log_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build up a graph (nodes and edges from a Bro http.log)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_graph.PcapGraph.dns_log_graph">
+<tt class="descname">dns_log_graph</tt><big>(</big><em>stream</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#PcapGraph.dns_log_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph.dns_log_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build up a graph (nodes and edges from a Bro dns.log)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_graph.PcapGraph.weird_log_graph">
+<tt class="descname">weird_log_graph</tt><big>(</big><em>stream</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#PcapGraph.weird_log_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph.weird_log_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build up a graph (nodes and edges from a Bro weird.log)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_graph.PcapGraph.files_log_graph">
+<tt class="descname">files_log_graph</tt><big>(</big><em>stream</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#PcapGraph.files_log_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph.files_log_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build up a graph (nodes and edges from a Bro dns.log)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_graph.PcapGraph.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#PcapGraph.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.PcapGraph.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class Cleanup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pcap_graph.test">
+<tt class="descclassname">workbench.workers.pcap_graph.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_graph.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_graph.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>pcap_graph.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.pcap_http_graph">
+<span id="workbench-workers-pcap-http-graph-module"></span><h2>workbench.workers.pcap_http_graph module<a class="headerlink" href="#module-workbench.workers.pcap_http_graph" title="Permalink to this headline">¶</a></h2>
+<p>pcap_http_graph worker</p>
+<dl class="class">
+<dt id="workbench.workers.pcap_http_graph.PcapHTTPGraph">
+<em class="property">class </em><tt class="descclassname">workbench.workers.pcap_http_graph.</tt><tt class="descname">PcapHTTPGraph</tt><a class="reference internal" href="_modules/workbench/workers/pcap_http_graph.html#PcapHTTPGraph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_http_graph.PcapHTTPGraph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker generates a graph from a PCAP (depends on Bro)</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.pcap_http_graph.PcapHTTPGraph.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['pcap_bro']</em><a class="headerlink" href="#workbench.workers.pcap_http_graph.PcapHTTPGraph.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_http_graph.PcapHTTPGraph.add_node">
+<tt class="descname">add_node</tt><big>(</big><em>node_id</em>, <em>name</em>, <em>labels</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_http_graph.html#PcapHTTPGraph.add_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_http_graph.PcapHTTPGraph.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cache aware add_node</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_http_graph.PcapHTTPGraph.add_rel">
+<tt class="descname">add_rel</tt><big>(</big><em>source_id</em>, <em>target_id</em>, <em>rel</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_http_graph.html#PcapHTTPGraph.add_rel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_http_graph.PcapHTTPGraph.add_rel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Cache aware add_rel</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_http_graph.PcapHTTPGraph.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_http_graph.html#PcapHTTPGraph.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_http_graph.PcapHTTPGraph.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Okay this worker is going build graphs from PCAP Bro output logs</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_http_graph.PcapHTTPGraph.http_log_graph">
+<tt class="descname">http_log_graph</tt><big>(</big><em>stream</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_http_graph.html#PcapHTTPGraph.http_log_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_http_graph.PcapHTTPGraph.http_log_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build up a graph (nodes and edges from a Bro http.log)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_http_graph.PcapHTTPGraph.weird_log_graph">
+<tt class="descname">weird_log_graph</tt><big>(</big><em>stream</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_http_graph.html#PcapHTTPGraph.weird_log_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_http_graph.PcapHTTPGraph.weird_log_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build up a graph (nodes and edges from a Bro weird.log)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_http_graph.PcapHTTPGraph.files_log_graph">
+<tt class="descname">files_log_graph</tt><big>(</big><em>stream</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_http_graph.html#PcapHTTPGraph.files_log_graph"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_http_graph.PcapHTTPGraph.files_log_graph" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build up a graph (nodes and edges from a Bro dns.log)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pcap_http_graph.PcapHTTPGraph.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_http_graph.html#PcapHTTPGraph.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_http_graph.PcapHTTPGraph.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class Cleanup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pcap_http_graph.test">
+<tt class="descclassname">workbench.workers.pcap_http_graph.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pcap_http_graph.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pcap_http_graph.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>pcap_http_graph.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.pe_classifier">
+<span id="workbench-workers-pe-classifier-module"></span><h2>workbench.workers.pe_classifier module<a class="headerlink" href="#module-workbench.workers.pe_classifier" title="Permalink to this headline">¶</a></h2>
+<p>PE Classify worker (just a placeholder, not a real classifier at this point)</p>
+<dl class="class">
+<dt id="workbench.workers.pe_classifier.PEFileClassify">
+<em class="property">class </em><tt class="descclassname">workbench.workers.pe_classifier.</tt><tt class="descname">PEFileClassify</tt><a class="reference internal" href="_modules/workbench/workers/pe_classifier.html#PEFileClassify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_classifier.PEFileClassify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker classifies PEFiles as Evil or Benign  (TOY not a real classifier at this point)</p>
+<p>Initialization</p>
+<dl class="attribute">
+<dt id="workbench.workers.pe_classifier.PEFileClassify.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['pe_features', 'pe_indicators']</em><a class="headerlink" href="#workbench.workers.pe_classifier.PEFileClassify.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_classifier.PEFileClassify.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_classifier.html#PEFileClassify.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_classifier.PEFileClassify.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>This worker classifies PEFiles as Evil or Benign  (TOY not a real classifier at this point)</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pe_classifier.test">
+<tt class="descclassname">workbench.workers.pe_classifier.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_classifier.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_classifier.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>pe_classifier.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.pe_deep_sim">
+<span id="workbench-workers-pe-deep-sim-module"></span><h2>workbench.workers.pe_deep_sim module<a class="headerlink" href="#module-workbench.workers.pe_deep_sim" title="Permalink to this headline">¶</a></h2>
+<p>PE SSDeep Similarity worker</p>
+<dl class="class">
+<dt id="workbench.workers.pe_deep_sim.PEDeepSim">
+<em class="property">class </em><tt class="descclassname">workbench.workers.pe_deep_sim.</tt><tt class="descname">PEDeepSim</tt><a class="reference internal" href="_modules/workbench/workers/pe_deep_sim.html#PEDeepSim"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_deep_sim.PEDeepSim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker computes fuzzy matches between samples with ssdeep</p>
+<dl class="attribute">
+<dt id="workbench.workers.pe_deep_sim.PEDeepSim.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['meta_deep']</em><a class="headerlink" href="#workbench.workers.pe_deep_sim.PEDeepSim.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_deep_sim.PEDeepSim.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_deep_sim.html#PEDeepSim.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_deep_sim.PEDeepSim.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute method</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_deep_sim.PEDeepSim.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_deep_sim.html#PEDeepSim.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_deep_sim.PEDeepSim.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class Cleanup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pe_deep_sim.test">
+<tt class="descclassname">workbench.workers.pe_deep_sim.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_deep_sim.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_deep_sim.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>pe_deep_sim.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.pe_features">
+<span id="workbench-workers-pe-features-module"></span><h2>workbench.workers.pe_features module<a class="headerlink" href="#module-workbench.workers.pe_features" title="Permalink to this headline">¶</a></h2>
+<p>PE Features worker. This class pulls static features
+out of a PE file using the python pefile module.</p>
+<dl class="class">
+<dt id="workbench.workers.pe_features.PEFileWorker">
+<em class="property">class </em><tt class="descclassname">workbench.workers.pe_features.</tt><tt class="descname">PEFileWorker</tt><big>(</big><em>verbose=False</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#PEFileWorker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.PEFileWorker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Create instance of PEFileWorker class. This class pulls static
+features out of a PE file using the python pefile module.</p>
+<p>Init method</p>
+<dl class="attribute">
+<dt id="workbench.workers.pe_features.PEFileWorker.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.pe_features.PEFileWorker.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_features.PEFileWorker.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#PEFileWorker.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.PEFileWorker.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process the input bytes with pefile</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_features.PEFileWorker.set_dense_features">
+<tt class="descname">set_dense_features</tt><big>(</big><em>dense_feature_list</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#PEFileWorker.set_dense_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.PEFileWorker.set_dense_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the dense feature list that the Python pefile module should extract.
+This is really just sanity check functionality, meaning that these
+are the features you are expecting to get, and a warning will spit
+out if you don&#8217;t get some of these.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_features.PEFileWorker.get_dense_features">
+<tt class="descname">get_dense_features</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#PEFileWorker.get_dense_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.PEFileWorker.get_dense_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the dense feature list that the Python pefile module should extract.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_features.PEFileWorker.set_sparse_features">
+<tt class="descname">set_sparse_features</tt><big>(</big><em>sparse_feature_list</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#PEFileWorker.set_sparse_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.PEFileWorker.set_sparse_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the sparse feature list that the Python pefile module should extract.
+This is really just sanity check functionality, meaning that these
+are the features you are expecting to get, and a warning will spit
+out if you don&#8217;t get some of these.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_features.PEFileWorker.get_sparse_features">
+<tt class="descname">get_sparse_features</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#PEFileWorker.get_sparse_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.PEFileWorker.get_sparse_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the sparse feature list that the Python pefile module should extract.</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="workbench.workers.pe_features.PEFileWorker.open_using_pefile">
+<em class="property">static </em><tt class="descname">open_using_pefile</tt><big>(</big><em>input_name</em>, <em>input_bytes</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#PEFileWorker.open_using_pefile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.PEFileWorker.open_using_pefile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Open the PE File using the Python pefile module.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_features.PEFileWorker.extract_features_using_pefile">
+<tt class="descname">extract_features_using_pefile</tt><big>(</big><em>pef</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#PEFileWorker.extract_features_using_pefile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.PEFileWorker.extract_features_using_pefile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process the PE File using the Python pefile module.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pe_features.convert_to_utf8">
+<tt class="descclassname">workbench.workers.pe_features.</tt><tt class="descname">convert_to_utf8</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#convert_to_utf8"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.convert_to_utf8" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert string to UTF8</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pe_features.convert_to_ascii_null_term">
+<tt class="descclassname">workbench.workers.pe_features.</tt><tt class="descname">convert_to_ascii_null_term</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#convert_to_ascii_null_term"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.convert_to_ascii_null_term" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert string to Null terminated ascii</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pe_features.test">
+<tt class="descclassname">workbench.workers.pe_features.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_features.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_features.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>pe_features.py: Test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.pe_indicators">
+<span id="workbench-workers-pe-indicators-module"></span><h2>workbench.workers.pe_indicators module<a class="headerlink" href="#module-workbench.workers.pe_indicators" title="Permalink to this headline">¶</a></h2>
+<p>This python class codifies a bunch of rules around suspicious static
+features in a PE File. The rules don&#8217;t indicate malicious behavior
+they simply flag things that may be used by a malicious binary.
+Many of the indicators used were inspired by the material in the
+&#8216;Practical Malware Analysis&#8217; book by Sikorski and Honig,
+ISBN-13: 978-1593272906 (available on Amazon :)</p>
+<p>Description:</p>
+<blockquote>
+<div>PE_WARNINGS          = PE module warnings verbatim
+MALFORMED            = the PE file is malformed
+COMMUNICATION        = network activities
+CREDENTIALS          = activities associated with elevating or attaining new privileges
+KEYLOGGING           = activities associated with keylogging
+SYSTEM_STATE         = file system or registry activities
+SYSTEM_PROBE         = getting information from the local system (file system, OS config)
+SYSTEM_INTEGRITY     = compromises the security state of the local system
+PROCESS_MANIPULATION = indicators associated with process manipulation/injection
+PROCESS_SPAWN        = indicators associated with creating a new process
+STEALTH_LOAD         = indicators associated with loading libraries, resources, etc in a sneaky way
+ENCRYPTION           = any indicators related to encryption
+COM_SERVICES         = COM functionality or running as a service
+ANTI_DEBUG           = anti-debugging indicators</div></blockquote>
+<dl class="class">
+<dt id="workbench.workers.pe_indicators.PEIndicators">
+<em class="property">class </em><tt class="descclassname">workbench.workers.pe_indicators.</tt><tt class="descname">PEIndicators</tt><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Create instance of Indicators class. This class uses the
+static features from the pefile module to look for weird stuff.</p>
+<p>Note: All methods that start with &#8216;check&#8217; will be automatically
+included as part of the checks that happen when &#8216;execute&#8217; is called.</p>
+<p>Init method of the Indicators class.</p>
+<dl class="attribute">
+<dt id="workbench.workers.pe_indicators.PEIndicators.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the PEIndicators worker</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_corrupted_imports">
+<tt class="descname">check_corrupted_imports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_corrupted_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_corrupted_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Various ways the imports table might be corrupted.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_checksum_is_zero">
+<tt class="descname">check_checksum_is_zero</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_checksum_is_zero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_checksum_is_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking for a checksum of zero</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_checksum_mismatch">
+<tt class="descname">check_checksum_mismatch</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_checksum_mismatch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_checksum_mismatch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking for a checksum that doesn&#8217;t match the generated checksum</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_empty_section_name">
+<tt class="descname">check_empty_section_name</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_empty_section_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_empty_section_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking for an empty section name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_nonstandard_section_name">
+<tt class="descname">check_nonstandard_section_name</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_nonstandard_section_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_nonstandard_section_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking for an non-standard section name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_image_size_incorrect">
+<tt class="descname">check_image_size_incorrect</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_image_size_incorrect"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_image_size_incorrect" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the reported image size matches the actual image size</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_overlapping_headers">
+<tt class="descname">check_overlapping_headers</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_overlapping_headers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_overlapping_headers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if pefile module reported overlapping header</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_section_unaligned">
+<tt class="descname">check_section_unaligned</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_section_unaligned"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_section_unaligned" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if any of the sections are unaligned</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_section_oversized">
+<tt class="descname">check_section_oversized</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_section_oversized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_section_oversized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if any of the sections go past the total size of the image</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_dll_with_no_exports">
+<tt class="descname">check_dll_with_no_exports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_dll_with_no_exports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_dll_with_no_exports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE is a DLL with no exports</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_communication_imports">
+<tt class="descname">check_communication_imports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_communication_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_communication_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known communication methods</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_elevating_privs_imports">
+<tt class="descname">check_elevating_privs_imports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_elevating_privs_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_elevating_privs_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with elevating or attaining new privileges</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_keylogging_imports">
+<tt class="descname">check_keylogging_imports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_keylogging_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_keylogging_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with elevating or attaining new privileges</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_system_state_imports">
+<tt class="descname">check_system_state_imports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_system_state_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_system_state_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with changing system state</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_system_probe_imports">
+<tt class="descname">check_system_probe_imports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_system_probe_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_system_probe_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with probing the system</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_system_integrity_imports">
+<tt class="descname">check_system_integrity_imports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_system_integrity_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_system_integrity_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with system security or integrity</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_crypto_imports">
+<tt class="descname">check_crypto_imports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_crypto_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_crypto_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with encryption</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_anti_debug_imports">
+<tt class="descname">check_anti_debug_imports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_anti_debug_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_anti_debug_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with anti-debug</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_com_service_imports">
+<tt class="descname">check_com_service_imports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_com_service_imports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_com_service_imports" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with COM or services</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_process_manipulation">
+<tt class="descname">check_process_manipulation</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_process_manipulation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_process_manipulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with process manipulation/injection</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_process_spawn">
+<tt class="descname">check_process_spawn</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_process_spawn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_process_spawn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with spawning a new process</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_stealth_load">
+<tt class="descname">check_stealth_load</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_stealth_load"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_stealth_load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking if the PE imports known methods associated with loading libraries, resources, etc in a sneaky way</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_invalid_entry_point">
+<tt class="descname">check_invalid_entry_point</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_invalid_entry_point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_invalid_entry_point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checking the PE File warning for an invalide entry point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_indicators.PEIndicators.check_exports">
+<tt class="descname">check_exports</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#PEIndicators.check_exports"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.PEIndicators.check_exports" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is just a stub function right now, might be useful later</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pe_indicators.convert_to_ascii_null_term">
+<tt class="descclassname">workbench.workers.pe_indicators.</tt><tt class="descname">convert_to_ascii_null_term</tt><big>(</big><em>string</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#convert_to_ascii_null_term"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.convert_to_ascii_null_term" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert string to null terminated ascii string</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pe_indicators.test">
+<tt class="descclassname">workbench.workers.pe_indicators.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_indicators.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_indicators.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>pe_indicators.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.pe_peid">
+<span id="workbench-workers-pe-peid-module"></span><h2>workbench.workers.pe_peid module<a class="headerlink" href="#module-workbench.workers.pe_peid" title="Permalink to this headline">¶</a></h2>
+<p>PE peid worker, uses the peid_userdb.txt database of signatures</p>
+<dl class="class">
+<dt id="workbench.workers.pe_peid.PEIDWorker">
+<em class="property">class </em><tt class="descclassname">workbench.workers.pe_peid.</tt><tt class="descname">PEIDWorker</tt><a class="reference internal" href="_modules/workbench/workers/pe_peid.html#PEIDWorker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_peid.PEIDWorker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker looks up pe_id signatures for a PE file.</p>
+<dl class="attribute">
+<dt id="workbench.workers.pe_peid.PEIDWorker.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.pe_peid.PEIDWorker.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_peid.PEIDWorker.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_peid.html#PEIDWorker.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_peid.PEIDWorker.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the PEIDWorker</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.pe_peid.PEIDWorker.peid_features">
+<tt class="descname">peid_features</tt><big>(</big><em>pefile_handle</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_peid.html#PEIDWorker.peid_features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_peid.PEIDWorker.peid_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get features from PEid signature database</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.pe_peid.test">
+<tt class="descclassname">workbench.workers.pe_peid.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/pe_peid.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.pe_peid.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>pe_peid.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.strings">
+<span id="workbench-workers-strings-module"></span><h2>workbench.workers.strings module<a class="headerlink" href="#module-workbench.workers.strings" title="Permalink to this headline">¶</a></h2>
+<p>Strings worker</p>
+<dl class="class">
+<dt id="workbench.workers.strings.Strings">
+<em class="property">class </em><tt class="descclassname">workbench.workers.strings.</tt><tt class="descname">Strings</tt><a class="reference internal" href="_modules/workbench/workers/strings.html#Strings"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.strings.Strings" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker extracts all the strings from any type of file</p>
+<p>Initialize the Strings worker</p>
+<dl class="attribute">
+<dt id="workbench.workers.strings.Strings.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.strings.Strings.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.strings.Strings.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/strings.html#Strings.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.strings.Strings.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the Strings worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.strings.test">
+<tt class="descclassname">workbench.workers.strings.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/strings.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.strings.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>strings.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.swf_meta">
+<span id="workbench-workers-swf-meta-module"></span><h2>workbench.workers.swf_meta module<a class="headerlink" href="#module-workbench.workers.swf_meta" title="Permalink to this headline">¶</a></h2>
+<p>SWFMeta worker: This is a stub the real class (under the experimental
+directory has too many dependencies)</p>
+<dl class="class">
+<dt id="workbench.workers.swf_meta.SWFMeta">
+<em class="property">class </em><tt class="descclassname">workbench.workers.swf_meta.</tt><tt class="descname">SWFMeta</tt><a class="reference internal" href="_modules/workbench/workers/swf_meta.html#SWFMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.swf_meta.SWFMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker computes a bunch of meta-data about a SWF file</p>
+<dl class="attribute">
+<dt id="workbench.workers.swf_meta.SWFMeta.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample', 'meta']</em><a class="headerlink" href="#workbench.workers.swf_meta.SWFMeta.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.swf_meta.SWFMeta.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/swf_meta.html#SWFMeta.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.swf_meta.SWFMeta.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the SWFMeta worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.swf_meta.test">
+<tt class="descclassname">workbench.workers.swf_meta.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/swf_meta.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.swf_meta.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>swf_meta.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.unzip">
+<span id="workbench-workers-unzip-module"></span><h2>workbench.workers.unzip module<a class="headerlink" href="#module-workbench.workers.unzip" title="Permalink to this headline">¶</a></h2>
+<p>Unzip worker</p>
+<dl class="class">
+<dt id="workbench.workers.unzip.Unzip">
+<em class="property">class </em><tt class="descclassname">workbench.workers.unzip.</tt><tt class="descname">Unzip</tt><a class="reference internal" href="_modules/workbench/workers/unzip.html#Unzip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.unzip.Unzip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker unzips a zipped file</p>
+<dl class="attribute">
+<dt id="workbench.workers.unzip.Unzip.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.unzip.Unzip.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.unzip.Unzip.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/unzip.html#Unzip.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.unzip.Unzip.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the Unzip worker</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.unzip.Unzip.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/unzip.html#Unzip.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.unzip.Unzip.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class Cleanup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.unzip.test">
+<tt class="descclassname">workbench.workers.unzip.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/unzip.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.unzip.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>unzip.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.url">
+<span id="workbench-workers-url-module"></span><h2>workbench.workers.url module<a class="headerlink" href="#module-workbench.workers.url" title="Permalink to this headline">¶</a></h2>
+<p>URLS worker: Tries to extract URL from strings output</p>
+<dl class="class">
+<dt id="workbench.workers.url.URLS">
+<em class="property">class </em><tt class="descclassname">workbench.workers.url.</tt><tt class="descname">URLS</tt><a class="reference internal" href="_modules/workbench/workers/url.html#URLS"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.url.URLS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker looks for url patterns in strings output</p>
+<p>Initialize the URL worker</p>
+<dl class="attribute">
+<dt id="workbench.workers.url.URLS.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['strings']</em><a class="headerlink" href="#workbench.workers.url.URLS.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.url.URLS.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/url.html#URLS.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.url.URLS.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the URL worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.url.test">
+<tt class="descclassname">workbench.workers.url.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/url.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.url.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>url.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.view">
+<span id="workbench-workers-view-module"></span><h2>workbench.workers.view module<a class="headerlink" href="#module-workbench.workers.view" title="Permalink to this headline">¶</a></h2>
+<p>view worker</p>
+<dl class="class">
+<dt id="workbench.workers.view.View">
+<em class="property">class </em><tt class="descclassname">workbench.workers.view.</tt><tt class="descname">View</tt><a class="reference internal" href="_modules/workbench/workers/view.html#View"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view.View" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>View: Generates a view for any file type</p>
+<dl class="attribute">
+<dt id="workbench.workers.view.View.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['meta']</em><a class="headerlink" href="#workbench.workers.view.View.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view.View.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view.html#View.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view.View.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view.View.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view.html#View.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view.View.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class Cleanup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.view.test">
+<tt class="descclassname">workbench.workers.view.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>view.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.view_customer">
+<span id="workbench-workers-view-customer-module"></span><h2>workbench.workers.view_customer module<a class="headerlink" href="#module-workbench.workers.view_customer" title="Permalink to this headline">¶</a></h2>
+<p>view_customer worker</p>
+<dl class="class">
+<dt id="workbench.workers.view_customer.ViewCustomer">
+<em class="property">class </em><tt class="descclassname">workbench.workers.view_customer.</tt><tt class="descname">ViewCustomer</tt><a class="reference internal" href="_modules/workbench/workers/view_customer.html#ViewCustomer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_customer.ViewCustomer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ViewCustomer: Generates a customer usage view.</p>
+<dl class="attribute">
+<dt id="workbench.workers.view_customer.ViewCustomer.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['meta']</em><a class="headerlink" href="#workbench.workers.view_customer.ViewCustomer.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_customer.ViewCustomer.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_customer.html#ViewCustomer.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_customer.ViewCustomer.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute Method</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.view_customer.test">
+<tt class="descclassname">workbench.workers.view_customer.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_customer.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_customer.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>view_customer.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.view_log_meta">
+<span id="workbench-workers-view-log-meta-module"></span><h2>workbench.workers.view_log_meta module<a class="headerlink" href="#module-workbench.workers.view_log_meta" title="Permalink to this headline">¶</a></h2>
+<p>view_log_meta worker</p>
+<dl class="class">
+<dt id="workbench.workers.view_log_meta.ViewLogMeta">
+<em class="property">class </em><tt class="descclassname">workbench.workers.view_log_meta.</tt><tt class="descname">ViewLogMeta</tt><a class="reference internal" href="_modules/workbench/workers/view_log_meta.html#ViewLogMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_log_meta.ViewLogMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ViewLogMeta: Generates a view for meta data on the sample</p>
+<dl class="attribute">
+<dt id="workbench.workers.view_log_meta.ViewLogMeta.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['log_meta']</em><a class="headerlink" href="#workbench.workers.view_log_meta.ViewLogMeta.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_log_meta.ViewLogMeta.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_log_meta.html#ViewLogMeta.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_log_meta.ViewLogMeta.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the ViewLogMeta worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.view_log_meta.test">
+<tt class="descclassname">workbench.workers.view_log_meta.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_log_meta.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_log_meta.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>view_log_meta.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.view_memory">
+<span id="workbench-workers-view-memory-module"></span><h2>workbench.workers.view_memory module<a class="headerlink" href="#module-workbench.workers.view_memory" title="Permalink to this headline">¶</a></h2>
+<p>view_memory worker</p>
+<dl class="class">
+<dt id="workbench.workers.view_memory.ViewMemory">
+<em class="property">class </em><tt class="descclassname">workbench.workers.view_memory.</tt><tt class="descname">ViewMemory</tt><a class="reference internal" href="_modules/workbench/workers/view_memory.html#ViewMemory"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_memory.ViewMemory" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ViewMemory: Generates a view for meta data on the sample</p>
+<dl class="attribute">
+<dt id="workbench.workers.view_memory.ViewMemory.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['mem_connscan', 'mem_meta', 'mem_procdump', 'mem_pslist']</em><a class="headerlink" href="#workbench.workers.view_memory.ViewMemory.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_memory.ViewMemory.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_memory.html#ViewMemory.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_memory.ViewMemory.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the ViewMemory worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.view_memory.test">
+<tt class="descclassname">workbench.workers.view_memory.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_memory.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_memory.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>view_memory.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.view_meta">
+<span id="workbench-workers-view-meta-module"></span><h2>workbench.workers.view_meta module<a class="headerlink" href="#module-workbench.workers.view_meta" title="Permalink to this headline">¶</a></h2>
+<p>view_meta worker</p>
+<dl class="class">
+<dt id="workbench.workers.view_meta.ViewMetaData">
+<em class="property">class </em><tt class="descclassname">workbench.workers.view_meta.</tt><tt class="descname">ViewMetaData</tt><a class="reference internal" href="_modules/workbench/workers/view_meta.html#ViewMetaData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_meta.ViewMetaData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ViewMetaData: Generates a view for meta data on the sample</p>
+<dl class="attribute">
+<dt id="workbench.workers.view_meta.ViewMetaData.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['meta']</em><a class="headerlink" href="#workbench.workers.view_meta.ViewMetaData.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_meta.ViewMetaData.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_meta.html#ViewMetaData.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_meta.ViewMetaData.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the ViewMetaData worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.view_meta.test">
+<tt class="descclassname">workbench.workers.view_meta.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_meta.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_meta.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>view_meta.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.view_pcap">
+<span id="workbench-workers-view-pcap-module"></span><h2>workbench.workers.view_pcap module<a class="headerlink" href="#module-workbench.workers.view_pcap" title="Permalink to this headline">¶</a></h2>
+<p>view_pcap worker</p>
+<dl class="class">
+<dt id="workbench.workers.view_pcap.ViewPcap">
+<em class="property">class </em><tt class="descclassname">workbench.workers.view_pcap.</tt><tt class="descname">ViewPcap</tt><a class="reference internal" href="_modules/workbench/workers/view_pcap.html#ViewPcap"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pcap.ViewPcap" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ViewPcap: Generates a view for a pcap sample (depends on Bro)</p>
+<dl class="attribute">
+<dt id="workbench.workers.view_pcap.ViewPcap.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['pcap_bro']</em><a class="headerlink" href="#workbench.workers.view_pcap.ViewPcap.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_pcap.ViewPcap.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pcap.html#ViewPcap.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pcap.ViewPcap.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_pcap.ViewPcap.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pcap.html#ViewPcap.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pcap.ViewPcap.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class Cleanup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.view_pcap.test">
+<tt class="descclassname">workbench.workers.view_pcap.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pcap.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pcap.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>view_pcap.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.view_pcap_details">
+<span id="workbench-workers-view-pcap-details-module"></span><h2>workbench.workers.view_pcap_details module<a class="headerlink" href="#module-workbench.workers.view_pcap_details" title="Permalink to this headline">¶</a></h2>
+<p>view_pcap_details worker</p>
+<dl class="class">
+<dt id="workbench.workers.view_pcap_details.ViewPcapDetails">
+<em class="property">class </em><tt class="descclassname">workbench.workers.view_pcap_details.</tt><tt class="descname">ViewPcapDetails</tt><a class="reference internal" href="_modules/workbench/workers/view_pcap_details.html#ViewPcapDetails"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pcap_details.ViewPcapDetails" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ViewPcapDetails: Generates a view for a pcap sample (depends on Bro)</p>
+<p>Initialization of ViewPcapDetails</p>
+<dl class="attribute">
+<dt id="workbench.workers.view_pcap_details.ViewPcapDetails.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['view_pcap']</em><a class="headerlink" href="#workbench.workers.view_pcap_details.ViewPcapDetails.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_pcap_details.ViewPcapDetails.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pcap_details.html#ViewPcapDetails.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pcap_details.ViewPcapDetails.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>ViewPcapDetails execute method</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_pcap_details.ViewPcapDetails.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pcap_details.html#ViewPcapDetails.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pcap_details.ViewPcapDetails.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class Cleanup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.view_pcap_details.test">
+<tt class="descclassname">workbench.workers.view_pcap_details.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pcap_details.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pcap_details.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>view_pcap_details.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.view_pdf">
+<span id="workbench-workers-view-pdf-module"></span><h2>workbench.workers.view_pdf module<a class="headerlink" href="#module-workbench.workers.view_pdf" title="Permalink to this headline">¶</a></h2>
+<p>view_pdffile worker</p>
+<dl class="class">
+<dt id="workbench.workers.view_pdf.ViewPDFFile">
+<em class="property">class </em><tt class="descclassname">workbench.workers.view_pdf.</tt><tt class="descname">ViewPDFFile</tt><a class="reference internal" href="_modules/workbench/workers/view_pdf.html#ViewPDFFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pdf.ViewPDFFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ViewPDFFile: Generates a view for PDF files</p>
+<dl class="attribute">
+<dt id="workbench.workers.view_pdf.ViewPDFFile.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['meta', 'strings']</em><a class="headerlink" href="#workbench.workers.view_pdf.ViewPDFFile.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_pdf.ViewPDFFile.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pdf.html#ViewPDFFile.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pdf.ViewPDFFile.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the ViewPDF worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.view_pdf.test">
+<tt class="descclassname">workbench.workers.view_pdf.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pdf.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pdf.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8216; view_pdf.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.view_pe">
+<span id="workbench-workers-view-pe-module"></span><h2>workbench.workers.view_pe module<a class="headerlink" href="#module-workbench.workers.view_pe" title="Permalink to this headline">¶</a></h2>
+<p>view_pe worker</p>
+<dl class="class">
+<dt id="workbench.workers.view_pe.ViewPEFile">
+<em class="property">class </em><tt class="descclassname">workbench.workers.view_pe.</tt><tt class="descname">ViewPEFile</tt><a class="reference internal" href="_modules/workbench/workers/view_pe.html#ViewPEFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pe.ViewPEFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Generates a high level summary view for PE files that incorporates a large set of workers</p>
+<dl class="attribute">
+<dt id="workbench.workers.view_pe.ViewPEFile.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['meta', 'strings', 'pe_peid', 'pe_indicators', 'pe_classifier']</em><a class="headerlink" href="#workbench.workers.view_pe.ViewPEFile.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_pe.ViewPEFile.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pe.html#ViewPEFile.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pe.ViewPEFile.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the ViewPEFile worker</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="workbench.workers.view_pe.ViewPEFile.safe_get">
+<em class="property">static </em><tt class="descname">safe_get</tt><big>(</big><em>data</em>, <em>key_list</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pe.html#ViewPEFile.safe_get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pe.ViewPEFile.safe_get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Safely access dictionary keys when plugin may have failed</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.view_pe.test">
+<tt class="descclassname">workbench.workers.view_pe.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_pe.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_pe.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>view_pe.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.view_zip">
+<span id="workbench-workers-view-zip-module"></span><h2>workbench.workers.view_zip module<a class="headerlink" href="#module-workbench.workers.view_zip" title="Permalink to this headline">¶</a></h2>
+<p>view_zip worker</p>
+<dl class="class">
+<dt id="workbench.workers.view_zip.ViewZip">
+<em class="property">class </em><tt class="descclassname">workbench.workers.view_zip.</tt><tt class="descname">ViewZip</tt><a class="reference internal" href="_modules/workbench/workers/view_zip.html#ViewZip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_zip.ViewZip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ViewZip: Generates a view for Zip files</p>
+<dl class="attribute">
+<dt id="workbench.workers.view_zip.ViewZip.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['meta', 'unzip']</em><a class="headerlink" href="#workbench.workers.view_zip.ViewZip.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_zip.ViewZip.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_zip.html#ViewZip.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_zip.ViewZip.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the ViewZip worker</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.view_zip.ViewZip.__del__">
+<tt class="descname">__del__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_zip.html#ViewZip.__del__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_zip.ViewZip.__del__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class Cleanup</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.view_zip.test">
+<tt class="descclassname">workbench.workers.view_zip.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/view_zip.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.view_zip.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8211; view_zip.py test &#8211;</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.vt_query">
+<span id="workbench-workers-vt-query-module"></span><h2>workbench.workers.vt_query module<a class="headerlink" href="#module-workbench.workers.vt_query" title="Permalink to this headline">¶</a></h2>
+<p>VTQuery worker</p>
+<dl class="class">
+<dt id="workbench.workers.vt_query.VTQuery">
+<em class="property">class </em><tt class="descclassname">workbench.workers.vt_query.</tt><tt class="descname">VTQuery</tt><a class="reference internal" href="_modules/workbench/workers/vt_query.html#VTQuery"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.vt_query.VTQuery" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker query Virus Total, an apikey needs to be provided</p>
+<p>VTQuery Init</p>
+<dl class="attribute">
+<dt id="workbench.workers.vt_query.VTQuery.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['meta']</em><a class="headerlink" href="#workbench.workers.vt_query.VTQuery.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.vt_query.VTQuery.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/vt_query.html#VTQuery.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.vt_query.VTQuery.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the VTQuery worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.vt_query.test">
+<tt class="descclassname">workbench.workers.vt_query.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/vt_query.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.vt_query.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8211; vt_query.py test &#8211;</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.yara_sigs">
+<span id="workbench-workers-yara-sigs-module"></span><h2>workbench.workers.yara_sigs module<a class="headerlink" href="#module-workbench.workers.yara_sigs" title="Permalink to this headline">¶</a></h2>
+<p>Yara worker</p>
+<dl class="class">
+<dt id="workbench.workers.yara_sigs.YaraSigs">
+<em class="property">class </em><tt class="descclassname">workbench.workers.yara_sigs.</tt><tt class="descname">YaraSigs</tt><a class="reference internal" href="_modules/workbench/workers/yara_sigs.html#YaraSigs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.yara_sigs.YaraSigs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>This worker check for matches against yara sigs.
+Output keys: [matches:list of matches]</p>
+<dl class="attribute">
+<dt id="workbench.workers.yara_sigs.YaraSigs.dependencies">
+<tt class="descname">dependencies</tt><em class="property"> = ['sample']</em><a class="headerlink" href="#workbench.workers.yara_sigs.YaraSigs.dependencies" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.yara_sigs.YaraSigs.get_yara_rules">
+<tt class="descname">get_yara_rules</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/yara_sigs.html#YaraSigs.get_yara_rules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.yara_sigs.YaraSigs.get_yara_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively traverse the yara/rules directory for rules</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.yara_sigs.YaraSigs.execute">
+<tt class="descname">execute</tt><big>(</big><em>input_data</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/yara_sigs.html#YaraSigs.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.yara_sigs.YaraSigs.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>yara worker execute method</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.yara_sigs.test">
+<tt class="descclassname">workbench.workers.yara_sigs.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/yara_sigs.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.yara_sigs.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>yara.py: Unit test</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-workbench.workers" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Workbench 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

@@ -1,0 +1,457 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>workbench.workers.pe_features &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="../../../index.html">Workbench</a></h2>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../running.html">Running WorkBench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.clients.html">workbench.clients package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.server.html">workbench.server package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.workers.html">workbench.workers package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <h1>Source code for workbench.workers.pe_features</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39; PE Features worker. This class pulls static features</span>
+<span class="sd">    out of a PE file using the python pefile module.</span>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="kn">import</span> <span class="nn">pefile</span>
+<span class="kn">import</span> <span class="nn">pprint</span>
+
+
+<div class="viewcode-block" id="PEFileWorker"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.PEFileWorker">[docs]</a><span class="k">class</span> <span class="nc">PEFileWorker</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Create instance of PEFileWorker class. This class pulls static</span>
+<span class="sd">        features out of a PE file using the python pefile module.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;sample&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Init method &#39;&#39;&#39;</span>
+
+        <span class="c"># Dense feature list: this only functions to ensure that all of these</span>
+        <span class="c">#               features get extracted with a sanity check at the end.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dense_feature_list</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dense_features</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c"># Okay now the sparse fields</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_feature_list</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_features</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="c"># Verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+
+        <span class="c"># Warnings handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c"># Set the features that I&#39;m expected PE File to extract, note this is just</span>
+        <span class="c"># for sanity checking, meaning that if you don&#39;t get some of these features</span>
+        <span class="c"># the processing will spit out warnings for each feature not extracted.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_dense_features</span><span class="p">([</span><span class="s">&#39;check_sum&#39;</span><span class="p">,</span> <span class="s">&#39;generated_check_sum&#39;</span><span class="p">,</span> <span class="s">&#39;compile_date&#39;</span><span class="p">,</span> <span class="s">&#39;debug_size&#39;</span><span class="p">,</span> <span class="s">&#39;export_size&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;iat_rva&#39;</span><span class="p">,</span> <span class="s">&#39;major_version&#39;</span><span class="p">,</span> <span class="s">&#39;minor_version&#39;</span><span class="p">,</span> <span class="s">&#39;number_of_bound_import_symbols&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;number_of_bound_imports&#39;</span><span class="p">,</span> <span class="s">&#39;number_of_export_symbols&#39;</span><span class="p">,</span> <span class="s">&#39;number_of_import_symbols&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;number_of_imports&#39;</span><span class="p">,</span> <span class="s">&#39;number_of_rva_and_sizes&#39;</span><span class="p">,</span> <span class="s">&#39;number_of_sections&#39;</span><span class="p">,</span> <span class="s">&#39;pe_warnings&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;std_section_names&#39;</span><span class="p">,</span> <span class="s">&#39;total_size_pe&#39;</span><span class="p">,</span> <span class="s">&#39;virtual_address&#39;</span><span class="p">,</span> <span class="s">&#39;virtual_size&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;virtual_size_2&#39;</span><span class="p">,</span> <span class="s">&#39;datadir_IMAGE_DIRECTORY_ENTRY_BASERELOC_size&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;datadir_IMAGE_DIRECTORY_ENTRY_RESOURCE_size&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;datadir_IMAGE_DIRECTORY_ENTRY_IAT_size&#39;</span><span class="p">,</span> <span class="s">&#39;datadir_IMAGE_DIRECTORY_ENTRY_IMPORT_size&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;pe_char&#39;</span><span class="p">,</span> <span class="s">&#39;pe_dll&#39;</span><span class="p">,</span> <span class="s">&#39;pe_driver&#39;</span><span class="p">,</span> <span class="s">&#39;pe_exe&#39;</span><span class="p">,</span> <span class="s">&#39;pe_i386&#39;</span><span class="p">,</span> <span class="s">&#39;pe_majorlink&#39;</span><span class="p">,</span> 
+                                 <span class="s">&#39;pe_minorlink&#39;</span><span class="p">,</span> <span class="s">&#39;sec_entropy_data&#39;</span><span class="p">,</span> <span class="s">&#39;sec_entropy_rdata&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;sec_entropy_reloc&#39;</span><span class="p">,</span> <span class="s">&#39;sec_entropy_text&#39;</span><span class="p">,</span> <span class="s">&#39;sec_entropy_rsrc&#39;</span><span class="p">,</span> <span class="s">&#39;sec_rawptr_rsrc&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;sec_rawsize_rsrc&#39;</span><span class="p">,</span> <span class="s">&#39;sec_vasize_rsrc&#39;</span><span class="p">,</span> <span class="s">&#39;sec_raw_execsize&#39;</span><span class="p">,</span> <span class="s">&#39;sec_rawptr_data&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;sec_rawptr_text&#39;</span><span class="p">,</span> <span class="s">&#39;sec_rawsize_data&#39;</span><span class="p">,</span> <span class="s">&#39;sec_rawsize_text&#39;</span><span class="p">,</span> <span class="s">&#39;sec_va_execsize&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;sec_vasize_data&#39;</span><span class="p">,</span> <span class="s">&#39;sec_vasize_text&#39;</span><span class="p">,</span> <span class="s">&#39;size_code&#39;</span><span class="p">,</span> <span class="s">&#39;size_image&#39;</span><span class="p">,</span> <span class="s">&#39;size_initdata&#39;</span><span class="p">,</span>
+                                 <span class="s">&#39;size_uninit&#39;</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_sparse_features</span><span class="p">([</span><span class="s">&#39;imported_symbols&#39;</span><span class="p">,</span> <span class="s">&#39;section_names&#39;</span><span class="p">,</span> <span class="s">&#39;pe_warning_strings&#39;</span><span class="p">])</span>
+
+<div class="viewcode-block" id="PEFileWorker.execute"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.PEFileWorker.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
+
+        <span class="sd">&#39;&#39;&#39; Process the input bytes with pefile &#39;&#39;&#39;</span>
+        <span class="n">raw_bytes</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s">&#39;sample&#39;</span><span class="p">][</span><span class="s">&#39;raw_bytes&#39;</span><span class="p">]</span>
+
+        <span class="c"># Have the PE File module process the file</span>
+        <span class="n">pefile_handle</span><span class="p">,</span> <span class="n">error_str</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">open_using_pefile</span><span class="p">(</span><span class="s">&#39;unknown&#39;</span><span class="p">,</span> <span class="n">raw_bytes</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">pefile_handle</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="n">error_str</span><span class="p">,</span> <span class="s">&#39;dense_features&#39;</span><span class="p">:</span> <span class="p">[],</span> <span class="s">&#39;sparse_features&#39;</span><span class="p">:</span> <span class="p">[]}</span>
+
+        <span class="c"># Now extract the various features using pefile</span>
+        <span class="n">dense_features</span><span class="p">,</span> <span class="n">sparse_features</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">extract_features_using_pefile</span><span class="p">(</span><span class="n">pefile_handle</span><span class="p">)</span>
+
+        <span class="c"># Okay set my response</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;dense_features&#39;</span><span class="p">:</span> <span class="n">dense_features</span><span class="p">,</span> <span class="s">&#39;sparse_features&#39;</span><span class="p">:</span> <span class="n">sparse_features</span><span class="p">}</span>
+</div>
+<div class="viewcode-block" id="PEFileWorker.set_dense_features"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.PEFileWorker.set_dense_features">[docs]</a>    <span class="k">def</span> <span class="nf">set_dense_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dense_feature_list</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set the dense feature list that the Python pefile module should extract.</span>
+<span class="sd">            This is really just sanity check functionality, meaning that these</span>
+<span class="sd">            are the features you are expecting to get, and a warning will spit</span>
+<span class="sd">            out if you don&#39;t get some of these. &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dense_feature_list</span> <span class="o">=</span> <span class="n">dense_feature_list</span>
+</div>
+<div class="viewcode-block" id="PEFileWorker.get_dense_features"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.PEFileWorker.get_dense_features">[docs]</a>    <span class="k">def</span> <span class="nf">get_dense_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set the dense feature list that the Python pefile module should extract. &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dense_features</span>
+</div>
+<div class="viewcode-block" id="PEFileWorker.set_sparse_features"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.PEFileWorker.set_sparse_features">[docs]</a>    <span class="k">def</span> <span class="nf">set_sparse_features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sparse_feature_list</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set the sparse feature list that the Python pefile module should extract.</span>
+<span class="sd">            This is really just sanity check functionality, meaning that these</span>
+<span class="sd">            are the features you are expecting to get, and a warning will spit</span>
+<span class="sd">            out if you don&#39;t get some of these. &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_feature_list</span> <span class="o">=</span> <span class="n">sparse_feature_list</span>
+</div>
+<div class="viewcode-block" id="PEFileWorker.get_sparse_features"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.PEFileWorker.get_sparse_features">[docs]</a>    <span class="k">def</span> <span class="nf">get_sparse_features</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Set the sparse feature list that the Python pefile module should extract. &#39;&#39;&#39;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_features</span>
+
+    <span class="c"># Make sure pe can parse this file</span></div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="PEFileWorker.open_using_pefile"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.PEFileWorker.open_using_pefile">[docs]</a>    <span class="k">def</span> <span class="nf">open_using_pefile</span><span class="p">(</span><span class="n">input_name</span><span class="p">,</span> <span class="n">input_bytes</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Open the PE File using the Python pefile module. &#39;&#39;&#39;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">pef</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">input_bytes</span><span class="p">,</span> <span class="n">fast_load</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PEFormatError</span><span class="p">),</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;warning: pe_fail (with exception from pefile module) on file: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">input_name</span>
+            <span class="n">error_str</span> <span class="o">=</span> <span class="s">&#39;(Exception):, </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="n">error_str</span>
+
+        <span class="c"># Now test to see if the features are there/extractable if not return FAIL flag</span>
+        <span class="k">if</span> <span class="n">pef</span><span class="o">.</span><span class="n">PE_TYPE</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">7</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;warning: pe_fail on file: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">input_name</span>
+            <span class="n">error_str</span> <span class="o">=</span> <span class="s">&#39;warning: pe_fail on file: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">input_name</span>
+            <span class="k">return</span> <span class="bp">None</span><span class="p">,</span> <span class="n">error_str</span>
+
+        <span class="c"># Success</span>
+        <span class="k">return</span> <span class="n">pef</span><span class="p">,</span> <span class="bp">None</span>
+
+    <span class="c"># Extract various set of features using PEfile module</span></div>
+<div class="viewcode-block" id="PEFileWorker.extract_features_using_pefile"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.PEFileWorker.extract_features_using_pefile">[docs]</a>    <span class="k">def</span> <span class="nf">extract_features_using_pefile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pef</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Process the PE File using the Python pefile module. &#39;&#39;&#39;</span>
+
+        <span class="c"># Store all extracted features into feature lists</span>
+        <span class="n">extracted_dense</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">extracted_sparse</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c"># Now slog through the info and extract the features</span>
+        <span class="n">feature_not_found_flag</span> <span class="o">=</span> <span class="o">-</span><span class="mi">99</span>
+        <span class="n">feature_default_value</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_warnings</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="c"># Set all the dense features and sparse features to &#39;feature not found&#39;</span>
+        <span class="c"># value and then check later to see if it was found</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dense_feature_list</span><span class="p">:</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_not_found_flag</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_feature_list</span><span class="p">:</span>
+            <span class="n">extracted_sparse</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_not_found_flag</span>
+
+        <span class="c"># Check to make sure all the section names are standard</span>
+        <span class="n">std_sections</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;.text&#39;</span><span class="p">,</span> <span class="s">&#39;.bss&#39;</span><span class="p">,</span> <span class="s">&#39;.rdata&#39;</span><span class="p">,</span> <span class="s">&#39;.data&#39;</span><span class="p">,</span> <span class="s">&#39;.rsrc&#39;</span><span class="p">,</span> <span class="s">&#39;.edata&#39;</span><span class="p">,</span> <span class="s">&#39;.idata&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;.pdata&#39;</span><span class="p">,</span> <span class="s">&#39;.debug&#39;</span><span class="p">,</span> <span class="s">&#39;.reloc&#39;</span><span class="p">,</span> <span class="s">&#39;.stab&#39;</span><span class="p">,</span> <span class="s">&#39;.stabstr&#39;</span><span class="p">,</span> <span class="s">&#39;.tls&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;.crt&#39;</span><span class="p">,</span> <span class="s">&#39;.gnu_deb&#39;</span><span class="p">,</span> <span class="s">&#39;.eh_fram&#39;</span><span class="p">,</span> <span class="s">&#39;.exptbl&#39;</span><span class="p">,</span> <span class="s">&#39;.rodata&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">):</span>
+            <span class="n">std_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">std_section_names</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">extracted_sparse</span><span class="p">[</span><span class="s">&#39;section_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="n">pef</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">convert_to_ascii_null_term</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">extracted_sparse</span><span class="p">[</span><span class="s">&#39;section_names&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">std_sections</span><span class="p">:</span>
+                <span class="n">std_section_names</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;std_section_names&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">std_section_names</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;debug_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">Size</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;major_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">MajorImageVersion</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;minor_version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">MinorImageVersion</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;iat_rva&#39;</span><span class="p">]</span>	 <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">VirtualAddress</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;export_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Size</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;check_sum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">CheckSum</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;generated_check_sum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">generate_checksum</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;generated_check_sum&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pef</span><span class="o">.</span><span class="n">sections</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;virtual_address&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">VirtualAddress</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;virtual_size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">Misc_VirtualSize</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;number_of_sections&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">FILE_HEADER</span><span class="o">.</span><span class="n">NumberOfSections</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;compile_date&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">FILE_HEADER</span><span class="o">.</span><span class="n">TimeDateStamp</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;number_of_rva_and_sizes&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">NumberOfRvaAndSizes</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;total_size_pe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pef</span><span class="o">.</span><span class="n">__data__</span><span class="p">)</span>
+
+        <span class="c"># Number of import and exports</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pef</span><span class="p">,</span> <span class="s">&#39;DIRECTORY_ENTRY_IMPORT&#39;</span><span class="p">):</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;number_of_imports&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pef</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY_IMPORT</span><span class="p">)</span>
+            <span class="n">num_imported_symbols</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">pef</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY_IMPORT</span><span class="p">:</span>
+                <span class="n">num_imported_symbols</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">imports</span><span class="p">)</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;number_of_import_symbols&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_imported_symbols</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pef</span><span class="p">,</span> <span class="s">&#39;DIRECTORY_ENTRY_BOUND_IMPORT&#39;</span><span class="p">):</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;number_of_bound_imports&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pef</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY_BOUND_IMPORT</span><span class="p">)</span>
+            <span class="n">num_imported_symbols</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">pef</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY_BOUND_IMPORT</span><span class="p">:</span>
+                <span class="n">num_imported_symbols</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">entries</span><span class="p">)</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;number_of_bound_import_symbols&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">num_imported_symbols</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pef</span><span class="p">,</span> <span class="s">&#39;DIRECTORY_ENTRY_EXPORT&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;number_of_export_symbols&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">pef</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY_EXPORT</span><span class="o">.</span><span class="n">symbols</span><span class="p">)</span>
+                <span class="n">symbol_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">pef</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY_EXPORT</span><span class="o">.</span><span class="n">symbols</span><span class="p">:</span>
+                    <span class="n">symbol_info</span> <span class="o">=</span> <span class="s">&#39;unknown&#39;</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">symbol</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                        <span class="n">symbol_info</span> <span class="o">=</span> <span class="s">&#39;ordinal=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">symbol</span><span class="o">.</span><span class="n">ordinal</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">symbol_info</span> <span class="o">=</span> <span class="s">&#39;name=&#39;</span> <span class="o">+</span> <span class="n">symbol</span><span class="o">.</span><span class="n">name</span>
+                    <span class="n">symbol_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">convert_to_utf8</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">symbol_info</span><span class="p">))</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+                <span class="c"># Now convert set to list and add to features</span>
+                <span class="n">extracted_sparse</span><span class="p">[</span><span class="s">&#39;ExportedSymbols&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">symbol_set</span><span class="p">)</span>
+
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">extracted_sparse</span><span class="p">[</span><span class="s">&#39;ExportedSymbols&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;AttributeError&#39;</span><span class="p">]</span>
+
+        <span class="c"># Specific Import info (Note this will be a sparse field woo hoo!)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">pef</span><span class="p">,</span> <span class="s">&#39;DIRECTORY_ENTRY_IMPORT&#39;</span><span class="p">):</span>
+            <span class="n">symbol_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">pef</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY_IMPORT</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">imports</span><span class="p">:</span>
+                    <span class="n">symbol_info</span> <span class="o">=</span> <span class="s">&#39;unknown&#39;</span>
+                    <span class="k">if</span> <span class="n">symbol</span><span class="o">.</span><span class="n">import_by_ordinal</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+                        <span class="n">symbol_info</span> <span class="o">=</span> <span class="s">&#39;ordinal=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">symbol</span><span class="o">.</span><span class="n">ordinal</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">symbol_info</span> <span class="o">=</span> <span class="s">&#39;name=&#39;</span> <span class="o">+</span> <span class="n">symbol</span><span class="o">.</span><span class="n">name</span>
+                        <span class="c"># symbol_info[&#39;hint&#39;] = symbol.hint</span>
+                    <span class="k">if</span> <span class="n">symbol</span><span class="o">.</span><span class="n">bound</span><span class="p">:</span>
+                        <span class="n">symbol_info</span> <span class="o">+=</span> <span class="s">&#39; bound=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">symbol</span><span class="o">.</span><span class="n">bound</span><span class="p">)</span>
+
+                    <span class="n">symbol_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">convert_to_utf8</span><span class="p">(</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">dll</span><span class="p">,</span> <span class="n">symbol_info</span><span class="p">))</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+            <span class="c"># Now convert set to list and add to features</span>
+            <span class="n">extracted_sparse</span><span class="p">[</span><span class="s">&#39;imported_symbols&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">symbol_set</span><span class="p">)</span>
+
+        <span class="c"># Do we have a second section</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pef</span><span class="o">.</span><span class="n">sections</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;virtual_size_2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">sections</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">Misc_VirtualSize</span>
+
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;size_image&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">SizeOfImage</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;size_code&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">SizeOfCode</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;size_initdata&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">SizeOfInitializedData</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;size_uninit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">SizeOfUninitializedData</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;pe_majorlink&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">MajorLinkerVersion</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;pe_minorlink&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">MinorLinkerVersion</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;pe_driver&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">pef</span><span class="o">.</span><span class="n">is_driver</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;pe_exe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">pef</span><span class="o">.</span><span class="n">is_exe</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;pe_dll&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">pef</span><span class="o">.</span><span class="n">is_dll</span><span class="p">()</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;pe_i386&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">pef</span><span class="o">.</span><span class="n">FILE_HEADER</span><span class="o">.</span><span class="n">Machine</span> <span class="o">!=</span> <span class="mh">0x014c</span><span class="p">:</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;pe_i386&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;pe_char&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">FILE_HEADER</span><span class="o">.</span><span class="n">Characteristics</span>
+
+        <span class="c"># Data directory features!!</span>
+        <span class="n">datadirs</span> <span class="o">=</span> <span class="p">{</span> 
+            <span class="mi">0</span><span class="p">:</span> <span class="s">&#39;IMAGE_DIRECTORY_ENTRY_EXPORT&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span> <span class="s">&#39;IMAGE_DIRECTORY_ENTRY_IMPORT&#39;</span><span class="p">,</span> 
+            <span class="mi">2</span><span class="p">:</span> <span class="s">&#39;IMAGE_DIRECTORY_ENTRY_RESOURCE&#39;</span><span class="p">,</span> <span class="mi">5</span><span class="p">:</span> <span class="s">&#39;IMAGE_DIRECTORY_ENTRY_BASERELOC&#39;</span><span class="p">,</span> 
+            <span class="mi">12</span><span class="p">:</span> <span class="s">&#39;IMAGE_DIRECTORY_ENTRY_IAT&#39;</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">idx</span><span class="p">,</span> <span class="n">datadir</span> <span class="ow">in</span> <span class="n">datadirs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">datadir</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">idx</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="n">directory</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">DATA_DIRECTORY</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;datadir_</span><span class="si">%s</span><span class="s">_size&#39;</span> <span class="o">%</span> <span class="n">datadir</span><span class="p">]</span> <span class="o">=</span> <span class="n">directory</span><span class="o">.</span><span class="n">Size</span>
+
+        <span class="c"># Section features</span>
+        <span class="n">section_flags</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;IMAGE_SCN_MEM_EXECUTE&#39;</span><span class="p">,</span> <span class="s">&#39;IMAGE_SCN_CNT_CODE&#39;</span><span class="p">,</span> <span class="s">&#39;IMAGE_SCN_MEM_WRITE&#39;</span><span class="p">,</span> <span class="s">&#39;IMAGE_SCN_MEM_READ&#39;</span><span class="p">]</span>
+        <span class="n">rawexecsize</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">vaexecsize</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">sec</span> <span class="ow">in</span> <span class="n">pef</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">sec</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="k">for</span> <span class="n">char</span> <span class="ow">in</span> <span class="n">section_flags</span><span class="p">:</span>
+                <span class="c"># does the section have one of our attribs?</span>
+                <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">sec</span><span class="p">,</span> <span class="n">char</span><span class="p">):</span>
+                    <span class="n">rawexecsize</span> <span class="o">+=</span> <span class="n">sec</span><span class="o">.</span><span class="n">SizeOfRawData</span>
+                    <span class="n">vaexecsize</span> <span class="o">+=</span> <span class="n">sec</span><span class="o">.</span><span class="n">Misc_VirtualSize</span>
+                    <span class="k">break</span>
+
+            <span class="c"># Take out any weird characters in section names</span>
+            <span class="n">secname</span> <span class="o">=</span> <span class="n">convert_to_ascii_null_term</span><span class="p">(</span><span class="n">sec</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">secname</span> <span class="o">=</span> <span class="n">secname</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;&#39;</span><span class="p">)</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;sec_entropy_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">secname</span><span class="p">]</span> <span class="o">=</span> <span class="n">sec</span><span class="o">.</span><span class="n">get_entropy</span><span class="p">()</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;sec_rawptr_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">secname</span><span class="p">]</span> <span class="o">=</span> <span class="n">sec</span><span class="o">.</span><span class="n">PointerToRawData</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;sec_rawsize_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">secname</span><span class="p">]</span> <span class="o">=</span> <span class="n">sec</span><span class="o">.</span><span class="n">SizeOfRawData</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;sec_vasize_</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">secname</span><span class="p">]</span> <span class="o">=</span> <span class="n">sec</span><span class="o">.</span><span class="n">Misc_VirtualSize</span>
+
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;sec_va_execsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vaexecsize</span>
+        <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;sec_raw_execsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rawexecsize</span>
+
+        <span class="c"># Imphash (implemented in pefile 1.2.10-139 or later)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">extracted_sparse</span><span class="p">[</span><span class="s">&#39;imp_hash&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">get_imphash</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">extracted_sparse</span><span class="p">[</span><span class="s">&#39;imp_hash&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;Not found: Install pefile 1.2.10-139 or later&#39;</span>
+
+        <span class="c"># Register if there were any pe warnings</span>
+        <span class="n">warnings</span> <span class="o">=</span> <span class="n">pef</span><span class="o">.</span><span class="n">get_warnings</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">warnings</span><span class="p">:</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;pe_warnings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">extracted_sparse</span><span class="p">[</span><span class="s">&#39;pe_warning_strings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">warnings</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">extracted_dense</span><span class="p">[</span><span class="s">&#39;pe_warnings&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c"># Issue a warning if the feature isn&#39;t found</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dense_feature_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">extracted_dense</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">==</span> <span class="n">feature_not_found_flag</span><span class="p">:</span>
+                <span class="n">extracted_dense</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="n">feature_default_value</span>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">):</span>
+                    <span class="k">print</span> <span class="s">&#39;info: Feature: </span><span class="si">%s</span><span class="s"> not found! Setting to </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">feature_default_value</span><span class="p">)</span>
+
+        <span class="c"># Issue a warning if the feature isn&#39;t found</span>
+        <span class="k">for</span> <span class="n">feature</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_feature_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">extracted_sparse</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">==</span> <span class="n">feature_not_found_flag</span><span class="p">:</span>
+                <span class="n">extracted_sparse</span><span class="p">[</span><span class="n">feature</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c"># For sparse data probably best default</span>
+                <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_verbose</span><span class="p">):</span>
+                    <span class="k">print</span> <span class="s">&#39;info: Feature: </span><span class="si">%s</span><span class="s"> not found! Setting to </span><span class="si">%d</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">feature</span><span class="p">,</span> <span class="n">feature_default_value</span><span class="p">)</span>
+
+        <span class="c"># Set the features for the class var</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dense_features</span> <span class="o">=</span> <span class="n">extracted_dense</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sparse_features</span> <span class="o">=</span> <span class="n">extracted_sparse</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_dense_features</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sparse_features</span><span class="p">()</span>
+
+<span class="c"># Helper functions</span></div></div>
+<div class="viewcode-block" id="convert_to_utf8"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.convert_to_utf8">[docs]</a><span class="k">def</span> <span class="nf">convert_to_utf8</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Convert string to UTF8 &#39;&#39;&#39;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">u</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+    <span class="n">utf8</span> <span class="o">=</span> <span class="n">u</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&#39;utf-8&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">utf8</span>
+</div>
+<div class="viewcode-block" id="convert_to_ascii_null_term"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.convert_to_ascii_null_term">[docs]</a><span class="k">def</span> <span class="nf">convert_to_ascii_null_term</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Convert string to Null terminated ascii &#39;&#39;&#39;</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">,</span> <span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+
+
+<span class="c"># Unit test: Create the class, the proper input and run the execute() method for a test</span></div>
+<div class="viewcode-block" id="test"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_features.test">[docs]</a><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39; pe_features.py: Test&#39;&#39;&#39;</span>
+
+    <span class="c"># This worker test requires a local server running</span>
+    <span class="kn">import</span> <span class="nn">zerorpc</span>
+    <span class="n">workbench</span> <span class="o">=</span> <span class="n">zerorpc</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">heartbeat</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+    <span class="n">workbench</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&#39;tcp://127.0.0.1:4242&#39;</span><span class="p">)</span>
+
+    <span class="c"># Generate 3 different inputs for the worker (better coverage)</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span>
+                             <span class="s">&#39;../data/pe/bad/033d91aae8ad29ed9fbb858179271232&#39;</span><span class="p">)</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">store_sample</span><span class="p">(</span><span class="s">&#39;bad&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s">&#39;exe&#39;</span><span class="p">)</span>
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span>
+                             <span class="s">&#39;../data/pe/good/4be7ec02133544cde7a580875e130208&#39;</span><span class="p">)</span>
+    <span class="n">md5_2</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">store_sample</span><span class="p">(</span><span class="s">&#39;good_pe&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s">&#39;exe&#39;</span><span class="p">)</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">get_sample</span><span class="p">(</span><span class="n">md5</span><span class="p">)</span>
+    <span class="n">input_data_2</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">get_sample</span><span class="p">(</span><span class="n">md5_2</span><span class="p">)</span>
+    <span class="n">input_data_3</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;sample&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;raw_bytes&#39;</span><span class="p">:</span> <span class="s">&#39;invalid pe file to hit exception code&#39;</span><span class="p">}}</span>
+
+    <span class="c"># Execute the worker (unit test)</span>
+    <span class="n">worker</span> <span class="o">=</span> <span class="n">PEFileWorker</span><span class="p">()</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;&lt;&lt; Unit Test &gt;&gt;&gt;&#39;</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>    
+
+    <span class="c"># For code coverage</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">input_data_2</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">input_data_3</span><span class="p">)</span>
+
+    <span class="c"># Execute the worker (server test)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">work_request</span><span class="p">(</span><span class="s">&#39;pe_features&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;&lt;&lt; Server Test &gt;&gt;&gt;&#39;</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">test</span><span class="p">()</span>
+</pre></div>
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Workbench 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

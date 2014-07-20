@@ -1,0 +1,304 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Running WorkBench &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="index.html" />
+    <link rel="next" title="Frequently Asked Questions" href="faq.html" />
+    <link rel="prev" title="Installing Workbench" href="installation.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="index.html">Workbench</a></h2>
+          <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing Workbench</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Running WorkBench</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#server-localhost-or-server-machine">Server (localhost or server machine)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cli-command-line-interface">CLI (Command Line Interface)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-clients-use-s-for-remote-server">Example Clients (use -s for remote server)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#workbench-examples">Workbench Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#making-your-own-worker">Making your own Worker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#making-your-own-client">Making your own Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-the-ipython-notebooks">Running the IPython Notebooks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-tests">Running Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#configuration-file-information">Configuration File Information</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workbench.clients.html">workbench.clients package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <div class="section" id="running-workbench">
+<h1>Running WorkBench<a class="headerlink" href="#running-workbench" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="server-localhost-or-server-machine">
+<h2>Server (localhost or server machine)<a class="headerlink" href="#server-localhost-or-server-machine" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre>$ pip install workbench --pre
+$ workbench_server
+</pre></div>
+</div>
+</div>
+<div class="section" id="cli-command-line-interface">
+<h2>CLI (Command Line Interface)<a class="headerlink" href="#cli-command-line-interface" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>::</dt>
+<dd>$ workbench</dd>
+</dl>
+</div>
+<div class="section" id="example-clients-use-s-for-remote-server">
+<h2>Example Clients (use -s for remote server)<a class="headerlink" href="#example-clients-use-s-for-remote-server" title="Permalink to this headline">¶</a></h2>
+<p>There are about a dozen example clients showing how to use workbench on
+pcaps, PEfiles, pdfs, and log files. We even have a simple nodes.js
+client (looking for node devs to pop some pull requests :).</p>
+<div class="highlight-python"><div class="highlight"><pre>$ cd workbench/clients
+$ python simple_workbench_client.py [-s tcp://mega.server.com]
+</pre></div>
+</div>
+</div>
+<div class="section" id="workbench-examples">
+<h2>Workbench Examples<a class="headerlink" href="#workbench-examples" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><p class="first"><a class="reference external" href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PCAP_to_Graph.ipynb/">PCAP to Graph</a> (A short teaser)</p>
+</li>
+<li><p class="first"><a class="reference external" href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Workbench_Demo.ipynb/">Workbench Demo</a></p>
+</li>
+<li><p class="first"><a class="reference external" href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Adding_Worker.ipynb/">Adding a new Worker</a> (super hawt)</p>
+</li>
+<li><p class="first"><a class="reference external" href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PCAP_to_Dataframe.ipynb/">PCAP to Dataframe</a></p>
+</li>
+<li><p class="first"><a class="reference external" href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PCAP_DriveBy.ipynb">PCAP DriveBy Analysis</a></p>
+</li>
+<li><p class="first"><a class="reference external" href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_SimGraph.ipynb">Using Neo4j for PE File Sim Graph</a></p>
+</li>
+<li><p class="first"><a class="reference external" href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Generator_Pipelines.ipynb">Generator Pipelines Notebook</a></p>
+</li>
+<li><p class="first">WIP Notebooks</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference external" href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Network_Stream.ipynb">Network Stream Analysis Notebook</a></li>
+<li><a class="reference external" href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/PE_Static_Analysis.ipynb">PE File Static Analysis Notebook</a></li>
+</ul>
+</div></blockquote>
+</li>
+</ul>
+</div>
+<div class="section" id="making-your-own-worker">
+<h2>Making your own Worker<a class="headerlink" href="#making-your-own-worker" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>See the notebook <a class="reference external" href="http://nbviewer.ipython.org/url/raw.github.com/SuperCowPowers/workbench/master/workbench/notebooks/Adding_Worker.ipynb/">Adding a new Worker</a></li>
+</ul>
+<div class="section" id="workbench-conventions">
+<h3>Workbench Conventions<a class="headerlink" href="#workbench-conventions" title="Permalink to this headline">¶</a></h3>
+<p>Workers should adhere to the following naming conventions (not enforced)</p>
+<ul>
+<li><dl class="first docutils">
+<dt>If you work on a specific type of sample than start the name with</dt>
+<dd><p class="first last">that</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Examples: pcap_bro.py, pe_features.py, log_meta.py</p>
+</li>
+<li><dl class="first docutils">
+<dt>A worker that is new/experimental should start with &#8216;x_&#8217;</dt>
+<dd><p class="first last">(x_pcap_razor.py)</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>A &#8216;view&#8217;(worker that handles &#8216;presentation&#8217;) should start with</dt>
+<dd><p class="first last">&#8216;view_&#8217;</p>
+</dd>
+</dl>
+</li>
+<li><p class="first">Examples: view_log_meta.py, view_pdf.py, view_pe.py</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="making-your-own-client">
+<span id="makingclient"></span><h2>Making your own Client<a class="headerlink" href="#making-your-own-client" title="Permalink to this headline">¶</a></h2>
+<p>Although the Workbench repository has dozens of clients (see
+workbench/clients)there is NO official client to workbench. Clients are
+examples of how YOU can just use ZeroRPC from the Python, Node.js, or
+CLI interfaces. See <a class="reference external" href="http://zerorpc.dotcloud.com/">ZeroRPC</a>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">zerorpc</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">zerorpc</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span>
+<span class="n">c</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&quot;tcp://127.0.0.1:4242&quot;</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;evil.pcap&#39;</span><span class="p">,</span><span class="s">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">store_sample</span><span class="p">(</span><span class="s">&#39;evil.pcap&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+<span class="k">print</span> <span class="n">c</span><span class="o">.</span><span class="n">work_request</span><span class="p">(</span><span class="s">&#39;pcap_meta&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output from above &#8216;client&#8217;:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span><span class="s">&#39;pcap_meta&#39;</span><span class="p">:</span> <span class="p">{</span>
+    <span class="s">&#39;encoding&#39;</span><span class="p">:</span> <span class="s">&#39;binary&#39;</span><span class="p">,</span>
+    <span class="s">&#39;file_size&#39;</span><span class="p">:</span> <span class="mi">54339570</span><span class="p">,</span>
+    <span class="s">&#39;file_type&#39;</span><span class="p">:</span> <span class="s">&#39;tcpdump (little-endian) - version 2.4 (Ethernet, 65535)&#39;</span><span class="p">,</span>
+    <span class="s">&#39;filename&#39;</span><span class="p">:</span> <span class="s">&#39;evil.pcap&#39;</span><span class="p">,</span>
+    <span class="s">&#39;import_time&#39;</span><span class="p">:</span> <span class="s">&#39;2014-02-08T22:15:50.282000Z&#39;</span><span class="p">,</span>
+    <span class="s">&#39;md5&#39;</span><span class="p">:</span> <span class="s">&#39;bba97e16d7f92240196dc0caef9c457a&#39;</span><span class="p">,</span>
+    <span class="s">&#39;mime_type&#39;</span><span class="p">:</span> <span class="s">&#39;application/vnd.tcpdump.pcap&#39;</span>
+<span class="p">}}</span><span class="sb">``</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-the-ipython-notebooks">
+<h2>Running the IPython Notebooks<a class="headerlink" href="#running-the-ipython-notebooks" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre>brew install freetype
+brew install gfortran
+pip install -r requirements\_notebooks.txt
+Go to Starbucks..
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-tests">
+<h2>Running Tests<a class="headerlink" href="#running-tests" title="Permalink to this headline">¶</a></h2>
+<p>Unit testing, sub-pipeline tests, and full pipeline tests</p>
+<div class="highlight-python"><div class="highlight"><pre>$ tox
+</pre></div>
+</div>
+<div class="section" id="benign-error">
+<h3>Benign Error<a class="headerlink" href="#benign-error" title="Permalink to this headline">¶</a></h3>
+<p>We have no idea why occasionaly you see this pop up in the server
+output. To our knowledge it literally has no impact on any functionality
+or robustness. If you know anything about this please help us out by
+opening an issue and pull request. :)</p>
+<div class="highlight-python"><div class="highlight"><pre>ERROR:zerorpc.channel:zerorpc.ChannelMultiplexer, unable to route event:
+_zpc_more {&#39;response_to&#39;: &#39;67d7df3f-1f3e-45f4-b2e6-352260fa1507&#39;, &#39;zmqid&#39;:
+[&#39;\x00\x82*\x01\xea&#39;], &#39;message_id&#39;: &#39;67d7df42-1f3e-45f4-b2e6-352260fa1507&#39;,
+&#39;v&#39;: 3} [...]
+</pre></div>
+</div>
+</div>
+<div class="section" id="virustotal-warning">
+<h3>VirusTotal Warning<a class="headerlink" href="#virustotal-warning" title="Permalink to this headline">¶</a></h3>
+<p>The vt_query.py worker uses a shared &#8216;low-volume&#8217; API key provided by
+SuperCowPowers LLC. When running the vt_query worker the following
+warning happens quite often:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="s">&quot;VirusTotal Query Error, no valid response... past per min quota?&quot;</span>
+</pre></div>
+</div>
+<p>If you&#8217;d like to use the vt_query worker on a regular basis, you&#8217;ll
+have to put your own VirusTotal API key in the
+workbench/server/config.ini file.</p>
+</div>
+</div>
+<div class="section" id="configuration-file-information">
+<h2>Configuration File Information<a class="headerlink" href="#configuration-file-information" title="Permalink to this headline">¶</a></h2>
+<p>When you first run workbench it copies default.ini to config.ini within
+the workbench/server directory, you can make local changes to this file
+without worrying about it getting overwritten on the next &#8216;git pull&#8217;.
+Also you can store API keys in it because it never gets pushed back to
+the repository.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Example/default configuration for the workbench server</span>
+<span class="p">[</span><span class="n">workbench</span><span class="p">]</span>
+
+<span class="c"># Server URI (server machine ip or name)</span>
+<span class="c"># Example: mybigserver or 12.34.56.789</span>
+<span class="n">server_uri</span> <span class="o">=</span> <span class="n">localhost</span>
+
+<span class="c"># DataStore URI (datastore machine ip or name)</span>
+<span class="c"># Example: mybigserver or 12.34.56.789</span>
+<span class="n">datastore_uri</span> <span class="o">=</span> <span class="n">localhost</span>
+
+<span class="c"># Neo4j URI (Neo4j Graph DB machine ip or name)</span>
+<span class="c"># Example: mybigserver or 12.34.56.789</span>
+<span class="n">neo4j_uri</span> <span class="o">=</span> <span class="n">localhost</span>
+
+<span class="c"># ElasticSearch URI (ELS machine ip or name)</span>
+<span class="c"># Example: mybigserver or 12.34.56.789</span>
+<span class="n">els_uri</span> <span class="o">=</span> <span class="n">localhost</span>
+
+<span class="c"># DataStore Database</span>
+<span class="c"># Example: customer123, ml_talk, pdf_deep</span>
+<span class="n">database</span> <span class="o">=</span> <span class="n">workbench</span>
+
+<span class="c"># Storage Limits (in MegaBytes, 0 for no limit)</span>
+<span class="n">worker_cap</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">samples_cap</span> <span class="o">=</span> <span class="mi">200</span>
+
+<span class="c"># VT API Key</span>
+<span class="c"># Example: 93748163412341234v123947</span>
+<span class="n">vt_apikey</span> <span class="o">=</span> <span class="mi">123</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="faq.html" title="Frequently Asked Questions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="installation.html" title="Installing Workbench"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Workbench 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

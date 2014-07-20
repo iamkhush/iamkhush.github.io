@@ -1,0 +1,1192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>workbench.server package &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="index.html" />
+    <link rel="next" title="workbench.server.bro package" href="workbench.server.bro.html" />
+    <link rel="prev" title="workbench.clients package" href="workbench.clients.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="index.html">Workbench</a></h2>
+          <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running WorkBench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workbench.clients.html">workbench.clients package</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">workbench.server package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-workbench.server.data_store">workbench.server.data_store module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-workbench.server.els_indexer">workbench.server.els_indexer module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-workbench.server.neo_db">workbench.server.neo_db module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-workbench.server.plugin_manager">workbench.server.plugin_manager module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-workbench.server.workbench">workbench.server.workbench module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-workbench.server">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="workbench.workers.html">workbench.workers package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <div class="section" id="workbench-server-package">
+<h1>workbench.server package<a class="headerlink" href="#workbench-server-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="workbench.server.bro.html">workbench.server.bro package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="workbench.server.bro.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.server.bro.html#module-workbench.server.bro.bro_log_reader">workbench.server.bro.bro_log_reader module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="workbench.server.bro.html#module-workbench.server.bro">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-workbench.server.data_store">
+<span id="workbench-server-data-store-module"></span><h2>workbench.server.data_store module<a class="headerlink" href="#module-workbench.server.data_store" title="Permalink to this headline">¶</a></h2>
+<p>DataStore class for WorkBench.</p>
+<dl class="class">
+<dt id="workbench.server.data_store.DataStore">
+<em class="property">class </em><tt class="descclassname">workbench.server.data_store.</tt><tt class="descname">DataStore</tt><big>(</big><em>uri='mongodb://localhost/workbench'</em>, <em>database='workbench'</em>, <em>worker_cap=0</em>, <em>samples_cap=0</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>DataStore for Workbench.</p>
+<p>Currently tied to MongoDB but making this class &#8216;abstract&#8217;  should be
+straightforward and we could think about using another backend.</p>
+<p>Initialization for the Workbench data store class.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>uri</strong> &#8211; Connection String for DataStore backend.</li>
+<li><strong>database</strong> &#8211; Name of database.</li>
+<li><strong>worker_cap</strong> &#8211; MBs in the capped collection.</li>
+<li><strong>samples_cap</strong> &#8211; MBs of sample to be stored.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.get_uri">
+<tt class="descname">get_uri</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.get_uri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.get_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the uri of the data store.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.store_sample">
+<tt class="descname">store_sample</tt><big>(</big><em>filename</em>, <em>sample_bytes</em>, <em>type_tag</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.store_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.store_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a sample into the datastore.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filename</strong> &#8211; Name of the file.</li>
+<li><strong>sample_bytes</strong> &#8211; Actual bytes of sample.</li>
+<li><strong>type_tag</strong> &#8211; Type of sample (&#8216;exe&#8217;,&#8217;pcap&#8217;,&#8217;pdf&#8217;,&#8217;json&#8217;,&#8217;swf&#8217;, or ...).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Digest md5 digest of the sample.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.sample_storage_size">
+<tt class="descname">sample_storage_size</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.sample_storage_size"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.sample_storage_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the storage size of the samples storage collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.expire_data">
+<tt class="descname">expire_data</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.expire_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.expire_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Expire data within the samples collection.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.clean_for_serialization">
+<tt class="descname">clean_for_serialization</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.clean_for_serialization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.clean_for_serialization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean data in preparation for serialization.</p>
+<p>Deletes items having key either a BSON, datetime, dict or a list instance, or
+starting with __.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; Sample data to be serialized.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Cleaned data dictionary.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.clean_for_storage">
+<tt class="descname">clean_for_storage</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.clean_for_storage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.clean_for_storage" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean data in preparation for storage.</p>
+<p>Deletes items with key having a &#8216;.&#8217; or is &#8216;_id&#8217;. Also deletes those items
+whose value is a dictionary or a list.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; Sample data dictionary to be cleaned.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Cleaned data dictionary.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.get_sample">
+<tt class="descname">get_sample</tt><big>(</big><em>md5</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.get_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.get_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the sample from the data store.</p>
+<p>This method first fetches the data from datastore, then cleans it for serialization
+and then updates it with &#8216;raw_bytes&#8217; item.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>md5</strong> &#8211; The md5 digest of the sample to be fetched from datastore.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The sample dictionary.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">RuntimeError</span></tt> &#8211; 
+Either Sample is not found or the gridfs file is missing.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.get_sample_window">
+<tt class="descname">get_sample_window</tt><big>(</big><em>type_tag</em>, <em>size=10</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.get_sample_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.get_sample_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a window of samples not to exceed size (in MB).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>type_tag</strong> &#8211; Type of sample (&#8216;exe&#8217;,&#8217;pcap&#8217;,&#8217;pdf&#8217;,&#8217;json&#8217;,&#8217;swf&#8217;, or ...).</li>
+<li><strong>size</strong> &#8211; Size of samples in MBs.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a list of md5s.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.has_sample">
+<tt class="descname">has_sample</tt><big>(</big><em>md5</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.has_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.has_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if data store has this sample.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>md5</strong> &#8211; The md5 digest of the required sample.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if sample with this md5 is present, else False.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.list_samples">
+<tt class="descname">list_samples</tt><big>(</big><em>predicate={}</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.list_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.list_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all samples that meet the predicate or all if predicate is not specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>predicate</strong> &#8211; Match samples against this predicate (or all if not specified)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of dictionaries with matching samples {&#8216;md5&#8217;:md5, &#8216;filename&#8217;: &#8216;foo.exe&#8217;, &#8216;type_tag&#8217;: &#8216;exe&#8217;}</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.store_work_results">
+<tt class="descname">store_work_results</tt><big>(</big><em>results</em>, <em>collection</em>, <em>md5</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.store_work_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.store_work_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store the output results of the worker.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>results</strong> &#8211; a dictionary.</li>
+<li><strong>collection</strong> &#8211; the database collection to store the results in.</li>
+<li><strong>md5</strong> &#8211; the md5 of sample data to be updated.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.get_work_results">
+<tt class="descname">get_work_results</tt><big>(</big><em>collection</em>, <em>md5</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.get_work_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.get_work_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the results of the worker.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>collection</strong> &#8211; the database collection storing the results.</li>
+<li><strong>md5</strong> &#8211; the md5 digest of the data.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Dictionary of the worker result.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.all_sample_md5s">
+<tt class="descname">all_sample_md5s</tt><big>(</big><em>type_tag=None</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.all_sample_md5s"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.all_sample_md5s" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of all md5 matching the type_tag (&#8216;exe&#8217;,&#8217;pdf&#8217;, etc).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>type_tag</strong> &#8211; the type of sample.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a list of matching samples.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.clear_db">
+<tt class="descname">clear_db</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.clear_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.clear_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drops the entire workbench database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.periodic_ops">
+<tt class="descname">periodic_ops</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.periodic_ops"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.periodic_ops" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run periodic operations on the the data store.</p>
+<p>Operations like making sure collections are capped and indexes are set up.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.to_unicode">
+<tt class="descname">to_unicode</tt><big>(</big><em>s</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.to_unicode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.to_unicode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert an elementary datatype to unicode.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>s</strong> &#8211; the datatype to be unicoded.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unicoded data.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.data_store.DataStore.data_to_unicode">
+<tt class="descname">data_to_unicode</tt><big>(</big><em>data</em><big>)</big><a class="reference internal" href="_modules/workbench/server/data_store.html#DataStore.data_to_unicode"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.data_store.DataStore.data_to_unicode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Recursively convert a list or dictionary to unicode.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> &#8211; The data to be unicoded.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Unicoded data.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.server.els_indexer">
+<span id="workbench-server-els-indexer-module"></span><h2>workbench.server.els_indexer module<a class="headerlink" href="#module-workbench.server.els_indexer" title="Permalink to this headline">¶</a></h2>
+<p>ELSIndexer class for WorkBench.</p>
+<dl class="class">
+<dt id="workbench.server.els_indexer.ELSStubIndexer">
+<em class="property">class </em><tt class="descclassname">workbench.server.els_indexer.</tt><tt class="descname">ELSStubIndexer</tt><big>(</big><em>hosts='[{&quot;host&quot;: &quot;localhost&quot;</em>, <em>&quot;port&quot;: 9200}]'</em><big>)</big><a class="reference internal" href="_modules/workbench/server/els_indexer.html#ELSStubIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.els_indexer.ELSStubIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ELS Stub.</p>
+<p>Stub Indexer Initialization.</p>
+<dl class="method">
+<dt id="workbench.server.els_indexer.ELSStubIndexer.index_data">
+<tt class="descname">index_data</tt><big>(</big><em>data</em>, <em>index_name</em>, <em>doc_type</em><big>)</big><a class="reference internal" href="_modules/workbench/server/els_indexer.html#ELSStubIndexer.index_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.els_indexer.ELSStubIndexer.index_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index data in Stub Indexer.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.els_indexer.ELSStubIndexer.search">
+<tt class="descname">search</tt><big>(</big><em>index_name</em>, <em>query</em><big>)</big><a class="reference internal" href="_modules/workbench/server/els_indexer.html#ELSStubIndexer.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.els_indexer.ELSStubIndexer.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search in Stub Indexer.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="workbench.server.els_indexer.ELSIndexer">
+<em class="property">class </em><tt class="descclassname">workbench.server.els_indexer.</tt><tt class="descname">ELSIndexer</tt><big>(</big><em>hosts=None</em><big>)</big><a class="reference internal" href="_modules/workbench/server/els_indexer.html#ELSIndexer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.els_indexer.ELSIndexer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>ELSIndexer class for WorkBench.</p>
+<p>Initialization for the Elastic Search Indexer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>hosts</strong> &#8211; List of connection settings.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="workbench.server.els_indexer.ELSIndexer.index_data">
+<tt class="descname">index_data</tt><big>(</big><em>data</em>, <em>index_name</em>, <em>doc_type</em><big>)</big><a class="reference internal" href="_modules/workbench/server/els_indexer.html#ELSIndexer.index_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.els_indexer.ELSIndexer.index_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Take an arbitrary dictionary of data and index it with ELS.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; data to be Indexed. Should be a dictionary.</li>
+<li><strong>index_name</strong> &#8211; Name of the index.</li>
+<li><strong>doc_type</strong> &#8211; The type of the document.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">RuntimeError</span></tt> &#8211; 
+When the Indexing fails.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.els_indexer.ELSIndexer.search">
+<tt class="descname">search</tt><big>(</big><em>index_name</em>, <em>query</em><big>)</big><a class="reference internal" href="_modules/workbench/server/els_indexer.html#ELSIndexer.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.els_indexer.ELSIndexer.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search the given index_name with the given ELS query.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>index_name</strong> &#8211; Name of the Index</li>
+<li><strong>query</strong> &#8211; The string to be searched.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">List of results.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">RuntimeError</span></tt> &#8211; 
+When the search query fails.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.server.neo_db">
+<span id="workbench-server-neo-db-module"></span><h2>workbench.server.neo_db module<a class="headerlink" href="#module-workbench.server.neo_db" title="Permalink to this headline">¶</a></h2>
+<p>NeoDB class for WorkBench.</p>
+<dl class="class">
+<dt id="workbench.server.neo_db.NeoDBStub">
+<em class="property">class </em><tt class="descclassname">workbench.server.neo_db.</tt><tt class="descname">NeoDBStub</tt><big>(</big><em>uri='http://localhost:7474/db/data'</em><big>)</big><a class="reference internal" href="_modules/workbench/server/neo_db.html#NeoDBStub"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.neo_db.NeoDBStub" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>NeoDB Stub.</p>
+<p>NeoDB Stub.</p>
+<dl class="method">
+<dt id="workbench.server.neo_db.NeoDBStub.add_node">
+<tt class="descname">add_node</tt><big>(</big><em>node_id</em>, <em>name</em>, <em>labels</em><big>)</big><a class="reference internal" href="_modules/workbench/server/neo_db.html#NeoDBStub.add_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.neo_db.NeoDBStub.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>NeoDB Stub.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.neo_db.NeoDBStub.has_node">
+<tt class="descname">has_node</tt><big>(</big><em>node_id</em><big>)</big><a class="reference internal" href="_modules/workbench/server/neo_db.html#NeoDBStub.has_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.neo_db.NeoDBStub.has_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>NeoDB Stub.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.neo_db.NeoDBStub.add_rel">
+<tt class="descname">add_rel</tt><big>(</big><em>source_node_id</em>, <em>target_node_id</em>, <em>rel</em><big>)</big><a class="reference internal" href="_modules/workbench/server/neo_db.html#NeoDBStub.add_rel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.neo_db.NeoDBStub.add_rel" title="Permalink to this definition">¶</a></dt>
+<dd><p>NeoDB Stub.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.neo_db.NeoDBStub.clear_db">
+<tt class="descname">clear_db</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/neo_db.html#NeoDBStub.clear_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.neo_db.NeoDBStub.clear_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>NeoDB Stub.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="workbench.server.neo_db.NeoDB">
+<em class="property">class </em><tt class="descclassname">workbench.server.neo_db.</tt><tt class="descname">NeoDB</tt><big>(</big><em>uri='http://localhost:7474/db/data'</em><big>)</big><a class="reference internal" href="_modules/workbench/server/neo_db.html#NeoDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.neo_db.NeoDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>NeoDB indexer for Workbench.</p>
+<p>Initialization for NeoDB indexer.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>uri</strong> &#8211; The uri to connect NeoDB.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><tt class="xref py py-exc docutils literal"><span class="pre">RuntimeError</span></tt> &#8211; 
+When connection to NeoDB failed.</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="workbench.server.neo_db.NeoDB.add_node">
+<tt class="descname">add_node</tt><big>(</big><em>node_id</em>, <em>name</em>, <em>labels</em><big>)</big><a class="reference internal" href="_modules/workbench/server/neo_db.html#NeoDB.add_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.neo_db.NeoDB.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add the node with name and labels.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>node_id</strong> &#8211; Id for the node.</li>
+<li><strong>name</strong> &#8211; Name for the node.</li>
+<li><strong>labels</strong> &#8211; Label for the node.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><tt class="xref py py-exc docutils literal"><span class="pre">NotImplementedError</span></tt> &#8211; 
+When adding labels is not supported.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.neo_db.NeoDB.has_node">
+<tt class="descname">has_node</tt><big>(</big><em>node_id</em><big>)</big><a class="reference internal" href="_modules/workbench/server/neo_db.html#NeoDB.has_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.neo_db.NeoDB.has_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the node is present.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>node_id</strong> &#8211; Id for the node.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if node with node_id is present, else False.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.neo_db.NeoDB.add_rel">
+<tt class="descname">add_rel</tt><big>(</big><em>source_node_id</em>, <em>target_node_id</em>, <em>rel</em><big>)</big><a class="reference internal" href="_modules/workbench/server/neo_db.html#NeoDB.add_rel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.neo_db.NeoDB.add_rel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a relationship between nodes.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>source_node_id</strong> &#8211; Node Id for the source node.</li>
+<li><strong>target_node_id</strong> &#8211; Node Id for the target node.</li>
+<li><strong>rel</strong> &#8211; Name of the relationship &#8216;contains&#8217;</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.neo_db.NeoDB.clear_db">
+<tt class="descname">clear_db</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/neo_db.html#NeoDB.clear_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.neo_db.NeoDB.clear_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the Graph Database of all nodes and edges.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.server.plugin_manager">
+<span id="workbench-server-plugin-manager-module"></span><h2>workbench.server.plugin_manager module<a class="headerlink" href="#module-workbench.server.plugin_manager" title="Permalink to this headline">¶</a></h2>
+<p>A simple plugin manager. Rolling my own for three reasons:
+1) Environmental scan did not give me quite what I wanted.
+2) The super simple examples didn&#8217;t support automatic/dynamic loading.
+3) I kinda wanted to understand the process :)</p>
+<dl class="class">
+<dt id="workbench.server.plugin_manager.PluginManager">
+<em class="property">class </em><tt class="descclassname">workbench.server.plugin_manager.</tt><tt class="descname">PluginManager</tt><big>(</big><em>plugin_callback</em>, <em>plugin_dir='workers'</em><big>)</big><a class="reference internal" href="_modules/workbench/server/plugin_manager.html#PluginManager"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.plugin_manager.PluginManager" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">watchdog.events.FileSystemEventHandler</span></tt></p>
+<p>Plugin Manager for Workbench.</p>
+<p>Initialize the Plugin Manager for Workbench.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>plugin_callback</strong> &#8211; The callback for plugin. This is called when plugin is added.</li>
+<li><strong>plugin_dir</strong> &#8211; The dir where plugin resides.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="workbench.server.plugin_manager.PluginManager.on_created">
+<tt class="descname">on_created</tt><big>(</big><em>event</em><big>)</big><a class="reference internal" href="_modules/workbench/server/plugin_manager.html#PluginManager.on_created"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.plugin_manager.PluginManager.on_created" title="Permalink to this definition">¶</a></dt>
+<dd><p>Watcher callback</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> &#8211; The creation event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.plugin_manager.PluginManager.on_modified">
+<tt class="descname">on_modified</tt><big>(</big><em>event</em><big>)</big><a class="reference internal" href="_modules/workbench/server/plugin_manager.html#PluginManager.on_modified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.plugin_manager.PluginManager.on_modified" title="Permalink to this definition">¶</a></dt>
+<dd><p>Watcher callback.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>event</strong> &#8211; The modification event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.plugin_manager.PluginManager.add_plugin">
+<tt class="descname">add_plugin</tt><big>(</big><em>f</em><big>)</big><a class="reference internal" href="_modules/workbench/server/plugin_manager.html#PluginManager.add_plugin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.plugin_manager.PluginManager.add_plugin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adding and verifying plugin.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>f</strong> &#8211; the filepath for the plugin.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.plugin_manager.PluginManager.validate">
+<tt class="descname">validate</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/workbench/server/plugin_manager.html#PluginManager.validate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.plugin_manager.PluginManager.validate" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>Validate the plugin, each plugin must have the following:</dt>
+<dd><ol class="first last arabic simple">
+<li>The worker class must have an execute method: execute(self, input_data).</li>
+<li>The worker class must have a dependencies list (even if it&#8217;s empty).</li>
+<li>The file must have a top level test() method.</li>
+</ol>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>handler</strong> &#8211; the loaded plugin.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.plugin_manager.PluginManager.plugin_test_validation">
+<tt class="descname">plugin_test_validation</tt><big>(</big><em>handler</em><big>)</big><a class="reference internal" href="_modules/workbench/server/plugin_manager.html#PluginManager.plugin_test_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.plugin_manager.PluginManager.plugin_test_validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plugin validation.</p>
+<p>Every workbench plugin must have top level test method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>handler</strong> &#8211; The loaded plugin.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">None if the test fails or the test function.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.plugin_manager.PluginManager.plugin_class_validation">
+<tt class="descname">plugin_class_validation</tt><big>(</big><em>plugin_class</em><big>)</big><a class="reference internal" href="_modules/workbench/server/plugin_manager.html#PluginManager.plugin_class_validation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.plugin_manager.PluginManager.plugin_class_validation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plugin validation</p>
+<p>Every workbench plugin must have a dependencies list (even if it&#8217;s empty).
+Every workbench plugin must have an execute method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plugin_class</strong> &#8211; The loaded plugun class.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if dependencies and execute are present, else False.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.server.plugin_manager.test">
+<tt class="descclassname">workbench.server.plugin_manager.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/plugin_manager.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.plugin_manager.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes plugin_manager.py test.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.server.workbench">
+<span id="workbench-server-workbench-module"></span><h2>workbench.server.workbench module<a class="headerlink" href="#module-workbench.server.workbench" title="Permalink to this headline">¶</a></h2>
+<p>Workbench: Open Source Security Framework</p>
+<dl class="class">
+<dt id="workbench.server.workbench.WorkBench">
+<em class="property">class </em><tt class="descclassname">workbench.server.workbench.</tt><tt class="descname">WorkBench</tt><big>(</big><em>store_args=None</em>, <em>els_hosts=None</em>, <em>neo_uri=None</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Workbench: Open Source Security Framework.</p>
+<p>Initialize the Framework.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>store_args</strong> &#8211; Dictionary with keys uri,database,samples_cap, worker_cap.</li>
+<li><strong>els_hosts</strong> &#8211; The address where Elastic Search Indexer is running.</li>
+<li><strong>neo_uri</strong> &#8211; The address where Neo4j is running.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.store_sample">
+<tt class="descname">store_sample</tt><big>(</big><em>filename</em>, <em>input_bytes</em>, <em>type_tag</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.store_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.store_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a sample into the DataStore.
+:param filename: name of the file (used purely as meta data not for lookup)
+:param input_bytes: the actual bytes of the sample e.g. f.read()
+:param type_tag: (&#8216;exe&#8217;,&#8217;pcap&#8217;,&#8217;pdf&#8217;,&#8217;json&#8217;,&#8217;swf&#8217;, or ...)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the md5 of the sample.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.get_sample">
+<tt class="descname">get_sample</tt><big>(</big><em>md5</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.get_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.get_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a sample from the DataStore.
+:param md5: the md5 of the sample</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A dictionary of meta data about the sample which includes
+a [&#8216;raw_bytes&#8217;] key that contains the raw bytes.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.get_sample_window">
+<tt class="descname">get_sample_window</tt><big>(</big><em>type_tag</em>, <em>size</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.get_sample_window"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.get_sample_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a sample from the DataStore.
+:param type_tag: the type of samples (&#8216;pcap&#8217;,&#8217;exe&#8217;,&#8217;pdf&#8217;)
+:param size: the size of the window in MegaBytes (10 = 10MB)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A list of md5s representing the newest samples within the size window</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.has_sample">
+<tt class="descname">has_sample</tt><big>(</big><em>md5</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.has_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.has_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Do we have this sample in the DataStore.
+:param md5: the md5 of the sample</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True or False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.list_samples">
+<tt class="descname">list_samples</tt><big>(</big><em>predicate={}</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.list_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.list_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all samples that meet the predicate or all if predicate is not specified.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>predicate</strong> &#8211; Match samples against this predicate (or all if not specified)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">List of dictionaries with matching samples {&#8216;md5&#8217;:md5, &#8216;filename&#8217;: &#8216;foo.exe&#8217;, &#8216;type_tag&#8217;: &#8216;exe&#8217;}</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="workbench.server.workbench.WorkBench.stream_sample">
+<tt class="descname">stream_sample</tt><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.stream_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.stream_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stream the sample by giving back a generator, typically used on &#8216;logs&#8217;.
+:param md5: the md5 of the sample
+:param max_rows: the maximum number of rows to return (None for all)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A generator that yields rows of the file/log</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.guess_type_tag">
+<tt class="descname">guess_type_tag</tt><big>(</big><em>input_bytes</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.guess_type_tag"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.guess_type_tag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to guess the type_tag for this sample</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.index_sample">
+<tt class="descname">index_sample</tt><big>(</big><em>md5</em>, <em>index_name</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.index_sample"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.index_sample" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index a stored sample with the Indexer.
+:param md5: the md5 of the sample
+:param index_name: the name of the index</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Nothing</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.index_worker_output">
+<tt class="descname">index_worker_output</tt><big>(</big><em>worker_name</em>, <em>md5</em>, <em>index_name</em>, <em>subfield</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.index_worker_output"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.index_worker_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Index worker output with the Indexer.
+:param worker_name: &#8216;strings&#8217;, &#8216;pe_features&#8217;, whatever
+:param md5: the md5 of the sample
+:param index_name: the name of the index
+:param subfield: index just this subfield (None for all)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Nothing</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.search">
+<tt class="descname">search</tt><big>(</big><em>index_name</em>, <em>query</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search a particular index in the Indexer
+:param index_name: the name of the index
+:param query: the query against the index</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">All matches to the query</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.add_node">
+<tt class="descname">add_node</tt><big>(</big><em>node_id</em>, <em>name</em>, <em>labels</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.add_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.add_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a node to the graph with name and labels.
+:param node_id: the unique node_id e.g. &#8216;www.evil4u.com&#8217;
+:param name: the display name of the node e.g. &#8216;evil4u&#8217;
+:param labels: a list of labels e.g. [&#8216;domain&#8217;,&#8217;evil&#8217;]</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Nothing</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.has_node">
+<tt class="descname">has_node</tt><big>(</big><em>node_id</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.has_node"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.has_node" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does the Graph DB have this node
+:param node_id: the unique node_id e.g. &#8216;www.evil4u.com&#8217;</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True/False</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.add_rel">
+<tt class="descname">add_rel</tt><big>(</big><em>source_id</em>, <em>target_id</em>, <em>rel</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.add_rel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.add_rel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a relationship: source, target must already exist (see add_node)
+&#8216;rel&#8217; is the name of the relationship &#8216;contains&#8217; or whatever.
+:param source_id: the unique node_id of the source
+:param target_id: the unique node_id of the target
+:param rel: name of the relationship</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Nothing</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.clear_graph_db">
+<tt class="descname">clear_graph_db</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.clear_graph_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.clear_graph_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the Graph Database of all nodes and edges.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Nothing</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.clear_db">
+<tt class="descname">clear_db</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.clear_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.clear_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clear the Main Database of all samples and worker output.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Nothing</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.work_request">
+<tt class="descname">work_request</tt><big>(</big><em>worker_name</em>, <em>md5</em>, <em>subkeys=None</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.work_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.work_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a work request for an existing stored sample.
+:param worker_name: &#8216;strings&#8217;, &#8216;pe_features&#8217;, whatever
+:param md5: the md5 of the sample
+:param subkeys: just return a subfield e.g. &#8216;foo&#8217; or &#8216;foo.bar&#8217; (None for all)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The output of the worker or just the subfield of the worker output</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="workbench.server.workbench.WorkBench.batch_work_request">
+<tt class="descname">batch_work_request</tt><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.batch_work_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.batch_work_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a batch work request for an existing set of stored samples.</p>
+<p>A subset of sample can be specified with kwargs.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>worker_name</strong> &#8211; &#8216;strings&#8217;, &#8216;pe_features&#8217;, whatever</li>
+<li><strong>kwargs</strong> &#8211; a way of specifying subsets of samples ({} for all)
+type_tag: subset based on sample type (e.g. type_tag=&#8217;exe&#8217;)
+md5_list: subset just the samples in this list
+subkeys: return just this subkey (e.g. &#8216;foo&#8217; or &#8216;foo.bar&#8217;)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A generator that yields rows of worker output or subfields of the worker output</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.store_sample_set">
+<tt class="descname">store_sample_set</tt><big>(</big><em>md5_list</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.store_sample_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.store_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a sample set (which is just a list of md5s).</p>
+<p>Note: All md5s must already be in the data store.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>md5_list</strong> &#8211; a list of the md5s in this set (all must exist in data store)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The md5 of the set (the actual md5 of the set</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.get_sample_set">
+<tt class="descname">get_sample_set</tt><big>(</big><em>md5</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.get_sample_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.get_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a sample set (which is just a list of md5s).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>md5_list</strong> &#8211; a list of the md5s in this set (all must exist in data store)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">The md5 of the set (the actual md5 of the set</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="workbench.server.workbench.WorkBench.stream_sample_set">
+<tt class="descname">stream_sample_set</tt><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.stream_sample_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.stream_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stream a sample set (which is just a list of md5s).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>md5</strong> &#8211; the md5 of the sample_set</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A generator that yields the md5s in the sample set</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.get_datastore_uri">
+<tt class="descname">get_datastore_uri</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.get_datastore_uri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.get_datastore_uri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gives you the current datastore URL.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">The URI of the data store currently being used by Workbench</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.help">
+<tt class="descname">help</tt><big>(</big><em>cli=False</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.help"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.help" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns help commands</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.help_basic">
+<tt class="descname">help_basic</tt><big>(</big><em>cli=False</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.help_basic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.help_basic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns basic help commands</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.help_commands">
+<tt class="descname">help_commands</tt><big>(</big><em>cli=False</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.help_commands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.help_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a big string of Workbench commands and signatures</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.help_command">
+<tt class="descname">help_command</tt><big>(</big><em>command</em>, <em>cli=False</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.help_command"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.help_command" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a specific Workbench command and docstring</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.help_workers">
+<tt class="descname">help_workers</tt><big>(</big><em>cli=False</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.help_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.help_workers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a big string of the loaded Workbench workers and their dependencies</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.help_worker">
+<tt class="descname">help_worker</tt><big>(</big><em>worker</em>, <em>cli=False</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.help_worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.help_worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a specific Workbench worker and docstring</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.help_advanced">
+<tt class="descname">help_advanced</tt><big>(</big><em>cli=False</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.help_advanced"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.help_advanced" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns advanced help commands</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.help_everything">
+<tt class="descname">help_everything</tt><big>(</big><em>cli=False</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.help_everything"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.help_everything" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns advanced help commands</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.list_all_commands">
+<tt class="descname">list_all_commands</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.list_all_commands"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.list_all_commands" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a list of all the Workbench commands</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.list_all_workers">
+<tt class="descname">list_all_workers</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.list_all_workers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.list_all_workers" title="Permalink to this definition">¶</a></dt>
+<dd><p>List all the currently loaded workers</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.worker_info">
+<tt class="descname">worker_info</tt><big>(</big><em>worker_name</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.worker_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.worker_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the information about this worker</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.server.workbench.WorkBench.test_worker">
+<tt class="descname">test_worker</tt><big>(</big><em>worker_name</em><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#WorkBench.test_worker"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.WorkBench.test_worker" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the test for a specific worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.server.workbench.run">
+<tt class="descclassname">workbench.server.workbench.</tt><tt class="descname">run</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#run"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>Run the workbench server</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.server.workbench.test">
+<tt class="descclassname">workbench.server.workbench.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/server/workbench.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.server.workbench.test" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-workbench.server">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-workbench.server" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="workbench.server.bro.html" title="workbench.server.bro package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="workbench.clients.html" title="workbench.clients package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Workbench 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

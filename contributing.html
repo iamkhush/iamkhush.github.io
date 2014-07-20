@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Contributing &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="index.html" />
+    <link rel="next" title="Credits" href="authors.html" />
+    <link rel="prev" title="Frequently Asked Questions" href="faq.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="index.html">Workbench</a></h2>
+          <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running WorkBench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#report-a-bug-or-make-a-feature-request">Report a Bug or Make a Feature Request</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#look-at-the-code">Look at the Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#become-a-developer">Become a Developer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#tips">Tips</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pypi-checklist-senior-dev-stuff">PyPI Checklist (Senior Dev Stuff)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workbench.clients.html">workbench.clients package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <div class="section" id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="report-a-bug-or-make-a-feature-request">
+<h2>Report a Bug or Make a Feature Request<a class="headerlink" href="#report-a-bug-or-make-a-feature-request" title="Permalink to this headline">¶</a></h2>
+<p>Please go to the GitHub Issues page: <a class="reference external" href="https://github.com/SuperCowPowers/workbench/issues">https://github.com/SuperCowPowers/workbench/issues</a>.</p>
+</div>
+<div class="section" id="look-at-the-code">
+<h2>Look at the Code<a class="headerlink" href="#look-at-the-code" title="Permalink to this headline">¶</a></h2>
+<img src="http://raw.github.com/supercowpowers/workbench/master/images/warning.jpg"
+        alt="robot"  width="60px" align="left" style="margin-right:10px;"/><div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Caution!: The repository contains malcious data samples, be careful, exclude the workbench directory from AV, etc...</p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>git clone https://github.com/supercowpowers/workbench.git
+</pre></div>
+</div>
+</div>
+<div class="section" id="become-a-developer">
+<h2>Become a Developer<a class="headerlink" href="#become-a-developer" title="Permalink to this headline">¶</a></h2>
+<p>Workbench uses the &#8216;GitHub Flow&#8217; model: <a class="reference external" href="http://scottchacon.com/2011/08/31/github-flow.html">GitHub Flow</a></p>
+<ul class="simple">
+<li>To work on something new, create a descriptively named branch off of master (ie: my-awesome)</li>
+<li>Commit to that branch locally and regularly push your work to the same named branch on the server</li>
+<li>When you need feedback or help, or you think the branch is ready for merging, open a pull request</li>
+<li>After someone else has reviewed and signed off on the feature, you can merge it into master</li>
+</ul>
+<div class="section" id="getting-started">
+<h3>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li>Fork the repo on GitHub</li>
+<li>git clone <a class="reference external" href="mailto:git&#37;&#52;&#48;github&#46;com">git<span>&#64;</span>github<span>&#46;</span>com</a>:your_name_here/workbench.git</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="new-feature-or-bug">
+<h3>New Feature or Bug<a class="headerlink" href="#new-feature-or-bug" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>$ git checkout -b my-awesome
+$ git push -u origin my-awesome
+$ &lt;code for a bit&gt;; git push
+$ &lt;code for a bit&gt;; git push
+$ tox (this will run all the tests)
+</pre></div>
+</div>
+<ul class="simple">
+<li>Go to github and hit &#8216;New pull request&#8217;</li>
+<li>Someone reviews it and says &#8216;AOK&#8217;</li>
+<li>Merge the pull request (green button)</li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="tips">
+<h2>Tips<a class="headerlink" href="#tips" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Any questions/issue please join us on either the Email Forums or Gitter :)</li>
+</ul>
+</div>
+<div class="section" id="pypi-checklist-senior-dev-stuff">
+<h2>PyPI Checklist (Senior Dev Stuff)<a class="headerlink" href="#pypi-checklist-senior-dev-stuff" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Spin up a fresh Python Virtual Environment</li>
+<li>Make a git branch called &#8216;v0.2.2-alpha&#8217; or whatever</li>
+</ul>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Make sure workbench/data/memory_images/exemplar4.vmem isn’t there, remove if necessary!</p>
+</div>
+<div class="highlight-python"><div class="highlight"><pre>$ pip install -e .
+$ python setup.py sdist
+$ cd dist
+$ tar xzvf workbench-0.x.y.tar.gz
+$ cd workbench-0.x.y/
+$ python setup.py install
+$ workbench_server
+</pre></div>
+</div>
+<ul class="simple">
+<li>look at output, make sure EVERYTHING comes up okay</li>
+<li>quit workbench_server (ctrl-c in the server window)</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>$ pip install tox
+$ tox (pass all tests)
+</pre></div>
+</div>
+<ul class="simple">
+<li>change version in workbench/__init__.py</li>
+<li>change version in setup.py</li>
+<li>Update HISTORY.rst</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>$ python setup.py publish
+</pre></div>
+</div>
+<ul class="simple">
+<li>Spin up another fresh Python Virtual Environment</li>
+</ul>
+<div class="highlight-python"><div class="highlight"><pre>$ pip install workbench --pre
+$ workbench_server (in one terminal)
+$ pip install pytest-cov
+$ cd workbench/workers
+$ ./runtests (in another terminal)
+</pre></div>
+</div>
+<ul class="simple">
+<li>Push the version branch</li>
+<li>Go to git do a PR</li>
+<li>Wait for green build and merge</li>
+<li>Create a new release with the same version (v0.2.2-alpha or whatever)</li>
+<li>Claim success!</li>
+</ul>
+</div>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="authors.html" title="Credits"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="faq.html" title="Frequently Asked Questions"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Workbench 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

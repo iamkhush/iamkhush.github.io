@@ -1,0 +1,543 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>workbench.workers.pe_indicators &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="../../../index.html">Workbench</a></h2>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../running.html">Running WorkBench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.clients.html">workbench.clients package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.server.html">workbench.server package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.workers.html">workbench.workers package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <h1>Source code for workbench.workers.pe_indicators</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39;</span>
+<span class="sd">This python class codifies a bunch of rules around suspicious static</span>
+<span class="sd">features in a PE File. The rules don&#39;t indicate malicious behavior</span>
+<span class="sd">they simply flag things that may be used by a malicious binary.</span>
+<span class="sd">Many of the indicators used were inspired by the material in the</span>
+<span class="sd">&#39;Practical Malware Analysis&#39; book by Sikorski and Honig,</span>
+<span class="sd">ISBN-13: 978-1593272906 (available on Amazon :)</span>
+
+<span class="sd">Description:</span>
+
+<span class="sd">    PE_WARNINGS          = PE module warnings verbatim</span>
+<span class="sd">    MALFORMED            = the PE file is malformed</span>
+<span class="sd">    COMMUNICATION        = network activities</span>
+<span class="sd">    CREDENTIALS          = activities associated with elevating or attaining new privileges</span>
+<span class="sd">    KEYLOGGING           = activities associated with keylogging</span>
+<span class="sd">    SYSTEM_STATE         = file system or registry activities</span>
+<span class="sd">    SYSTEM_PROBE         = getting information from the local system (file system, OS config)</span>
+<span class="sd">    SYSTEM_INTEGRITY     = compromises the security state of the local system</span>
+<span class="sd">    PROCESS_MANIPULATION = indicators associated with process manipulation/injection</span>
+<span class="sd">    PROCESS_SPAWN        = indicators associated with creating a new process</span>
+<span class="sd">    STEALTH_LOAD         = indicators associated with loading libraries, resources, etc in a sneaky way</span>
+<span class="sd">    ENCRYPTION           = any indicators related to encryption</span>
+<span class="sd">    COM_SERVICES         = COM functionality or running as a service</span>
+<span class="sd">    ANTI_DEBUG           = anti-debugging indicators</span>
+<span class="sd">&#39;&#39;&#39;</span>
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">pefile</span>
+
+
+<div class="viewcode-block" id="PEIndicators"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators">[docs]</a><span class="k">class</span> <span class="nc">PEIndicators</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Create instance of Indicators class. This class uses the</span>
+<span class="sd">        static features from the pefile module to look for weird stuff.</span>
+
+<span class="sd">        Note: All methods that start with &#39;check&#39; will be automatically</span>
+<span class="sd">        included as part of the checks that happen when &#39;execute&#39; is called.</span>
+<span class="sd">    &#39;&#39;&#39;</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;sample&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Init method of the Indicators class. &#39;&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span> <span class="o">=</span> <span class="bp">None</span>
+
+<div class="viewcode-block" id="PEIndicators.execute"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Execute the PEIndicators worker &#39;&#39;&#39;</span>
+        <span class="n">raw_bytes</span> <span class="o">=</span> <span class="n">input_data</span><span class="p">[</span><span class="s">&#39;sample&#39;</span><span class="p">][</span><span class="s">&#39;raw_bytes&#39;</span><span class="p">]</span>
+
+        <span class="c"># Analyze the output of pefile for any anomalous conditions.</span>
+        <span class="c"># Have the PE File module process the file</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span> <span class="o">=</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PE</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">raw_bytes</span><span class="p">,</span> <span class="n">fast_load</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="n">pefile</span><span class="o">.</span><span class="n">PEFormatError</span><span class="p">),</span> <span class="n">error</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;error&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">),</span> <span class="s">&#39;indicator_list&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s">&#39;Error&#39;</span><span class="p">:</span> <span class="s">&#39;PE module failed!&#39;</span><span class="p">}]}</span>
+
+        <span class="n">indicators</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">indicators</span> <span class="o">+=</span> <span class="p">[{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="n">warn</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;PE_WARN&#39;</span><span class="p">}</span> 
+                       <span class="k">for</span> <span class="n">warn</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">get_warnings</span><span class="p">()]</span>
+
+        <span class="c"># Automatically invoke any method of this class that starts with &#39;check&#39;</span>
+        <span class="n">check_methods</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_check_methods</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">check_method</span> <span class="ow">in</span> <span class="n">check_methods</span><span class="p">:</span>
+            <span class="n">hit_data</span> <span class="o">=</span> <span class="n">check_method</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">hit_data</span><span class="p">:</span>
+                <span class="n">indicators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">hit_data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;indicator_list&#39;</span><span class="p">:</span> <span class="n">indicators</span><span class="p">}</span>
+
+    <span class="c">#</span>
+    <span class="c"># Check methods</span>
+    <span class="c">#</span></div>
+<div class="viewcode-block" id="PEIndicators.check_corrupted_imports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_corrupted_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_corrupted_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Various ways the imports table might be corrupted. &#39;&#39;&#39;</span>
+        <span class="n">pe_warning_matches</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Error parsing the import directory at RVA:&#39;</span><span class="p">,</span>
+                              <span class="s">&#39;Error parsing the import directory. Invalid Import data at RVA:&#39;</span><span class="p">,</span>
+                              <span class="s">&#39;Error parsing the Delay import directory at RVA:&#39;</span><span class="p">,</span>
+                              <span class="s">&#39;Error parsing the Delay import directory. Invalid import data at RVA:&#39;</span><span class="p">]</span>
+
+        <span class="c"># Search for any of the possible matches</span>
+        <span class="n">match_hits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_within_pe_warnings</span><span class="p">(</span><span class="n">pe_warning_matches</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match_hits</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Corrupted import table&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;MALFORMED&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">match_hits</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_checksum_is_zero"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_checksum_is_zero">[docs]</a>    <span class="k">def</span> <span class="nf">check_checksum_is_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking for a checksum of zero &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">CheckSum</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Checksum of Zero&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;MALFORMED&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_checksum_mismatch"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_checksum_mismatch">[docs]</a>    <span class="k">def</span> <span class="nf">check_checksum_mismatch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking for a checksum that doesn&#39;t match the generated checksum &#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">CheckSum</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">generate_checksum</span><span class="p">():</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Reported Checksum does not match actual checksum&#39;</span><span class="p">,</span> 
+                        <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;MALFORMED&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_empty_section_name"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_empty_section_name">[docs]</a>    <span class="k">def</span> <span class="nf">check_empty_section_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking for an empty section name &#39;&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">section</span><span class="o">.</span><span class="n">Name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Section with no name, tamper indication&#39;</span><span class="p">,</span> 
+                        <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;MALFORMED&#39;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_nonstandard_section_name"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_nonstandard_section_name">[docs]</a>    <span class="k">def</span> <span class="nf">check_nonstandard_section_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking for an non-standard section name &#39;&#39;&#39;</span>
+        <span class="n">std_sections</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;.text&#39;</span><span class="p">,</span> <span class="s">&#39;.bss&#39;</span><span class="p">,</span> <span class="s">&#39;.rdata&#39;</span><span class="p">,</span> <span class="s">&#39;.data&#39;</span><span class="p">,</span> <span class="s">&#39;.rsrc&#39;</span><span class="p">,</span> <span class="s">&#39;.edata&#39;</span><span class="p">,</span> <span class="s">&#39;.idata&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;.pdata&#39;</span><span class="p">,</span> <span class="s">&#39;.debug&#39;</span><span class="p">,</span> <span class="s">&#39;.reloc&#39;</span><span class="p">,</span> <span class="s">&#39;.stab&#39;</span><span class="p">,</span> <span class="s">&#39;.stabstr&#39;</span><span class="p">,</span> <span class="s">&#39;.tls&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;.crt&#39;</span><span class="p">,</span> <span class="s">&#39;.gnu_deb&#39;</span><span class="p">,</span> <span class="s">&#39;.eh_fram&#39;</span><span class="p">,</span> <span class="s">&#39;.exptbl&#39;</span><span class="p">,</span> <span class="s">&#39;.rodata&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">200</span><span class="p">):</span>
+            <span class="n">std_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        <span class="n">non_std_sections</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">convert_to_ascii_null_term</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">std_sections</span><span class="p">):</span>
+                <span class="n">non_std_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">non_std_sections</span><span class="p">:</span>
+            <span class="k">return</span><span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Section(s) with a non-standard name, tamper indication&#39;</span><span class="p">,</span> 
+                   <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;MALFORMED&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">non_std_sections</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_image_size_incorrect"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_image_size_incorrect">[docs]</a>    <span class="k">def</span> <span class="nf">check_image_size_incorrect</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the reported image size matches the actual image size &#39;&#39;&#39;</span>
+        <span class="n">last_virtual_address</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">last_virtual_size</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="n">section_alignment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">SectionAlignment</span>
+        <span class="n">total_image_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">SizeOfImage</span>
+
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">VirtualAddress</span> <span class="o">&gt;</span> <span class="n">last_virtual_address</span><span class="p">:</span>
+                <span class="n">last_virtual_address</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">VirtualAddress</span>
+                <span class="n">last_virtual_size</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">Misc_VirtualSize</span>
+
+        <span class="c"># Just pad the size to be equal to the alignment and check for mismatch</span>
+        <span class="n">last_virtual_size</span> <span class="o">+=</span> <span class="n">section_alignment</span> <span class="o">-</span> <span class="p">(</span><span class="n">last_virtual_size</span> <span class="o">%</span> <span class="n">section_alignment</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">last_virtual_address</span> <span class="o">+</span> <span class="n">last_virtual_size</span><span class="p">)</span> <span class="o">!=</span> <span class="n">total_image_size</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Image size does not match reported size&#39;</span><span class="p">,</span> 
+                    <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;MALFORMED&#39;</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_overlapping_headers"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_overlapping_headers">[docs]</a>    <span class="k">def</span> <span class="nf">check_overlapping_headers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if pefile module reported overlapping header &#39;&#39;&#39;</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Error parsing the resources directory, attempting to read entry name. Entry names overlap&#39;</span><span class="p">]</span>
+
+        <span class="c"># Search for any of the possible matches</span>
+        <span class="n">match_hits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_within_pe_warnings</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match_hits</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Overlapping sections&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;MALFORMED&#39;</span><span class="p">}</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_section_unaligned"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_section_unaligned">[docs]</a>    <span class="k">def</span> <span class="nf">check_section_unaligned</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if any of the sections are unaligned &#39;&#39;&#39;</span>
+        <span class="n">file_alignment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">FileAlignment</span>
+        <span class="n">unaligned_sections</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">PointerToRawData</span> <span class="o">%</span> <span class="n">file_alignment</span><span class="p">:</span>
+                <span class="n">unaligned_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">Name</span><span class="p">)</span>
+
+        <span class="c"># If we had any unaligned sections, return them</span>
+        <span class="k">if</span> <span class="n">unaligned_sections</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Unaligned section, tamper indication&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;MALFORMED&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">unaligned_sections</span><span class="p">}</span>
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_section_oversized"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_section_oversized">[docs]</a>    <span class="k">def</span> <span class="nf">check_section_oversized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if any of the sections go past the total size of the image &#39;&#39;&#39;</span>
+        <span class="n">total_image_size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">OPTIONAL_HEADER</span><span class="o">.</span><span class="n">SizeOfImage</span>
+
+        <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">sections</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">PointerToRawData</span> <span class="o">+</span> <span class="n">section</span><span class="o">.</span><span class="n">SizeOfRawData</span> <span class="o">&gt;</span> <span class="n">total_image_size</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Oversized section, storing addition data within the PE&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;MALFORMED&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">section</span><span class="o">.</span><span class="n">Name</span><span class="p">}</span>
+
+        <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_dll_with_no_exports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_dll_with_no_exports">[docs]</a>    <span class="k">def</span> <span class="nf">check_dll_with_no_exports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE is a DLL with no exports&#39;&#39;&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">is_dll</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="p">,</span><span class="s">&#39;DIRECTORY_ENTRY_EXPORT&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span><span class="s">&#39;DLL with NO export symbols&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span><span class="s">&#39;MALFORMED&#39;</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_communication_imports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_communication_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_communication_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known communication methods&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;accept&#39;</span><span class="p">,</span> <span class="s">&#39;bind&#39;</span><span class="p">,</span> <span class="s">&#39;connect&#39;</span><span class="p">,</span> <span class="s">&#39;connectnamedpipe&#39;</span><span class="p">,</span> <span class="s">&#39;ftpputfile&#39;</span><span class="p">,</span> <span class="s">&#39;getadaptersinfo&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;gethostbyname&#39;</span><span class="p">,</span> <span class="s">&#39;gethostname&#39;</span><span class="p">,</span> <span class="s">&#39;inet_addr&#39;</span><span class="p">,</span> <span class="s">&#39;internetopen&#39;</span><span class="p">,</span> <span class="s">&#39;internetopenurl&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;internetreadfile&#39;</span><span class="p">,</span> <span class="s">&#39;internetwritefile&#39;</span><span class="p">,</span> <span class="s">&#39;netshareenum&#39;</span><span class="p">,</span> <span class="s">&#39;recv&#39;</span><span class="p">,</span> <span class="s">&#39;send&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;urldownloadtofile&#39;</span><span class="p">,</span> <span class="s">&#39;wsastartup&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span><span class="s">&#39;Imported symbols related to network communication&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="s">&#39;category&#39;</span><span class="p">:</span><span class="s">&#39;COMMUNICATION&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span><span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_elevating_privs_imports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_elevating_privs_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_elevating_privs_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with elevating or attaining new privileges&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;adjusttokenprivileges&#39;</span><span class="p">,</span> <span class="s">&#39;certopensystemstore&#39;</span><span class="p">,</span> <span class="s">&#39;deviceiocontrol&#39;</span><span class="p">,</span> <span class="s">&#39;isntadmin&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;lsaenumeratelogonsessions&#39;</span><span class="p">,</span> <span class="s">&#39;mmgetsystemroutineaddress&#39;</span><span class="p">,</span> <span class="s">&#39;ntsetinformationprocess&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;samiconnect&#39;</span><span class="p">,</span> <span class="s">&#39;samigetprivatedata&#39;</span><span class="p">,</span> <span class="s">&#39;samqueryinformationuse&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">matching_imports</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to elevating or attaining new privileges&#39;</span><span class="p">,</span> 
+                    <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;CREDENTIALS&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_keylogging_imports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_keylogging_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_keylogging_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with elevating or attaining new privileges&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;attachthreadinput&#39;</span><span class="p">,</span> <span class="s">&#39;bitblt&#39;</span><span class="p">,</span> <span class="s">&#39;callnexthookex&#39;</span><span class="p">,</span> <span class="s">&#39;getasynckeystate&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;getdc&#39;</span><span class="p">,</span> <span class="s">&#39;savedc&#39;</span><span class="p">,</span> <span class="s">&#39;getforgroundwindow&#39;</span><span class="p">,</span> <span class="s">&#39;getkeystate&#39;</span><span class="p">,</span> <span class="s">&#39;mapvirtualkey&#39;</span>
+                   <span class="s">&#39;registerhotkey&#39;</span><span class="p">,</span> <span class="s">&#39;setwindowshookex&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to keylogging activities&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;KEYLOGGING&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_system_state_imports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_system_state_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_system_state_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with changing system state&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;createfile&#39;</span><span class="p">,</span> <span class="s">&#39;createfilemapping&#39;</span><span class="p">,</span> <span class="s">&#39;readfile&#39;</span><span class="p">,</span> <span class="s">&#39;openfile&#39;</span><span class="p">,</span> <span class="s">&#39;deletefile&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;setfiletime&#39;</span><span class="p">,</span> <span class="s">&#39;createmutex&#39;</span><span class="p">,</span> <span class="s">&#39;openmutex&#39;</span><span class="p">,</span> <span class="s">&#39;gettemppath&#39;</span><span class="p">,</span> <span class="s">&#39;getwindowsdirectory&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;ntquerydirectoryfile&#39;</span><span class="p">,</span> <span class="s">&#39;regopenkey&#39;</span><span class="p">,</span> <span class="s">&#39;rtlcreateregistrykey&#39;</span><span class="p">,</span> <span class="s">&#39;rtlwriteregistryvalue&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;wow64disablewow64fsredirection&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to changing system state&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                    <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;SYSTEM_STATE&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_system_probe_imports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_system_probe_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_system_probe_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with probing the system&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;findfirstfile&#39;</span><span class="p">,</span> <span class="s">&#39;findnextfile&#39;</span><span class="p">,</span> <span class="s">&#39;findresource&#39;</span><span class="p">,</span> <span class="s">&#39;getsystemdefaultlangid&#39;</span><span class="p">,</span> <span class="s">&#39;getversionex&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to probing the system&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;SYSTEM_PROBE&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_system_integrity_imports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_system_integrity_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_system_integrity_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with system security or integrity&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;enableexecuteprotectionsupport&#39;</span><span class="p">,</span> <span class="s">&#39;mapviewoffile&#39;</span><span class="p">,</span> <span class="s">&#39;sfcterminatewatcherthread&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to system security and integrity&#39;</span><span class="p">,</span> 
+                    <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;SYSTEM_INTEGRITY&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_crypto_imports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_crypto_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_crypto_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with encryption&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;crypt&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to encryption&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;ENCRYPTION&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_anti_debug_imports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_anti_debug_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_anti_debug_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with anti-debug&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;checkremotedebbugerpresent&#39;</span><span class="p">,</span> <span class="s">&#39;isdebuggerpresent&#39;</span><span class="p">,</span> <span class="s">&#39;ntqueryinformationprocess&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;outputdebugstring&#39;</span><span class="p">,</span> <span class="s">&#39;queryperformancecounter&#39;</span><span class="p">,</span> <span class="s">&#39;gettickcount&#39;</span><span class="p">,</span> <span class="s">&#39;findwindow&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to anti-debugging&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;ANTI_DEBUG&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_com_service_imports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_com_service_imports">[docs]</a>    <span class="k">def</span> <span class="nf">check_com_service_imports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with COM or services&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;cocreateinstance&#39;</span><span class="p">,</span> <span class="s">&#39;controlservice&#39;</span><span class="p">,</span> <span class="s">&#39;createservice&#39;</span><span class="p">,</span> <span class="s">&#39;dllcanunloadnow&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;dllgetclassobject&#39;</span><span class="p">,</span> <span class="s">&#39;dllinstall&#39;</span><span class="p">,</span> <span class="s">&#39;dllregisterserver&#39;</span><span class="p">,</span> <span class="s">&#39;dllunregisterserver&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;oleinitialize&#39;</span><span class="p">,</span> <span class="s">&#39;openscmanager&#39;</span><span class="p">,</span> <span class="s">&#39;startservicectrldispatcher&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to COM or Services&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;COM_SERVICES&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_process_manipulation"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_process_manipulation">[docs]</a>    <span class="k">def</span> <span class="nf">check_process_manipulation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with process manipulation/injection&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;createremotethread&#39;</span><span class="p">,</span> <span class="s">&#39;createtoolhelp32snapshot&#39;</span><span class="p">,</span> <span class="s">&#39;enumprocesses&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;enumprocessmodules&#39;</span><span class="p">,</span> <span class="s">&#39;getmodulefilename&#39;</span><span class="p">,</span> <span class="s">&#39;getmodulehandle&#39;</span><span class="p">,</span> <span class="s">&#39;getstartupinfo&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;getthreadcontext&#39;</span><span class="p">,</span> <span class="s">&#39;iswow64process&#39;</span><span class="p">,</span> <span class="s">&#39;module32first&#39;</span><span class="p">,</span> <span class="s">&#39;module32next&#39;</span><span class="p">,</span> <span class="s">&#39;openprocess&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;process32first&#39;</span><span class="p">,</span> <span class="s">&#39;process32next&#39;</span><span class="p">,</span> <span class="s">&#39;queueuserapc&#39;</span><span class="p">,</span> <span class="s">&#39;readprocessmemory&#39;</span><span class="p">,</span> <span class="s">&#39;resumethread&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;setthreadcontext&#39;</span><span class="p">,</span> <span class="s">&#39;suspendthread&#39;</span><span class="p">,</span> <span class="s">&#39;thread32first&#39;</span><span class="p">,</span> <span class="s">&#39;thread32next&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;toolhelp32readprocessmemory&#39;</span><span class="p">,</span> <span class="s">&#39;virtualallocex&#39;</span><span class="p">,</span> <span class="s">&#39;virtualprotectex&#39;</span><span class="p">,</span> <span class="s">&#39;writeprocessmemory&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to process manipulation/injection&#39;</span><span class="p">,</span> 
+                    <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;PROCESS_MANIPULATION&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_process_spawn"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_process_spawn">[docs]</a>    <span class="k">def</span> <span class="nf">check_process_spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with spawning a new process&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;createprocess&#39;</span><span class="p">,</span> <span class="s">&#39;netschedulejobadd&#39;</span><span class="p">,</span> <span class="s">&#39;peeknamedpipe&#39;</span><span class="p">,</span> <span class="s">&#39;shellexecute&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;system&#39;</span><span class="p">,</span> <span class="s">&#39;winexec&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to spawning a new process&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                    <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;PROCESS_SPAWN&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_stealth_load"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_stealth_load">[docs]</a>    <span class="k">def</span> <span class="nf">check_stealth_load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking if the PE imports known methods associated with loading libraries, resources, etc in a sneaky way&#39;&#39;&#39;</span>
+        <span class="n">imports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;getprocaddress&#39;</span><span class="p">,</span> <span class="s">&#39;ldrloaddll&#39;</span><span class="p">,</span> <span class="s">&#39;loadlibrary&#39;</span><span class="p">,</span> <span class="s">&#39;loadresource&#39;</span><span class="p">]</span>
+        <span class="n">matching_imports</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_import_symbols</span><span class="p">(</span><span class="n">imports</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">matching_imports</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Imported symbols related to loading libraries, resources, in a sneaky way&#39;</span><span class="p">,</span>
+                    <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;STEALTH_LOAD&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">matching_imports</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_invalid_entry_point"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_invalid_entry_point">[docs]</a>    <span class="k">def</span> <span class="nf">check_invalid_entry_point</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Checking the PE File warning for an invalide entry point &#39;&#39;&#39;</span>
+        <span class="n">matches</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;Possibly corrupt file. AddressOfEntryPoint lies outside the file. AddressOfEntryPoint:&#39;</span><span class="p">,</span>
+                   <span class="s">&#39;AddressOfEntryPoint lies outside the sections</span><span class="se">\&#39;</span><span class="s"> boundaries. AddressOfEntryPoint:&#39;</span><span class="p">]</span>
+        <span class="c"># Search for any of the possible matches</span>
+        <span class="n">match_hits</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_search_within_pe_warnings</span><span class="p">(</span><span class="n">matches</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">match_hits</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&#39;description&#39;</span><span class="p">:</span> <span class="s">&#39;Invalid Entry Point&#39;</span><span class="p">,</span> <span class="s">&#39;severity&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+                    <span class="s">&#39;category&#39;</span><span class="p">:</span> <span class="s">&#39;OBFUSCATION&#39;</span><span class="p">,</span> <span class="s">&#39;attributes&#39;</span><span class="p">:</span> <span class="n">match_hits</span><span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="PEIndicators.check_exports"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.PEIndicators.check_exports">[docs]</a>    <span class="k">def</span> <span class="nf">check_exports</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; This is just a stub function right now, might be useful later &#39;&#39;&#39;</span>
+        <span class="n">exports</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;evil&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_search_for_export_symbols</span><span class="p">(</span><span class="n">exports</span><span class="p">)</span>
+
+    <span class="c">#</span>
+    <span class="c"># Helper methods</span>
+    <span class="c">#</span></div>
+    <span class="k">def</span> <span class="nf">_search_within_pe_warnings</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matches</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Just encapsulating a search that takes place fairly often &#39;&#39;&#39;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="s">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">match</span><span class="p">)</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">)</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">exp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">warning</span><span class="p">)</span> <span class="k">for</span> <span class="n">warning</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">get_warnings</span><span class="p">()):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="k">def</span> <span class="nf">_search_for_import_symbols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matches</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Just encapsulating a search that takes place fairly often &#39;&#39;&#39;</span>
+
+        <span class="c"># Sanity check</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="p">,</span> <span class="s">&#39;DIRECTORY_ENTRY_IMPORT&#39;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="c"># Find symbols that match</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="s">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">match</span><span class="p">)</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">)</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+        <span class="n">symbol_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY_IMPORT</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">module</span><span class="o">.</span><span class="n">imports</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">symbol</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+                    <span class="n">symbol_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">symbol</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+        <span class="n">symbol_matches</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">symbol_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">symbol</span><span class="p">):</span>
+                <span class="n">symbol_matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">symbol_matches</span>
+
+    <span class="k">def</span> <span class="nf">_search_for_export_symbols</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">matches</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Just encapsulating a search that takes place fairly often &#39;&#39;&#39;</span>
+        <span class="n">pattern</span> <span class="o">=</span> <span class="s">&#39;|&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">match</span><span class="p">)</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">matches</span><span class="p">)</span>
+        <span class="n">exp</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+        <span class="n">symbol_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">pefile_handle</span><span class="o">.</span><span class="n">DIRECTORY_ENTRY_EXPORT</span><span class="o">.</span><span class="n">symbols</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">symbol</span><span class="o">.</span><span class="n">name</span><span class="p">:</span>
+                    <span class="n">symbol_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">symbol</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="n">symbol_matches</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">symbol_list</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">exp</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">symbol</span><span class="p">):</span>
+                    <span class="n">symbol_matches</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">symbol</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">symbol_matches</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">_get_check_methods</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;check&#39;</span><span class="p">):</span>
+                <span class="n">results</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span>
+
+
+<span class="c"># Helper functions</span></div>
+<div class="viewcode-block" id="convert_to_ascii_null_term"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.convert_to_ascii_null_term">[docs]</a><span class="k">def</span> <span class="nf">convert_to_ascii_null_term</span><span class="p">(</span><span class="n">string</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; Convert string to null terminated ascii string &#39;&#39;&#39;</span>
+    <span class="n">string</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\x00</span><span class="s">&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">string</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&#39;ascii&#39;</span><span class="p">,</span> <span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+
+
+<span class="c"># Unit test: Create the class, the proper input and run the execute() method for a test</span></div>
+<div class="viewcode-block" id="test"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.pe_indicators.test">[docs]</a><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39; pe_indicators.py: Unit test&#39;&#39;&#39;</span>
+    <span class="kn">import</span> <span class="nn">pprint</span>
+
+    <span class="c"># This worker test requires a local server running</span>
+    <span class="kn">import</span> <span class="nn">zerorpc</span>
+    <span class="n">workbench</span> <span class="o">=</span> <span class="n">zerorpc</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">heartbeat</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+    <span class="n">workbench</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&quot;tcp://127.0.0.1:4242&quot;</span><span class="p">)</span>
+
+    <span class="c"># Generate the input data for this worker</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span>
+                             <span class="s">&#39;../data/pe/bad/033d91aae8ad29ed9fbb858179271232&#39;</span><span class="p">)</span>
+    <span class="n">md5_bad</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">store_sample</span><span class="p">(</span><span class="s">&#39;bad&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s">&#39;exe&#39;</span><span class="p">)</span>
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span>
+                             <span class="s">&#39;../data/pe/good/4be7ec02133544cde7a580875e130208&#39;</span><span class="p">)</span>
+    <span class="n">md5_good</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">store_sample</span><span class="p">(</span><span class="s">&#39;good_pe&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s">&#39;exe&#39;</span><span class="p">)</span>
+
+    <span class="c"># Execute the worker (unit test)</span>
+    <span class="n">worker</span> <span class="o">=</span> <span class="n">PEIndicators</span><span class="p">()</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">workbench</span><span class="o">.</span><span class="n">get_sample</span><span class="p">(</span><span class="n">md5_bad</span><span class="p">))</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;&lt;&lt; Unit Test 1 &gt;&gt;&gt;&#39;</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">workbench</span><span class="o">.</span><span class="n">get_sample</span><span class="p">(</span><span class="n">md5_good</span><span class="p">))</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;&lt;&lt; Unit Test 2 &gt;&gt;&gt;&#39;</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="c"># Execute the worker (server test)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">work_request</span><span class="p">(</span><span class="s">&#39;pe_indicators&#39;</span><span class="p">,</span> <span class="n">md5_bad</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;&lt;&lt; Server Test &gt;&gt;&gt;&#39;</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">test</span><span class="p">()</span>
+</pre></div>
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Workbench 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

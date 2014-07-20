@@ -1,0 +1,500 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>workbench.server.data_store &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="../../../index.html">Workbench</a></h2>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../running.html">Running WorkBench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.clients.html">workbench.clients package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.server.html">workbench.server package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.workers.html">workbench.workers package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <h1>Source code for workbench.server.data_store</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;DataStore class for WorkBench.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">gevent</span> <span class="kn">import</span> <span class="n">monkey</span><span class="p">;</span> <span class="n">monkey</span><span class="o">.</span><span class="n">patch_socket</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">pymongo</span>
+<span class="kn">import</span> <span class="nn">gridfs</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">bson</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+
+
+<div class="viewcode-block" id="DataStore"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore">[docs]</a><span class="k">class</span> <span class="nc">DataStore</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;DataStore for Workbench. </span>
+
+<span class="sd">    Currently tied to MongoDB but making this class &#39;abstract&#39;  should be </span>
+<span class="sd">    straightforward and we could think about using another backend.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">uri</span><span class="o">=</span><span class="s">&#39;mongodb://localhost/workbench&#39;</span><span class="p">,</span> <span class="n">database</span><span class="o">=</span><span class="s">&#39;workbench&#39;</span><span class="p">,</span> <span class="n">worker_cap</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">samples_cap</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialization for the Workbench data store class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            uri: Connection String for DataStore backend.</span>
+<span class="sd">            database: Name of database.</span>
+<span class="sd">            worker_cap: MBs in the capped collection.</span>
+<span class="sd">            samples_cap: MBs of sample to be stored.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span> <span class="o">=</span> <span class="s">&#39;samples&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">worker_cap</span> <span class="o">=</span> <span class="n">worker_cap</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">samples_cap</span> <span class="o">=</span> <span class="n">samples_cap</span>
+
+        <span class="c"># Get connection to mongo</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database_name</span> <span class="o">=</span> <span class="n">database</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">uri</span> <span class="o">=</span> <span class="s">&#39;mongodb://&#39;</span><span class="o">+</span><span class="n">uri</span><span class="o">+</span><span class="s">&#39;/&#39;</span><span class="o">+</span><span class="bp">self</span><span class="o">.</span><span class="n">database_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mongo</span> <span class="o">=</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">MongoClient</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="n">use_greenlets</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">mongo</span><span class="o">.</span><span class="n">get_default_database</span><span class="p">()</span>
+
+        <span class="c"># Get the gridfs handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">gridfs_handle</span> <span class="o">=</span> <span class="n">gridfs</span><span class="o">.</span><span class="n">GridFS</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">)</span>
+
+        <span class="c"># Run the periodic operations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_ops_run</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic_ops</span><span class="p">()</span>
+
+        <span class="k">print</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">- WorkBench DataStore connected: </span><span class="si">%s</span><span class="s">:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">uri</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">database_name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="DataStore.get_uri"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.get_uri">[docs]</a>    <span class="k">def</span> <span class="nf">get_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the uri of the data store.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">uri</span>
+</div>
+<div class="viewcode-block" id="DataStore.store_sample"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.store_sample">[docs]</a>    <span class="k">def</span> <span class="nf">store_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">sample_bytes</span><span class="p">,</span> <span class="n">type_tag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store a sample into the datastore.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename: Name of the file.</span>
+<span class="sd">            sample_bytes: Actual bytes of sample. </span>
+<span class="sd">            type_tag: Type of sample (&#39;exe&#39;,&#39;pcap&#39;,&#39;pdf&#39;,&#39;json&#39;,&#39;swf&#39;, or ...).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Digest md5 digest of the sample.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">sample_info</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c"># Compute the MD5 hash</span>
+        <span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;md5&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="n">sample_bytes</span><span class="p">)</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+
+        <span class="c"># Check if sample already exists</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_sample</span><span class="p">(</span><span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;md5&#39;</span><span class="p">]):</span>
+            <span class="k">print</span> <span class="s">&#39;Sample </span><span class="si">%s</span><span class="s">: already exists in DataStore&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;md5&#39;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;md5&#39;</span><span class="p">]</span>
+
+        <span class="c"># Run the periodic operations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">periodic_ops</span><span class="p">()</span>
+
+        <span class="c"># Check if we need to expire anything</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">expire_data</span><span class="p">()</span>
+
+        <span class="c"># Okay start populating the sample for adding to the data store</span>
+        <span class="c"># Filename, length, import time and type_tag</span>
+        <span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">filename</span>
+        <span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sample_bytes</span><span class="p">)</span>
+        <span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;import_time&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+        <span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;type_tag&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_tag</span>
+
+        <span class="c"># Random customer for now</span>
+        <span class="kn">import</span> <span class="nn">random</span>
+        <span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;customer&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="s">&#39;Mega Corp&#39;</span><span class="p">,</span> <span class="s">&#39;Huge Inc&#39;</span><span class="p">,</span> <span class="s">&#39;BearTron&#39;</span><span class="p">,</span> <span class="s">&#39;Dorseys Mom&#39;</span><span class="p">])</span>
+
+        <span class="c"># Push the file into the MongoDB GridFS</span>
+        <span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;__grid_fs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">gridfs_handle</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">sample_bytes</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">]</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">sample_info</span><span class="p">)</span>
+
+        <span class="c"># Print info</span>
+        <span class="k">print</span> <span class="s">&#39;Sample Storage: </span><span class="si">%.2f</span><span class="s"> out of </span><span class="si">%.2f</span><span class="s"> MB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_storage_size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_cap</span><span class="p">)</span>
+
+        <span class="c"># Return the sample md5</span>
+        <span class="k">return</span> <span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;md5&#39;</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="DataStore.sample_storage_size"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.sample_storage_size">[docs]</a>    <span class="k">def</span> <span class="nf">sample_storage_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the storage size of the samples storage collection.&quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">coll_stats</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s">&#39;collStats&#39;</span><span class="p">,</span> <span class="s">&#39;fs.chunks&#39;</span><span class="p">)</span>
+            <span class="n">sample_storage_size</span> <span class="o">=</span> <span class="n">coll_stats</span><span class="p">[</span><span class="s">&#39;size&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1024.0</span><span class="o">/</span><span class="mf">1024.0</span>
+            <span class="k">return</span> <span class="n">sample_storage_size</span>
+        <span class="k">except</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">OperationFailure</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+</div>
+<div class="viewcode-block" id="DataStore.expire_data"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.expire_data">[docs]</a>    <span class="k">def</span> <span class="nf">expire_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Expire data within the samples collection.&quot;&quot;&quot;</span>
+
+        <span class="c"># Do we need to start deleting stuff?</span>
+        <span class="k">while</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample_storage_size</span><span class="p">()</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_cap</span><span class="p">:</span>
+
+            <span class="c"># This should return the &#39;oldest&#39; record in samples</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">()</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s">&#39;import_time&#39;</span><span class="p">,</span><span class="n">pymongo</span><span class="o">.</span><span class="n">ASCENDING</span><span class="p">)</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c"># Delete it</span>
+            <span class="k">print</span> <span class="s">&#39;Deleting sample: </span><span class="si">%s</span><span class="s"> (</span><span class="si">%.2f</span><span class="s"> MB)...&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="s">&#39;md5&#39;</span><span class="p">],</span> <span class="n">record</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span><span class="o">/</span><span class="mf">1024.0</span><span class="o">/</span><span class="mf">1024.0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">({</span><span class="s">&#39;md5&#39;</span><span class="p">:</span> <span class="n">record</span><span class="p">[</span><span class="s">&#39;md5&#39;</span><span class="p">]})</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">gridfs_handle</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="s">&#39;__grid_fs&#39;</span><span class="p">])</span>
+
+            <span class="c"># Print info</span>
+            <span class="k">print</span> <span class="s">&#39;Sample Storage: </span><span class="si">%.2f</span><span class="s"> out of </span><span class="si">%.2f</span><span class="s"> MB&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_storage_size</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">samples_cap</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DataStore.clean_for_serialization"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.clean_for_serialization">[docs]</a>    <span class="k">def</span> <span class="nf">clean_for_serialization</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clean data in preparation for serialization.</span>
+
+<span class="sd">        Deletes items having key either a BSON, datetime, dict or a list instance, or</span>
+<span class="sd">        starting with __.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: Sample data to be serialized.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Cleaned data dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;__&#39;</span><span class="p">)):</span> 
+                    <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">bson</span><span class="o">.</span><span class="n">objectid</span><span class="o">.</span><span class="n">ObjectId</span><span class="p">):</span> 
+                    <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">):</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span><span class="o">+</span><span class="s">&#39;Z&#39;</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_for_serialization</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">clean_for_serialization</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="DataStore.clean_for_storage"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.clean_for_storage">[docs]</a>    <span class="k">def</span> <span class="nf">clean_for_storage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Clean data in preparation for storage.</span>
+
+<span class="sd">        Deletes items with key having a &#39;.&#39; or is &#39;_id&#39;. Also deletes those items</span>
+<span class="sd">        whose value is a dictionary or a list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: Sample data dictionary to be cleaned.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Cleaned data dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_to_unicode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">dict</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="s">&#39;_id&#39;</span><span class="p">:</span>
+                    <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="s">&#39;.&#39;</span> <span class="ow">in</span> <span class="n">k</span><span class="p">:</span>
+                    <span class="n">new_k</span> <span class="o">=</span> <span class="n">k</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="s">&#39;_&#39;</span><span class="p">)</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">new_k</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                    <span class="k">del</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                    <span class="n">k</span> <span class="o">=</span> <span class="n">new_k</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">dict</span><span class="p">):</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_for_storage</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="nb">list</span><span class="p">):</span>
+                    <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">clean_for_storage</span><span class="p">(</span><span class="n">item</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="n">k</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">data</span>
+</div>
+<div class="viewcode-block" id="DataStore.get_sample"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.get_sample">[docs]</a>    <span class="k">def</span> <span class="nf">get_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the sample from the data store.</span>
+
+<span class="sd">        This method first fetches the data from datastore, then cleans it for serialization</span>
+<span class="sd">        and then updates it with &#39;raw_bytes&#39; item.</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            md5: The md5 digest of the sample to be fetched from datastore.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            The sample dictionary.</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            RuntimeError: Either Sample is not found or the gridfs file is missing.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sample_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">]</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s">&#39;md5&#39;</span><span class="p">:</span> <span class="n">md5</span><span class="p">})</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sample_info</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&#39;Sample not found: </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">md5</span><span class="p">))</span>
+
+        <span class="c"># Get the raw bytes from GridFS (note: this could fail)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">grid_fs_id</span> <span class="o">=</span> <span class="n">sample_info</span><span class="p">[</span><span class="s">&#39;__grid_fs&#39;</span><span class="p">]</span>
+            <span class="n">sample_info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_for_serialization</span><span class="p">(</span><span class="n">sample_info</span><span class="p">)</span>
+            <span class="n">sample_info</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;raw_bytes&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">gridfs_handle</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">grid_fs_id</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()})</span>
+            <span class="k">return</span> <span class="n">sample_info</span>
+        <span class="k">except</span> <span class="n">gridfs</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">CorruptGridFile</span><span class="p">:</span>
+            <span class="c"># If we don&#39;t have the gridfs files, delete the entry from samples</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;md5&#39;</span><span class="p">:</span> <span class="n">md5</span><span class="p">},</span> <span class="p">{</span><span class="s">&#39;md5&#39;</span><span class="p">:</span> <span class="bp">None</span><span class="p">})</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&#39;Sample not found: </span><span class="si">%s</span><span class="s"> &#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">md5</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="DataStore.get_sample_window"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.get_sample_window">[docs]</a>    <span class="k">def</span> <span class="nf">get_sample_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_tag</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a window of samples not to exceed size (in MB).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            type_tag: Type of sample (&#39;exe&#39;,&#39;pcap&#39;,&#39;pdf&#39;,&#39;json&#39;,&#39;swf&#39;, or ...).</span>
+<span class="sd">            size: Size of samples in MBs.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a list of md5s.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Convert size to MB</span>
+        <span class="n">size</span> <span class="o">=</span> <span class="n">size</span> <span class="o">*</span> <span class="mi">1024</span> <span class="o">*</span> <span class="mi">1024</span>
+
+        <span class="c"># Grab all the samples of type=type_tag, sort by import_time (newest to oldest)</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s">&#39;type_tag&#39;</span><span class="p">:</span> <span class="n">type_tag</span><span class="p">},</span>
+            <span class="p">{</span><span class="s">&#39;md5&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span><span class="s">&#39;length&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="s">&#39;import_time&#39;</span><span class="p">,</span><span class="n">pymongo</span><span class="o">.</span><span class="n">DESCENDING</span><span class="p">)</span>
+        <span class="n">total_size</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">md5_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">total_size</span> <span class="o">&gt;</span> <span class="n">size</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">md5_list</span>
+            <span class="n">md5_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="s">&#39;md5&#39;</span><span class="p">])</span>
+            <span class="n">total_size</span> <span class="o">+=</span> <span class="n">item</span><span class="p">[</span><span class="s">&#39;length&#39;</span><span class="p">]</span>
+
+        <span class="c"># If you get this far you don&#39;t have &#39;size&#39; amount of data</span>
+        <span class="c"># so just return what you&#39;ve got</span>
+        <span class="k">return</span> <span class="n">md5_list</span>
+</div>
+<div class="viewcode-block" id="DataStore.has_sample"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.has_sample">[docs]</a>    <span class="k">def</span> <span class="nf">has_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Checks if data store has this sample.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            md5: The md5 digest of the required sample.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            True if sample with this md5 is present, else False.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># The easiest thing is to simply get the sample and if that</span>
+        <span class="c"># succeeds than return True, else return False</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_sample</span><span class="p">(</span><span class="n">md5</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">True</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">False</span>
+</div>
+<div class="viewcode-block" id="DataStore.list_samples"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.list_samples">[docs]</a>    <span class="k">def</span> <span class="nf">list_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="p">{}):</span>
+        <span class="sd">&quot;&quot;&quot;List all samples that meet the predicate or all if predicate is not specified.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            predicate: Match samples against this predicate (or all if not specified)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of dictionaries with matching samples {&#39;md5&#39;:md5, &#39;filename&#39;: &#39;foo.exe&#39;, &#39;type_tag&#39;: &#39;exe&#39;}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">predicate</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;_id&#39;</span><span class="p">:</span><span class="mi">0</span><span class="p">,</span> <span class="s">&#39;md5&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;filename&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">,</span> <span class="s">&#39;type_tag&#39;</span><span class="p">:</span><span class="mi">1</span><span class="p">})</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">cursor</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DataStore.store_work_results"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.store_work_results">[docs]</a>    <span class="k">def</span> <span class="nf">store_work_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store the output results of the worker.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            results: a dictionary.</span>
+<span class="sd">            collection: the database collection to store the results in.</span>
+<span class="sd">            md5: the md5 of sample data to be updated.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Make sure the md5 and time stamp is on the data before storing</span>
+        <span class="n">results</span><span class="p">[</span><span class="s">&#39;md5&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">md5</span>
+        <span class="n">results</span><span class="p">[</span><span class="s">&#39;__time_stamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">utcnow</span><span class="p">()</span>
+
+        <span class="c"># Fixme: Occasionally a capped collection will not let you update with a </span>
+        <span class="c">#        larger object, if you have MongoDB 2.6 or above this shouldn&#39;t</span>
+        <span class="c">#        really happen, so for now just kinda punting and giving a message.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="n">collection</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="s">&#39;md5&#39;</span><span class="p">:</span><span class="n">md5</span><span class="p">},</span> <span class="bp">self</span><span class="o">.</span><span class="n">clean_for_storage</span><span class="p">(</span><span class="n">results</span><span class="p">),</span> <span class="bp">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">pymongo</span><span class="o">.</span><span class="n">errors</span><span class="o">.</span><span class="n">OperationFailure</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;Not updating exising object in capped collection...(upgrade to mongodb 2.6)&#39;</span>
+</div>
+<div class="viewcode-block" id="DataStore.get_work_results"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.get_work_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_work_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the results of the worker.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            collection: the database collection storing the results.</span>
+<span class="sd">            md5: the md5 digest of the data.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Dictionary of the worker result.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="n">collection</span><span class="p">]</span><span class="o">.</span><span class="n">find_one</span><span class="p">({</span><span class="s">&#39;md5&#39;</span><span class="p">:</span><span class="n">md5</span><span class="p">})</span>
+</div>
+<div class="viewcode-block" id="DataStore.all_sample_md5s"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.all_sample_md5s">[docs]</a>    <span class="k">def</span> <span class="nf">all_sample_md5s</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_tag</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a list of all md5 matching the type_tag (&#39;exe&#39;,&#39;pdf&#39;, etc).</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            type_tag: the type of sample.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            a list of matching samples.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">type_tag</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({</span><span class="s">&#39;type_tag&#39;</span><span class="p">:</span> <span class="n">type_tag</span><span class="p">},</span> <span class="p">{</span><span class="s">&#39;md5&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;_id&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">cursor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">]</span><span class="o">.</span><span class="n">find</span><span class="p">({},</span> <span class="p">{</span><span class="s">&#39;md5&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&#39;_id&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">})</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">match</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">cursor</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="DataStore.clear_db"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.clear_db">[docs]</a>    <span class="k">def</span> <span class="nf">clear_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Drops the entire workbench database.&quot;&quot;&quot;</span>
+        
+        <span class="k">print</span> <span class="s">&#39;Dropping the entire workbench database... Whee!&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mongo</span><span class="o">.</span><span class="n">drop_database</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">database_name</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="DataStore.periodic_ops"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.periodic_ops">[docs]</a>    <span class="k">def</span> <span class="nf">periodic_ops</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Run periodic operations on the the data store.</span>
+<span class="sd">        </span>
+<span class="sd">        Operations like making sure collections are capped and indexes are set up.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Only run every 5 minutes</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_ops_run</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">300</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c"># Reset last ops run</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">last_ops_run</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">print</span> <span class="s">&#39;Running Periodic Ops&#39;</span>
+
+        <span class="c"># Get all the collections in the workbench database</span>
+        <span class="n">all_c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">collection_names</span><span class="p">()</span>
+
+        <span class="c"># Remove collections that we don&#39;t want to cap</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">all_c</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&#39;system.indexes&#39;</span><span class="p">)</span>
+            <span class="n">all_c</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&#39;fs.chunks&#39;</span><span class="p">)</span>
+            <span class="n">all_c</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&#39;fs.files&#39;</span><span class="p">)</span>
+            <span class="n">all_c</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;Catching a benign exception thats expected...&#39;</span>
+
+        <span class="c"># Convert collections to capped if desired</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_cap</span><span class="p">:</span>
+            <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">worker_cap</span> <span class="o">*</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">1024</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>  <span class="c"># MegaBytes per collection</span>
+            <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">all_c</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="o">.</span><span class="n">command</span><span class="p">(</span><span class="s">&#39;convertToCapped&#39;</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="c"># Loop through all collections ensuring they have an index on MD5s</span>
+        <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">all_c</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="n">collection</span><span class="p">]</span><span class="o">.</span><span class="n">ensure_index</span><span class="p">(</span><span class="s">&#39;md5&#39;</span><span class="p">)</span>
+
+        <span class="c"># Add required index for samples collection</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">database</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">sample_collection</span><span class="p">]</span><span class="o">.</span><span class="n">create_index</span><span class="p">(</span><span class="s">&#39;import_time&#39;</span><span class="p">)</span>
+
+    <span class="c"># Helper functions</span></div>
+<div class="viewcode-block" id="DataStore.to_unicode"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.to_unicode">[docs]</a>    <span class="k">def</span> <span class="nf">to_unicode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Convert an elementary datatype to unicode.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            s: the datatype to be unicoded.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Unicoded data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Fixme: This is total horseshit</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">s</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="s">&#39;ignore&#39;</span><span class="p">)</span>
+
+        <span class="c"># Just return the original object</span>
+        <span class="k">return</span> <span class="n">s</span>
+</div>
+<div class="viewcode-block" id="DataStore.data_to_unicode"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.data_store.DataStore.data_to_unicode">[docs]</a>    <span class="k">def</span> <span class="nf">data_to_unicode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Recursively convert a list or dictionary to unicode.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data: The data to be unicoded.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Unicoded data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="bp">self</span><span class="o">.</span><span class="n">to_unicode</span><span class="p">(</span><span class="n">k</span><span class="p">):</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_unicode</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()}</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">to_unicode</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">data</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">to_unicode</span><span class="p">(</span><span class="n">data</span><span class="p">)</span></div></div>
+</pre></div>
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Workbench 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

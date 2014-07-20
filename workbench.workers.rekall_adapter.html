@@ -1,0 +1,230 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>workbench.workers.rekall_adapter package &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="index.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="index.html">Workbench</a></h2>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running WorkBench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workbench.clients.html">workbench.clients package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <div class="section" id="workbench-workers-rekall-adapter-package">
+<h1>workbench.workers.rekall_adapter package<a class="headerlink" href="#workbench-workers-rekall-adapter-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-workbench.workers.rekall_adapter.rekall_adapter">
+<span id="workbench-workers-rekall-adapter-rekall-adapter-module"></span><h2>workbench.workers.rekall_adapter.rekall_adapter module<a class="headerlink" href="#module-workbench.workers.rekall_adapter.rekall_adapter" title="Permalink to this headline">¶</a></h2>
+<p>rekall_adapter: Helps Workbench utilize the Rekall Memory Forensic Framework.
+See Google Github: <a class="reference external" href="http://github.com/google/rekall">http://github.com/google/rekall</a>
+All credit for good stuff goes to them, all credit for bad stuff goes to us. :).</p>
+<dl class="function">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.gsleep">
+<tt class="descclassname">workbench.workers.rekall_adapter.rekall_adapter.</tt><tt class="descname">gsleep</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#gsleep"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.gsleep" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.RekallAdapter">
+<em class="property">class </em><tt class="descclassname">workbench.workers.rekall_adapter.rekall_adapter.</tt><tt class="descname">RekallAdapter</tt><big>(</big><em>raw_bytes</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#RekallAdapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.RekallAdapter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>RekallAdapter: Helps utilize the Rekall Memory Forensic Framework.</p>
+<p>Initialization.</p>
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.RekallAdapter.get_session">
+<tt class="descname">get_session</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#RekallAdapter.get_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.RekallAdapter.get_session" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.RekallAdapter.get_renderer">
+<tt class="descname">get_renderer</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#RekallAdapter.get_renderer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.RekallAdapter.get_renderer" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.MemSession">
+<em class="property">class </em><tt class="descclassname">workbench.workers.rekall_adapter.rekall_adapter.</tt><tt class="descname">MemSession</tt><big>(</big><em>raw_bytes</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#MemSession"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.MemSession" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>MemSession: Helps utilize the Rekall Memory Forensic Framework.</p>
+<p>Create a Rekall session from raw_bytes.</p>
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.MemSession.get_session">
+<tt class="descname">get_session</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#MemSession.get_session"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.MemSession.get_session" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the current session handle.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer">
+<em class="property">class </em><tt class="descclassname">workbench.workers.rekall_adapter.rekall_adapter.</tt><tt class="descname">WorkbenchRenderer</tt><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">rekall.ui.renderer.BaseRenderer</span></tt></p>
+<p>Workbench Renderer: Extends BaseRenderer and simply populates local python
+data structures, not meant to be serialized or sent over the network.</p>
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.start">
+<tt class="descname">start</tt><big>(</big><em>plugin_name=None</em>, <em>kwargs=None</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer.start"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.start" title="Permalink to this definition">¶</a></dt>
+<dd><p>Start method: initial data structures and store some meta data.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.end">
+<tt class="descname">end</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer.end"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.end" title="Permalink to this definition">¶</a></dt>
+<dd><p>Just a stub method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.format">
+<tt class="descname">format</tt><big>(</big><em>formatstring</em>, <em>*args</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer.format"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.format" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.section">
+<tt class="descname">section</tt><big>(</big><em>name=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer.section"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.section" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.report_error">
+<tt class="descname">report_error</tt><big>(</big><em>message</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer.report_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.report_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.table_header">
+<tt class="descname">table_header</tt><big>(</big><em>columns=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer.table_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.table_header" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.table_row">
+<tt class="descname">table_row</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer.table_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.table_row" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.write_data_stream">
+<tt class="descname">write_data_stream</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer.write_data_stream"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.write_data_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p>Just a stub method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.flush">
+<tt class="descname">flush</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.flush" title="Permalink to this definition">¶</a></dt>
+<dd><p>Just a stub method.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.render">
+<tt class="descname">render</tt><big>(</big><em>plugin</em><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#WorkbenchRenderer.render"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.render" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.classes">
+<tt class="descname">classes</tt><em class="property"> = {'WorkbenchRenderer': &lt;class 'workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer'&gt;, 'TextRenderer': &lt;class 'rekall.ui.text.TextRenderer'&gt;, 'TestRenderer': &lt;class 'rekall.ui.text.TestRenderer'&gt;, 'BaseRenderer': &lt;class 'rekall.ui.renderer.BaseRenderer'&gt;, 'JsonRenderer': &lt;class 'rekall.ui.json_renderer.JsonRenderer'&gt;}</em><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.classes" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.classes_by_name">
+<tt class="descname">classes_by_name</tt><em class="property"> = {None: &lt;class 'workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer'&gt;}</em><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.classes_by_name" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.plugin_feature">
+<tt class="descname">plugin_feature</tt><em class="property"> = 'BaseRenderer'</em><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.plugin_feature" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.top_level_class">
+<tt class="descname">top_level_class</tt><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.WorkbenchRenderer.top_level_class" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">BaseRenderer</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="workbench.workers.rekall_adapter.rekall_adapter.test">
+<tt class="descclassname">workbench.workers.rekall_adapter.rekall_adapter.</tt><tt class="descname">test</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/workbench/workers/rekall_adapter/rekall_adapter.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#workbench.workers.rekall_adapter.rekall_adapter.test" title="Permalink to this definition">¶</a></dt>
+<dd><p>rekall_adapter.py: Test.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-workbench.workers.rekall_adapter">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-workbench.workers.rekall_adapter" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Workbench 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

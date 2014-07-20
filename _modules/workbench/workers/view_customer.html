@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>workbench.workers.view_customer &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="../../../index.html">Workbench</a></h2>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../running.html">Running WorkBench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.clients.html">workbench.clients package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.server.html">workbench.server package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.workers.html">workbench.workers package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <h1>Source code for workbench.workers.view_customer</h1><div class="highlight"><pre>
+<span class="sd">&#39;&#39;&#39; view_customer worker &#39;&#39;&#39;</span>
+
+<div class="viewcode-block" id="ViewCustomer"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.view_customer.ViewCustomer">[docs]</a><span class="k">class</span> <span class="nc">ViewCustomer</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&#39;&#39;&#39; ViewCustomer: Generates a customer usage view. &#39;&#39;&#39;</span>
+    <span class="n">dependencies</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;meta&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="ViewCustomer.execute"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.view_customer.ViewCustomer.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_data</span><span class="p">):</span>
+        <span class="sd">&#39;&#39;&#39; Execute Method &#39;&#39;&#39;</span>
+
+        <span class="c"># View on all the meta data files in the sample</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">,</span> <span class="s">&#39;md5&#39;</span><span class="p">,</span> <span class="s">&#39;length&#39;</span><span class="p">,</span> <span class="s">&#39;customer&#39;</span><span class="p">,</span> <span class="s">&#39;import_time&#39;</span><span class="p">,</span> <span class="s">&#39;type_tag&#39;</span><span class="p">]</span>
+        <span class="n">view</span> <span class="o">=</span> <span class="p">{</span><span class="n">key</span><span class="p">:</span><span class="n">input_data</span><span class="p">[</span><span class="s">&#39;meta&#39;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">view</span>
+
+<span class="c"># Unit test: Create the class, the proper input and run the execute() method for a test</span></div></div>
+<div class="viewcode-block" id="test"><a class="viewcode-back" href="../../../workbench.workers.html#workbench.workers.view_customer.test">[docs]</a><span class="k">def</span> <span class="nf">test</span><span class="p">():</span>
+    <span class="sd">&#39;&#39;&#39; view_customer.py: Unit test&#39;&#39;&#39;</span>
+
+    <span class="c"># This worker test requires a local server running</span>
+    <span class="kn">import</span> <span class="nn">zerorpc</span>
+    <span class="n">workbench</span> <span class="o">=</span> <span class="n">zerorpc</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="mi">300</span><span class="p">,</span> <span class="n">heartbeat</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+    <span class="n">workbench</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="s">&quot;tcp://127.0.0.1:4242&quot;</span><span class="p">)</span>
+
+    <span class="c"># Generate input for the worker</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="n">data_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span>
+                             <span class="s">&#39;../data/pe/bad/033d91aae8ad29ed9fbb858179271232&#39;</span><span class="p">)</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">store_sample</span><span class="p">(</span><span class="s">&#39;bad_pe&#39;</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">data_path</span><span class="p">,</span> <span class="s">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">(),</span> <span class="s">&#39;exe&#39;</span><span class="p">)</span>
+    <span class="n">input_data</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">work_request</span><span class="p">(</span><span class="s">&#39;meta&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+
+    <span class="c"># Execute the worker (unit test)</span>
+    <span class="n">worker</span> <span class="o">=</span> <span class="n">ViewCustomer</span><span class="p">()</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">worker</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">input_data</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;&lt;&lt; Unit Test &gt;&gt;&gt;&#39;</span>
+    <span class="kn">import</span> <span class="nn">pprint</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+
+    <span class="c"># Execute the worker (server test)</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="n">workbench</span><span class="o">.</span><span class="n">work_request</span><span class="p">(</span><span class="s">&#39;view_customer&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&lt;&lt;&lt; Server Test &gt;&gt;&gt;&#39;</span>
+    <span class="n">pprint</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">test</span><span class="p">()</span>
+</pre></div>
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Workbench 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

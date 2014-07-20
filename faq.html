@@ -1,0 +1,215 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Frequently Asked Questions &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="index.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Running WorkBench" href="running.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="index.html">Workbench</a></h2>
+          <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="running.html">Running WorkBench</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Frequently Asked Questions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#medium-data">Medium Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#client-server">Client/Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cow-points">Cow Points</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="workbench.clients.html">workbench.clients package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <div class="section" id="frequently-asked-questions">
+<h1>Frequently Asked Questions<a class="headerlink" href="#frequently-asked-questions" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="medium-data">
+<h2>Medium Data<a class="headerlink" href="#medium-data" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><dl class="first docutils">
+<dt>What do you mean by &#8216;medium&#8217; data?</dt>
+<dd><p class="first last">The developers of Workbench feel like Medium-Data is a sweet spot, large enough to be meaningful for model
+generation, statistics and predictive performance but small enough to allow for low latency, fast interaction
+and streaming &#8216;hyperslabs&#8217; from server to client.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>What do you mean by hyperslabs?</dt>
+<dd><p class="first last">Many of our examples (notebooks) illustrate the streaming generator chains that allow a client (python script, IPython
+notebook, Node.js, CLI) to stream a filtered subset of the data over to the client.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Why do you have exploding heads every time you talk about streaming data into a DataFrame?</dt>
+<dd><p class="first last">Once you efficiently (streaming with zero-copy) populate a Pandas dataframe you have access to a very large set of statistics, analysis,
+and machine learning Python modules (statsmodel, Pandas, Scikit-Learn).</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>What kind of hardware do you recommend for the Workbench server?</dt>
+<dd><p class="first last">Workbench server will run great on a laptop but when you&#8217;re working with a group of researchers the most
+effective model is a shared group server. A beefy Dell server with 192Gig of Memory and a 100 TeraByte disk array
+will allow the workbench server to effectively process in the neighborhood of a million samples (PE Files, PDFs,
+PCAPs, SWF, etc.)</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="client-server">
+<h2>Client/Server<a class="headerlink" href="#client-server" title="Permalink to this headline">¶</a></h2>
+<ul>
+<li><dl class="first docutils">
+<dt>Philosophy on local Workbench server.</dt>
+<dd><p class="first">As you&#8217;ve noticed from many of the documents and notebooks,
+Workbench often defaults to using a local server. There are several
+reasons for this approach:</p>
+<ul class="last simple">
+<li>We love the concept of git, with a local server (sandbox) for quickness and agility and a remote server for when your ready to share your changes with the world.</li>
+<li>Workbench embraces this approach: Developers can quickly develop new fuctionality on their local server and when they are ready to share the awesome they can &#8216;push&#8217; their new worker to the &#8216;group server&#8217;.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>How do I push my worker to a &#8216;group server&#8217;?</dt>
+<dd><ul class="first last simple">
+<li>development box: $ git push</li>
+<li>server box: $ git pull</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>How do I have my workbench clients hit a remote server?</dt>
+<dd><ul class="first last">
+<li><p class="first">All clients have a -s, &#8211;server argument:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ python pcap_bro_indexer.py   # Hit local server
+$ python pcap_bro_indexer.py -s = my_server  # Hit remote server
+</pre></div>
+</div>
+</li>
+<li><dl class="first docutils">
+<dt>All clients read from the config.ini in the clients directory</dt>
+<dd><p class="first">If you always hit a remote server simply change the config.ini in the clients directory
+to point to the groupserver.:</p>
+<div class="last highlight-python"><div class="highlight"><pre>server_uri = localhost  (change this to whatever)
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p class="first">Okay I&#8217;ve changed my config.ini file, and now it shows up when I do a &#8216;$ git status&#8217;. How do I have git ignore it?:</p>
+<div class="highlight-python"><div class="highlight"><pre>git update-index --assume-unchanged workbench/clients/config.ini
+git update-index --assume-unchanged workbench/server/config.ini
+</pre></div>
+</div>
+</li>
+<li><dl class="first docutils">
+<dt>How do I setup a development server and a production server?</dt>
+<dd><p class="first">In general workbench should be treated like any other python module and it shouldn&#8217;t add any complexity to existing development/QA/deployment models. One suggestion (to be taken with a grain of salt) is simply to use git braches.:</p>
+<div class="last highlight-python"><div class="highlight"><pre>$ git checkout develop (on develop server)
+$ git checkout master (on prod server)
+</pre></div>
+</div>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="cow-points">
+<h2>Cow Points<a class="headerlink" href="#cow-points" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Are Cow Points worth anything? : No</li>
+<li>Will Cow Points ever be worth anything? : Maybe</li>
+<li>Are Cow Points officially tracked? : Yes</li>
+<li>Will I receive good Karma for Cow Points? : Yes</li>
+</ul>
+</div>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="contributing.html" title="Contributing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="running.html" title="Running WorkBench"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Workbench 0.1 documentation</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>

@@ -1,0 +1,713 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>workbench.server.workbench &mdash; Workbench 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/mozilla.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Workbench 0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+
+    <div class="document">
+  <div class="documentwrapper">
+    
+    <div class="sphinxsidebar" style="width: 310px;">
+        <nav>
+        <h2><a href="../../../index.html">Workbench</a></h2>
+          <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../project_details.html">Detailed Project Description</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installing Workbench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../running.html">Running WorkBench</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faq.html">Frequently Asked Questions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.clients.html">workbench.clients package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.server.html">workbench.server package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../workbench.workers.html">workbench.workers package</a></li>
+</ul>
+
+        </nav>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+    </div>
+    <div class="bodywrapper">
+      <div class="body">
+        
+  <h1>Source code for workbench.server.workbench</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Workbench: Open Source Security Framework &quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">gevent</span> <span class="kn">import</span> <span class="n">monkey</span><span class="p">;</span> <span class="n">monkey</span><span class="o">.</span><span class="n">patch_all</span><span class="p">(</span><span class="n">thread</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span> <span class="c"># Monkey!</span>
+<span class="kn">from</span> <span class="nn">gevent</span> <span class="kn">import</span> <span class="n">signal</span> <span class="k">as</span> <span class="n">gevent_signal</span>
+<span class="kn">import</span> <span class="nn">signal</span>
+<span class="kn">import</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">zerorpc</span>
+<span class="kn">import</span> <span class="nn">zmq</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">()</span>
+<span class="kn">import</span> <span class="nn">StringIO</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">hashlib</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">funcsigs</span>
+<span class="kn">import</span> <span class="nn">ConfigParser</span>
+<span class="kn">import</span> <span class="nn">magic</span>
+
+<span class="c"># Workbench server imports</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">data_store</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">els_indexer</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">neo_db</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">plugin_manager</span>
+    <span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">help_system</span>
+    <span class="kn">from</span> <span class="nn">bro</span> <span class="kn">import</span> <span class="n">bro_log_reader</span>
+
+<span class="c"># Okay this happens when you&#39;re running workbench in a debugger so having</span>
+<span class="c"># this is super handy and we&#39;ll keep it even though it hurts coverage score.</span>
+<span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">data_store</span>
+    <span class="kn">import</span> <span class="nn">els_indexer</span>
+    <span class="kn">import</span> <span class="nn">neo_db</span>
+    <span class="kn">import</span> <span class="nn">plugin_manager</span>
+    <span class="kn">import</span> <span class="nn">help_system</span>
+    <span class="kn">from</span> <span class="nn">bro</span> <span class="kn">import</span> <span class="n">bro_log_reader</span>
+
+
+<span class="k">class</span> <span class="nc">WorkBench</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="WorkBench"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench">[docs]</a>    <span class="sd">&quot;&quot;&quot;Workbench: Open Source Security Framework.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">store_args</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">els_hosts</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">neo_uri</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the Framework.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            store_args: Dictionary with keys uri,database,samples_cap, worker_cap.</span>
+<span class="sd">            els_hosts: The address where Elastic Search Indexer is running.</span>
+<span class="sd">            neo_uri: The address where Neo4j is running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># Announce Version</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;&lt;&lt;&lt; Workbench Version </span><span class="si">%s</span><span class="s"> &gt;&gt;&gt;&#39;</span> <span class="o">%</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="s">&#39;workbench&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__version__</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+            <span class="k">print</span> <span class="s">&#39;&lt;&lt;&lt; Workbench Version </span><span class="si">%s</span><span class="s"> &gt;&gt;&gt;&#39;</span> <span class="o">%</span> <span class="s">&#39;DEBUGGING&#39;</span>
+
+        <span class="c"># Open DataStore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span> <span class="o">=</span> <span class="n">data_store</span><span class="o">.</span><span class="n">DataStore</span><span class="p">(</span><span class="o">**</span><span class="n">store_args</span><span class="p">)</span>
+
+        <span class="c"># ELS Indexer</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">indexer</span> <span class="o">=</span> <span class="n">els_indexer</span><span class="o">.</span><span class="n">ELSIndexer</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s">&#39;hosts&#39;</span><span class="p">:</span> <span class="n">els_hosts</span><span class="p">}</span> <span class="k">if</span> <span class="n">els_hosts</span> <span class="k">else</span> <span class="p">{})</span>
+        <span class="k">except</span> <span class="ne">SystemExit</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;Could not connect to ELS. Is it running?&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">indexer</span> <span class="o">=</span> <span class="n">els_indexer</span><span class="o">.</span><span class="n">ELSStubIndexer</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s">&#39;uri&#39;</span><span class="p">:</span> <span class="n">neo_uri</span><span class="p">}</span> <span class="k">if</span> <span class="n">neo_uri</span> <span class="k">else</span> <span class="p">{})</span>
+
+        <span class="c"># Neo4j DB</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neo_db</span> <span class="o">=</span> <span class="n">neo_db</span><span class="o">.</span><span class="n">NeoDB</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s">&#39;uri&#39;</span><span class="p">:</span> <span class="n">neo_uri</span><span class="p">}</span> <span class="k">if</span> <span class="n">neo_uri</span> <span class="k">else</span> <span class="p">{})</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;Could not connect to Neo4j DB. Is it running?  $ neo4j start&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">neo_db</span> <span class="o">=</span> <span class="n">neo_db</span><span class="o">.</span><span class="n">NeoDBStub</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s">&#39;uri&#39;</span><span class="p">:</span> <span class="n">neo_uri</span><span class="p">}</span> <span class="k">if</span> <span class="n">neo_uri</span> <span class="k">else</span> <span class="p">{})</span>
+
+        <span class="c"># Create Plugin Manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">plugin_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span><span class="s">&#39;../workers&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin_manager</span> <span class="o">=</span> <span class="n">plugin_manager</span><span class="o">.</span><span class="n">PluginManager</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_new_plugin</span><span class="p">,</span> <span class="n">plugin_dir</span><span class="o">=</span><span class="n">plugin_dir</span><span class="p">)</span>
+
+        <span class="c"># Get Help System</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">help_system</span> <span class="o">=</span> <span class="n">help_system</span><span class="o">.</span><span class="n">HelpSystem</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+    <span class="c">#######################</span>
+    <span class="c"># Sample Methods</span>
+    <span class="c">#######################</span>
+    <span class="k">def</span> <span class="nf">store_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">input_bytes</span><span class="p">,</span> <span class="n">type_tag</span><span class="p">):</span>
+<div class="viewcode-block" id="WorkBench.store_sample"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.store_sample">[docs]</a>        <span class="sd">&quot;&quot;&quot; Store a sample into the DataStore.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                filename: name of the file (used purely as meta data not for lookup)</span>
+<span class="sd">                input_bytes: the actual bytes of the sample e.g. f.read()</span>
+<span class="sd">                type_tag: (&#39;exe&#39;,&#39;pcap&#39;,&#39;pdf&#39;,&#39;json&#39;,&#39;swf&#39;, or ...)</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                the md5 of the sample.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># If the sample comes in with an unknown type_tag try to determine it</span>
+        <span class="k">if</span> <span class="n">type_tag</span> <span class="o">==</span> <span class="s">&#39;unknown&#39;</span><span class="p">:</span>
+            <span class="k">print</span> <span class="s">&#39;&lt;&lt;&lt; Unknown File: Trying to Determine Type &gt;&gt;&gt;&#39;</span>
+            <span class="n">type_tag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">guess_type_tag</span><span class="p">(</span><span class="n">input_bytes</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">store_sample</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">input_bytes</span><span class="p">,</span> <span class="n">type_tag</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">get_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.get_sample"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.get_sample">[docs]</a>        <span class="sd">&quot;&quot;&quot; Get a sample from the DataStore.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                md5: the md5 of the sample</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                A dictionary of meta data about the sample which includes</span>
+<span class="sd">                a [&#39;raw_bytes&#39;] key that contains the raw bytes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">get_sample</span><span class="p">(</span><span class="n">md5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;sample&#39;</span><span class="p">:</span> <span class="n">sample</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">get_sample_window</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_tag</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.get_sample_window"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.get_sample_window">[docs]</a>        <span class="sd">&quot;&quot;&quot; Get a sample from the DataStore.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                type_tag: the type of samples (&#39;pcap&#39;,&#39;exe&#39;,&#39;pdf&#39;)</span>
+<span class="sd">                size: the size of the window in MegaBytes (10 = 10MB)</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                A list of md5s representing the newest samples within the size window</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">get_sample_window</span><span class="p">(</span><span class="n">type_tag</span><span class="p">,</span> <span class="n">size</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">has_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.has_sample"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.has_sample">[docs]</a>        <span class="sd">&quot;&quot;&quot; Do we have this sample in the DataStore.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                md5: the md5 of the sample</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                True or False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">has_sample</span><span class="p">(</span><span class="n">md5</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">list_samples</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="p">{}):</span></div>
+<div class="viewcode-block" id="WorkBench.list_samples"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.list_samples">[docs]</a>        <span class="sd">&quot;&quot;&quot;List all samples that meet the predicate or all if predicate is not specified.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            predicate: Match samples against this predicate (or all if not specified)</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            List of dictionaries with matching samples {&#39;md5&#39;:md5, &#39;filename&#39;: &#39;foo.exe&#39;, &#39;type_tag&#39;: &#39;exe&#39;}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">list_samples</span><span class="p">(</span><span class="n">predicate</span><span class="p">)</span>
+
+    <span class="nd">@zerorpc.stream</span></div>
+    <span class="k">def</span> <span class="nf">stream_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="p">,</span> <span class="n">max_rows</span><span class="p">):</span>
+<div class="viewcode-block" id="WorkBench.stream_sample"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.stream_sample">[docs]</a>        <span class="sd">&quot;&quot;&quot; Stream the sample by giving back a generator, typically used on &#39;logs&#39;.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                md5: the md5 of the sample</span>
+<span class="sd">                max_rows: the maximum number of rows to return (None for all)</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                A generator that yields rows of the file/log</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Grab the sample and it&#39;s raw bytes</span>
+        <span class="n">sample</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">get_sample</span><span class="p">(</span><span class="n">md5</span><span class="p">)</span>
+        <span class="n">raw_bytes</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s">&#39;raw_bytes&#39;</span><span class="p">]</span>
+
+        <span class="c"># Figure out the type of file to be streamed</span>
+        <span class="n">type_tag</span> <span class="o">=</span> <span class="n">sample</span><span class="p">[</span><span class="s">&#39;type_tag&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">type_tag</span> <span class="o">==</span> <span class="s">&#39;bro&#39;</span><span class="p">:</span>
+            <span class="n">bro_log</span> <span class="o">=</span> <span class="n">bro_log_reader</span><span class="o">.</span><span class="n">BroLogReader</span><span class="p">(</span><span class="n">convert_datetimes</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+            <span class="n">mem_file</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span>
+            <span class="n">generator</span> <span class="o">=</span> <span class="n">bro_log</span><span class="o">.</span><span class="n">read_log</span><span class="p">(</span><span class="n">mem_file</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">generator</span>
+        <span class="k">elif</span> <span class="n">type_tag</span> <span class="o">==</span> <span class="s">&#39;els_query&#39;</span><span class="p">:</span>
+            <span class="n">els_log</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)</span>
+            <span class="c"># Try to determine a couple of different types of ELS query results</span>
+            <span class="k">if</span> <span class="s">&#39;fields&#39;</span> <span class="ow">in</span> <span class="n">els_log</span><span class="p">[</span><span class="s">&#39;hits&#39;</span><span class="p">][</span><span class="s">&#39;hits&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">generator</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;fields&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">els_log</span><span class="p">[</span><span class="s">&#39;hits&#39;</span><span class="p">][</span><span class="s">&#39;hits&#39;</span><span class="p">][:</span><span class="n">max_rows</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">generator</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="s">&#39;_source&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">els_log</span><span class="p">[</span><span class="s">&#39;hits&#39;</span><span class="p">][</span><span class="s">&#39;hits&#39;</span><span class="p">][:</span><span class="n">max_rows</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">generator</span>
+        <span class="k">elif</span> <span class="n">type_tag</span> <span class="o">==</span> <span class="s">&#39;log&#39;</span><span class="p">:</span>
+            <span class="n">generator</span> <span class="o">=</span> <span class="p">({</span><span class="s">&#39;row&#39;</span><span class="p">:</span><span class="n">row</span><span class="p">}</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">raw_bytes</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">)[:</span><span class="n">max_rows</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">generator</span>
+        <span class="k">elif</span> <span class="n">type_tag</span> <span class="o">==</span> <span class="s">&#39;json&#39;</span><span class="p">:</span>
+            <span class="n">generator</span> <span class="o">=</span> <span class="p">(</span><span class="n">row</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">raw_bytes</span><span class="p">)[:</span><span class="n">max_rows</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">generator</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&#39;Cannot stream file </span><span class="si">%s</span><span class="s"> with type_tag:</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">md5</span><span class="p">,</span> <span class="n">type_tag</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">guess_type_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_bytes</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.guess_type_tag"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.guess_type_tag">[docs]</a>        <span class="sd">&quot;&quot;&quot; Try to guess the type_tag for this sample &quot;&quot;&quot;</span>
+        <span class="n">mime_to_type</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;application/x-dosexec&#39;</span><span class="p">:</span> <span class="s">&#39;exe&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;application/pdf&#39;</span><span class="p">:</span> <span class="s">&#39;pdf&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;application/zip&#39;</span><span class="p">:</span> <span class="s">&#39;zip&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;application/jar&#39;</span><span class="p">:</span> <span class="s">&#39;jar&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;application/vnd.ms-cab-compressed&#39;</span><span class="p">:</span> <span class="s">&#39;cab&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;text/plain&#39;</span><span class="p">:</span> <span class="s">&#39;txt&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;image/gif&#39;</span><span class="p">:</span> <span class="s">&#39;gif&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;image/jpeg&#39;</span><span class="p">:</span> <span class="s">&#39;jpg&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;image/png&#39;</span><span class="p">:</span> <span class="s">&#39;png&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;text/html&#39;</span><span class="p">:</span> <span class="s">&#39;html&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;application/vnd.ms-fontobject&#39;</span><span class="p">:</span> <span class="s">&#39;ms_font&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;application/x-shockwave-flash&#39;</span><span class="p">:</span> <span class="s">&#39;swf&#39;</span><span class="p">}</span>
+
+        <span class="c"># See what filemagic can determine</span>
+        <span class="k">with</span> <span class="n">magic</span><span class="o">.</span><span class="n">Magic</span><span class="p">(</span><span class="n">flags</span><span class="o">=</span><span class="n">magic</span><span class="o">.</span><span class="n">MAGIC_MIME_TYPE</span><span class="p">)</span> <span class="k">as</span> <span class="n">mag</span><span class="p">:</span>
+            <span class="n">mime_type</span> <span class="o">=</span> <span class="n">mag</span><span class="o">.</span><span class="n">id_buffer</span><span class="p">(</span><span class="n">input_bytes</span><span class="p">[:</span><span class="mi">1024</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">mime_type</span> <span class="ow">in</span> <span class="n">mime_to_type</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">mime_to_type</span><span class="p">[</span><span class="n">mime_type</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&#39;&lt;&lt;&lt; Sample Type could not be Determined &gt;&gt;&gt;&#39;</span>
+                <span class="k">return</span> <span class="s">&#39;unknown&#39;</span>
+
+
+
+    <span class="c">#######################</span>
+    <span class="c"># Index Methods</span>
+    <span class="c">#######################</span>
+    <span class="k">def</span> <span class="nf">index_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="p">,</span> <span class="n">index_name</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.index_sample"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.index_sample">[docs]</a>        <span class="sd">&quot;&quot;&quot; Index a stored sample with the Indexer.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                md5: the md5 of the sample</span>
+<span class="sd">                index_name: the name of the index</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                Nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">generator</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">stream_sample</span><span class="p">(</span><span class="n">md5</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">generator</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">indexer</span><span class="o">.</span><span class="n">index_data</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="n">index_name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">index_worker_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">,</span> <span class="n">md5</span><span class="p">,</span> <span class="n">index_name</span><span class="p">,</span> <span class="n">subfield</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.index_worker_output"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.index_worker_output">[docs]</a>        <span class="sd">&quot;&quot;&quot; Index worker output with the Indexer.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                worker_name: &#39;strings&#39;, &#39;pe_features&#39;, whatever</span>
+<span class="sd">                md5: the md5 of the sample</span>
+<span class="sd">                index_name: the name of the index</span>
+<span class="sd">                subfield: index just this subfield (None for all)</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                Nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Grab the data</span>
+        <span class="k">if</span> <span class="n">subfield</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_request</span><span class="p">(</span><span class="n">worker_name</span><span class="p">,</span> <span class="n">md5</span><span class="p">)[</span><span class="n">worker_name</span><span class="p">][</span><span class="n">subfield</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_request</span><span class="p">(</span><span class="n">worker_name</span><span class="p">,</span> <span class="n">md5</span><span class="p">)[</span><span class="n">worker_name</span><span class="p">]</span>
+
+        <span class="c"># Okay now index the data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">indexer</span><span class="o">.</span><span class="n">index_data</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">index_name</span><span class="o">=</span><span class="n">index_name</span><span class="p">,</span> <span class="n">doc_type</span><span class="o">=</span><span class="s">&#39;unknown&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_name</span><span class="p">,</span> <span class="n">query</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.search"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.search">[docs]</a>        <span class="sd">&quot;&quot;&quot; Search a particular index in the Indexer</span>
+<span class="sd">            Args:</span>
+<span class="sd">                index_name: the name of the index</span>
+<span class="sd">                query: the query against the index</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                All matches to the query</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">indexer</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">index_name</span><span class="p">,</span> <span class="n">query</span><span class="p">)</span>
+
+
+    <span class="c">#######################</span>
+    <span class="c"># Graph Methods</span>
+    <span class="c">#######################</span>
+    <span class="k">def</span> <span class="nf">add_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.add_node"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.add_node">[docs]</a>        <span class="sd">&quot;&quot;&quot; Add a node to the graph with name and labels.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                node_id: the unique node_id e.g. &#39;www.evil4u.com&#39;</span>
+<span class="sd">                name: the display name of the node e.g. &#39;evil4u&#39;</span>
+<span class="sd">                labels: a list of labels e.g. [&#39;domain&#39;,&#39;evil&#39;]</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                Nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neo_db</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node_id</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">has_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node_id</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.has_node"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.has_node">[docs]</a>        <span class="sd">&quot;&quot;&quot; Does the Graph DB have this node</span>
+<span class="sd">            Args:</span>
+<span class="sd">                node_id: the unique node_id e.g. &#39;www.evil4u.com&#39;</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                True/False</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">neo_db</span><span class="o">.</span><span class="n">has_node</span><span class="p">(</span><span class="n">node_id</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">add_rel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">source_id</span><span class="p">,</span> <span class="n">target_id</span><span class="p">,</span> <span class="n">rel</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.add_rel"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.add_rel">[docs]</a>        <span class="sd">&quot;&quot;&quot; Add a relationship: source, target must already exist (see add_node)</span>
+<span class="sd">            &#39;rel&#39; is the name of the relationship &#39;contains&#39; or whatever.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                source_id: the unique node_id of the source</span>
+<span class="sd">                target_id: the unique node_id of the target</span>
+<span class="sd">                rel: name of the relationship</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                Nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neo_db</span><span class="o">.</span><span class="n">add_rel</span><span class="p">(</span><span class="n">source_id</span><span class="p">,</span> <span class="n">target_id</span><span class="p">,</span> <span class="n">rel</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">clear_graph_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.clear_graph_db"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.clear_graph_db">[docs]</a>        <span class="sd">&quot;&quot;&quot; Clear the Graph Database of all nodes and edges.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                None</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                Nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">neo_db</span><span class="o">.</span><span class="n">clear_db</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">clear_db</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.clear_db"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.clear_db">[docs]</a>        <span class="sd">&quot;&quot;&quot; Clear the Main Database of all samples and worker output.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                None</span>
+<span class="sd">            Returns:</span>
+<span class="sd">                Nothing</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">clear_db</span><span class="p">()</span>
+
+
+    <span class="c">#######################</span>
+    <span class="c"># Work Request Methods</span>
+    <span class="c">#######################</span>
+    <span class="k">def</span> <span class="nf">work_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">,</span> <span class="n">md5</span><span class="p">,</span> <span class="n">subkeys</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.work_request"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.work_request">[docs]</a>        <span class="sd">&quot;&quot;&quot; Make a work request for an existing stored sample.</span>
+<span class="sd">            Args:</span>
+<span class="sd">                worker_name: &#39;strings&#39;, &#39;pe_features&#39;, whatever</span>
+<span class="sd">                md5: the md5 of the sample</span>
+<span class="sd">                subkeys: just return a subfield e.g. &#39;foo&#39; or &#39;foo.bar&#39; (None for all) </span>
+<span class="sd">            Returns:</span>
+<span class="sd">                The output of the worker or just the subfield of the worker output</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c"># Check valid</span>
+        <span class="k">if</span> <span class="n">worker_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&#39;Invalid work request for class </span><span class="si">%s</span><span class="s"> (not found)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">worker_name</span><span class="p">))</span>
+
+        <span class="c"># Get results (even if we have to wait for them)</span>
+        <span class="c"># Note: Yes, we&#39;re going to wait. Gevent concurrent execution will mean this</span>
+        <span class="c">#       code gets spawned off and new requests can be handled without issue.</span>
+        <span class="n">work_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_recursive_work_resolver</span><span class="p">(</span><span class="n">worker_name</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+
+        <span class="c"># Subkeys? (Fixme this is super klutzy)</span>
+        <span class="k">if</span> <span class="n">subkeys</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">sub_results</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">subkey</span> <span class="ow">in</span> <span class="n">subkeys</span><span class="p">:</span>
+                    <span class="n">tmp</span> <span class="o">=</span> <span class="n">work_results</span><span class="p">[</span><span class="n">worker_name</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">subkey</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">):</span>
+                        <span class="n">tmp</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                        <span class="n">sub_results</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span>
+                <span class="n">work_results</span> <span class="o">=</span> <span class="n">sub_results</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&#39;Could not get one or more subkeys for: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">work_results</span><span class="p">))</span>
+
+        <span class="c"># Clean it and ship it</span>
+        <span class="n">work_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">clean_for_serialization</span><span class="p">(</span><span class="n">work_results</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">work_results</span>
+
+    <span class="nd">@zerorpc.stream</span></div>
+    <span class="k">def</span> <span class="nf">batch_work_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="p">{}):</span>
+<div class="viewcode-block" id="WorkBench.batch_work_request"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.batch_work_request">[docs]</a>        <span class="sd">&quot;&quot;&quot;Make a batch work request for an existing set of stored samples.</span>
+
+<span class="sd">        A subset of sample can be specified with kwargs.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            worker_name: &#39;strings&#39;, &#39;pe_features&#39;, whatever</span>
+<span class="sd">            kwargs: a way of specifying subsets of samples ({} for all)</span>
+<span class="sd">                type_tag: subset based on sample type (e.g. type_tag=&#39;exe&#39;)</span>
+<span class="sd">                md5_list: subset just the samples in this list</span>
+<span class="sd">                subkeys: return just this subkey (e.g. &#39;foo&#39; or &#39;foo.bar&#39;)</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            A generator that yields rows of worker output or subfields of the worker output</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">type_tag</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;type_tag&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">md5_list</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;md5_list&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span>
+        <span class="n">subkeys</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;subkeys&#39;</span><span class="p">,</span><span class="bp">None</span><span class="p">)</span>
+
+        <span class="c"># If no md5_list specified put all samples (of type type_tag if not None)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">md5_list</span><span class="p">:</span>
+            <span class="n">md5_list</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">all_sample_md5s</span><span class="p">(</span><span class="n">type_tag</span><span class="p">)</span> 
+
+        <span class="c"># Loop through all the md5s and return a generator with yield</span>
+        <span class="k">for</span> <span class="n">md5</span> <span class="ow">in</span> <span class="n">md5_list</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">subkeys</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_request</span><span class="p">(</span><span class="n">worker_name</span><span class="p">,</span> <span class="n">md5</span><span class="p">,</span> <span class="n">subkeys</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">work_request</span><span class="p">(</span><span class="n">worker_name</span><span class="p">,</span> <span class="n">md5</span><span class="p">)[</span><span class="n">worker_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+    <span class="k">def</span> <span class="nf">store_sample_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5_list</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.store_sample_set"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.store_sample_set">[docs]</a>        <span class="sd">&quot;&quot;&quot; Store a sample set (which is just a list of md5s).</span>
+
+<span class="sd">            Note: All md5s must already be in the data store.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                md5_list: a list of the md5s in this set (all must exist in data store)</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                The md5 of the set (the actual md5 of the set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">md5</span> <span class="ow">in</span> <span class="n">md5_list</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_sample</span><span class="p">(</span><span class="n">md5</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s">&#39;Sample not found all items in sample_set</span><span class="se">\</span>
+<span class="s">                                    must be in the datastore: </span><span class="si">%s</span><span class="s"> (not found)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">md5</span><span class="p">))</span>
+        <span class="n">set_md5</span> <span class="o">=</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">md5_list</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_work_results</span><span class="p">({</span><span class="s">&#39;md5_list&#39;</span><span class="p">:</span><span class="n">md5_list</span><span class="p">},</span> <span class="s">&#39;sample_set&#39;</span><span class="p">,</span> <span class="n">set_md5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">set_md5</span>
+
+    <span class="k">def</span> <span class="nf">get_sample_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.get_sample_set"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.get_sample_set">[docs]</a>        <span class="sd">&quot;&quot;&quot; Store a sample set (which is just a list of md5s).</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                md5_list: a list of the md5s in this set (all must exist in data store)</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                The md5 of the set (the actual md5 of the set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_work_results</span><span class="p">(</span><span class="s">&#39;sample_set&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+
+    <span class="nd">@zerorpc.stream</span></div>
+    <span class="k">def</span> <span class="nf">stream_sample_set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span>
+<div class="viewcode-block" id="WorkBench.stream_sample_set"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.stream_sample_set">[docs]</a>        <span class="sd">&quot;&quot;&quot; Stream a sample set (which is just a list of md5s).</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                md5: the md5 of the sample_set</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                A generator that yields the md5s in the sample set</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">md5</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_work_results</span><span class="p">(</span><span class="s">&#39;sample_set&#39;</span><span class="p">,</span> <span class="n">md5</span><span class="p">)[</span><span class="s">&#39;md5_list&#39;</span><span class="p">]:</span>
+            <span class="k">yield</span> <span class="n">md5</span>
+
+    <span class="k">def</span> <span class="nf">get_datastore_uri</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.get_datastore_uri"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.get_datastore_uri">[docs]</a>        <span class="sd">&quot;&quot;&quot; Gives you the current datastore URL.</span>
+
+<span class="sd">            Args:</span>
+<span class="sd">                None</span>
+
+<span class="sd">            Returns:</span>
+<span class="sd">                The URI of the data store currently being used by Workbench</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">get_uri</span><span class="p">()</span>
+
+
+    <span class="c">##################</span>
+    <span class="c"># Help</span>
+    <span class="c">##################</span>
+    <span class="k">def</span> <span class="nf">help</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.help"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.help">[docs]</a>        <span class="sd">&quot;&quot;&quot; Returns help commands &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_system</span><span class="o">.</span><span class="n">help</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">help_basic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.help_basic"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.help_basic">[docs]</a>        <span class="sd">&quot;&quot;&quot; Returns basic help commands &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_system</span><span class="o">.</span><span class="n">help_basic</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">help_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.help_commands"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.help_commands">[docs]</a>        <span class="sd">&quot;&quot;&quot; Returns a big string of Workbench commands and signatures &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_system</span><span class="o">.</span><span class="n">help_commands</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">help_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">cli</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.help_command"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.help_command">[docs]</a>        <span class="sd">&quot;&quot;&quot; Returns a specific Workbench command and docstring &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_system</span><span class="o">.</span><span class="n">help_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span><span class="n">cli</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">help_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.help_workers"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.help_workers">[docs]</a>        <span class="sd">&quot;&quot;&quot; Returns a big string of the loaded Workbench workers and their dependencies &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_system</span><span class="o">.</span><span class="n">help_workers</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">help_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker</span><span class="p">,</span> <span class="n">cli</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.help_worker"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.help_worker">[docs]</a>        <span class="sd">&quot;&quot;&quot; Returns a specific Workbench worker and docstring &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_system</span><span class="o">.</span><span class="n">help_worker</span><span class="p">(</span><span class="n">worker</span><span class="p">,</span> <span class="n">cli</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">help_advanced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.help_advanced"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.help_advanced">[docs]</a>        <span class="sd">&quot;&quot;&quot; Returns advanced help commands &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_system</span><span class="o">.</span><span class="n">help_advanced</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">help_everything</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cli</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.help_everything"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.help_everything">[docs]</a>        <span class="sd">&quot;&quot;&quot; Returns advanced help commands &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">help_system</span><span class="o">.</span><span class="n">help_everything</span><span class="p">(</span><span class="n">cli</span><span class="p">)</span>
+
+
+    <span class="c">##################</span>
+    <span class="c"># Introspection</span>
+    <span class="c">##################</span>
+    <span class="k">def</span> <span class="nf">list_all_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.list_all_commands"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.list_all_commands">[docs]</a>        <span class="sd">&quot;&quot;&quot; Returns a list of all the Workbench commands&quot;&quot;&quot;</span>
+        <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getmembers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">predicate</span><span class="o">=</span><span class="n">inspect</span><span class="o">.</span><span class="n">ismethod</span><span class="p">)</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;_&#39;</span><span class="p">)]</span>
+        <span class="n">commands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;batch_work_request&#39;</span><span class="p">)</span> <span class="c"># I think the zerorpc decorator messes up inspect</span>
+        <span class="k">return</span> <span class="n">commands</span>
+
+    <span class="k">def</span> <span class="nf">list_all_workers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.list_all_workers"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.list_all_workers">[docs]</a>        <span class="sd">&quot;&quot;&quot; List all the currently loaded workers &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">worker_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.worker_info"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.worker_info">[docs]</a>        <span class="sd">&quot;&quot;&quot; Get the information about this worker &quot;&quot;&quot;</span>
+        <span class="n">plugin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span><span class="p">[</span><span class="n">worker_name</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s">&#39;dependencies&#39;</span><span class="p">:</span> <span class="n">plugin</span><span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">dependencies</span><span class="p">,</span> <span class="s">&#39;doc&#39;</span><span class="p">:</span> <span class="n">plugin</span><span class="p">[</span><span class="s">&#39;class&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">__doc__</span><span class="p">}</span>
+
+
+    <span class="c">##################</span>
+    <span class="c"># Testing</span>
+    <span class="c">##################</span>
+    <span class="k">def</span> <span class="nf">test_worker</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">):</span></div>
+<div class="viewcode-block" id="WorkBench.test_worker"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.WorkBench.test_worker">[docs]</a>        <span class="sd">&quot;&quot;&quot; Run the test for a specific worker &quot;&quot;&quot;</span>
+
+        <span class="c"># First find the plugin</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">plugin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span><span class="p">[</span><span class="n">worker_name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s"> worker not found.. misspelled?&#39;</span> <span class="o">%</span> <span class="n">worker_name</span>
+
+        <span class="c"># Now try to run the test</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">plugin</span><span class="p">[</span><span class="s">&#39;test&#39;</span><span class="p">]()</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">)</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="s">&#39;Failure for plugin: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">worker_name</span><span class="p">)</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s">&#39;Error: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="n">error</span>
+            <span class="k">return</span> <span class="n">output</span>
+
+
+    <span class="c">####################</span>
+    <span class="c"># Internal Methods</span>
+    <span class="c">####################</span>
+    <span class="k">def</span> <span class="nf">_new_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin</span><span class="p">,</span> <span class="n">mod_time</span><span class="p">):</span></div>
+        <span class="sd">&quot;&quot;&quot; Internal: This method handles the mechanics around new plugins. &quot;&quot;&quot;</span>
+        <span class="k">print</span> <span class="s">&#39;</span><span class="se">\t</span><span class="s">- </span><span class="si">%s</span><span class="s">: loaded...&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">plugin</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
+        <span class="n">plugin</span><span class="p">[</span><span class="s">&#39;time_stamp&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mod_time</span> <span class="c"># datetime.datetime.utcnow()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span><span class="p">[</span><span class="n">plugin</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">plugin</span>
+
+    <span class="k">def</span> <span class="nf">_store_work_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">results</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Internal: Stores the work results of a worker.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">store_work_results</span><span class="p">(</span><span class="n">results</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">_get_work_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Internal: Method for fetching work results.&quot;&quot;&quot;</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_store</span><span class="o">.</span><span class="n">get_work_results</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">collection</span><span class="p">:</span> <span class="n">results</span><span class="p">}</span> <span class="k">if</span> <span class="n">results</span> <span class="k">else</span> <span class="bp">None</span>
+
+
+    <span class="c"># So the trick here is that since each worker just stores it&#39;s input dependencies</span>
+    <span class="c"># we can resursively backtrack and all the needed work gets done.</span>
+    <span class="k">def</span> <span class="nf">_recursive_work_resolver</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">worker_name</span><span class="p">,</span> <span class="n">md5</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Internal: Input dependencies are resursively backtracked, invoked and then</span>
+<span class="sd">               passed down the pipeline until htting the requested worker. &quot;&quot;&quot;</span>
+
+        <span class="c"># Looking for the sample or sample_set?</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">worker_name</span> <span class="o">==</span> <span class="s">&#39;sample&#39;</span><span class="p">):</span>
+            <span class="c"># If we have a sample set with this md5, return it</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sample_set</span><span class="p">(</span><span class="n">md5</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sample_set</span><span class="p">(</span><span class="n">md5</span><span class="p">)</span>
+            <span class="c"># Return the sample (might raise a RuntimeError)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_sample</span><span class="p">(</span><span class="n">md5</span><span class="p">)</span>
+
+        <span class="c"># Do I actually have this plugin? (might have failed, etc)</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">worker_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span><span class="p">):</span>
+            <span class="k">print</span> <span class="s">&#39;Request for non-existing or failed plugin: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">worker_name</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">{}</span>
+
+        <span class="c"># If the results exist and the time_stamp is newer than the plugin&#39;s, I&#39;m done</span>
+        <span class="n">collection</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span><span class="p">[</span><span class="n">worker_name</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">work_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_work_results</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">work_results</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span><span class="p">[</span><span class="n">worker_name</span><span class="p">][</span><span class="s">&#39;time_stamp&#39;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">work_results</span><span class="p">[</span><span class="n">collection</span><span class="p">][</span><span class="s">&#39;__time_stamp&#39;</span><span class="p">]:</span>
+                <span class="k">print</span> <span class="s">&#39;Returning cached work results for plugin: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">worker_name</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">work_results</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&#39;Updating work results for new plugin: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">worker_name</span><span class="p">)</span>
+
+        <span class="c"># Okay either need to generate (or re-generate) the work results</span>
+        <span class="n">dependencies</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span><span class="p">[</span><span class="n">worker_name</span><span class="p">][</span><span class="s">&#39;dependencies&#39;</span><span class="p">]</span>
+        <span class="n">dependant_results</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">dependency</span> <span class="ow">in</span> <span class="n">dependencies</span><span class="p">:</span>
+            <span class="n">dependant_results</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_recursive_work_resolver</span><span class="p">(</span><span class="n">dependency</span><span class="p">,</span> <span class="n">md5</span><span class="p">))</span>
+        <span class="k">print</span> <span class="s">&#39;New work for plugin: </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">worker_name</span><span class="p">)</span>
+        <span class="n">work_results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_meta</span><span class="p">[</span><span class="n">worker_name</span><span class="p">][</span><span class="s">&#39;class&#39;</span><span class="p">]()</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">dependant_results</span><span class="p">)</span>
+
+        <span class="c"># Enforce dictionary output</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">work_results</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">print</span> <span class="s">&#39;Critical: Plugin </span><span class="si">%s</span><span class="s"> MUST produce a python dictionary!&#39;</span> <span class="o">%</span> <span class="n">worker_name</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="c"># Store the results and return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_store_work_results</span><span class="p">(</span><span class="n">work_results</span><span class="p">,</span> <span class="n">collection</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_work_results</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="n">md5</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_find_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">d</span><span class="p">,</span><span class="n">k</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="p">:</span> <span class="k">return</span> <span class="n">d</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+        <span class="n">submatch</span> <span class="o">=</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="n">_k</span><span class="p">][</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">_k</span> <span class="ow">in</span> <span class="n">d</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">d</span><span class="p">[</span><span class="n">_k</span><span class="p">]]</span>
+        <span class="k">return</span> <span class="n">submatch</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">submatch</span> <span class="k">else</span> <span class="bp">None</span>
+
+
+<span class="k">def</span> <span class="nf">run</span><span class="p">():</span></div>
+<div class="viewcode-block" id="run"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.run">[docs]</a>    <span class="sd">&quot;&quot;&quot; Run the workbench server &quot;&quot;&quot;</span>
+
+    <span class="c"># Load the configuration file relative to this script location</span>
+    <span class="n">config_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">__file__</span><span class="p">)),</span> <span class="s">&#39;config.ini&#39;</span><span class="p">)</span>
+    <span class="n">workbench_conf</span> <span class="o">=</span> <span class="n">ConfigParser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">config_ini</span> <span class="o">=</span> <span class="n">workbench_conf</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">config_path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">config_ini</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;Could not locate config.ini file, tried </span><span class="si">%s</span><span class="s"> : exiting...&#39;</span> <span class="o">%</span> <span class="n">config_path</span>
+        <span class="nb">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="c"># Pull configuration settings</span>
+    <span class="n">datastore_uri</span> <span class="o">=</span> <span class="n">workbench_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;workbench&#39;</span><span class="p">,</span> <span class="s">&#39;datastore_uri&#39;</span><span class="p">)</span>
+    <span class="n">database</span> <span class="o">=</span> <span class="n">workbench_conf</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;workbench&#39;</span><span class="p">,</span> <span class="s">&#39;database&#39;</span><span class="p">)</span>
+    <span class="n">worker_cap</span> <span class="o">=</span> <span class="n">workbench_conf</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s">&#39;workbench&#39;</span><span class="p">,</span> <span class="s">&#39;worker_cap&#39;</span><span class="p">)</span>
+    <span class="n">samples_cap</span> <span class="o">=</span> <span class="n">workbench_conf</span><span class="o">.</span><span class="n">getint</span><span class="p">(</span><span class="s">&#39;workbench&#39;</span><span class="p">,</span> <span class="s">&#39;samples_cap&#39;</span><span class="p">)</span>
+
+    <span class="c"># Spin up Workbench ZeroRPC</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">store_args</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;uri&#39;</span><span class="p">:</span> <span class="n">datastore_uri</span><span class="p">,</span> <span class="s">&#39;database&#39;</span><span class="p">:</span> <span class="n">database</span><span class="p">,</span> <span class="s">&#39;worker_cap&#39;</span><span class="p">:</span><span class="n">worker_cap</span><span class="p">,</span> <span class="s">&#39;samples_cap&#39;</span><span class="p">:</span><span class="n">samples_cap</span><span class="p">}</span>
+        <span class="k">print</span> <span class="s">&#39;&lt;&lt;&lt; Workbench Server at </span><span class="si">%s</span><span class="s"> &gt;&gt;&gt;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="s">&#39;tcp://0.0.0.0:4242&#39;</span><span class="p">)</span>
+        <span class="n">workbench</span> <span class="o">=</span> <span class="n">zerorpc</span><span class="o">.</span><span class="n">Server</span><span class="p">(</span><span class="n">WorkBench</span><span class="p">(</span><span class="n">store_args</span><span class="o">=</span><span class="n">store_args</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;workbench&#39;</span><span class="p">,</span> <span class="n">heartbeat</span><span class="o">=</span><span class="mi">60</span><span class="p">)</span>
+        <span class="n">workbench</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="s">&#39;tcp://0.0.0.0:4242&#39;</span><span class="p">)</span>
+        <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Workbench is ready and feeling super duper!&#39;</span>
+        <span class="n">gevent_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGTERM</span><span class="p">,</span> <span class="n">workbench</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+        <span class="n">gevent_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGINT</span><span class="p">,</span> <span class="n">workbench</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+        <span class="n">gevent_signal</span><span class="p">(</span><span class="n">signal</span><span class="o">.</span><span class="n">SIGKILL</span><span class="p">,</span> <span class="n">workbench</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
+        <span class="n">workbench</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+        <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Workbench Server Shutting Down... and dreaming of sheep...&#39;</span>
+
+    <span class="k">except</span> <span class="n">zmq</span><span class="o">.</span><span class="n">error</span><span class="o">.</span><span class="n">ZMQError</span><span class="p">:</span>
+        <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">Info: Could not start Workbench server (no worries, probably already running...)</span><span class="se">\n</span><span class="s">&#39;</span>
+
+
+<span class="c"># Test that just calls main</span>
+<span class="k">def</span> <span class="nf">test</span><span class="p">():</span></div>
+<div class="viewcode-block" id="test"><a class="viewcode-back" href="../../../workbench.server.html#workbench.server.workbench.test">[docs]</a>    <span class="n">run</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span></div>
+    <span class="n">run</span><span class="p">()</span>
+</pre></div>
+
+      </div>
+    </div>
+  </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Workbench 0.1 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div> 
+    <div class="footer">
+        &copy; Copyright 2014, SuperCowPowers LLC.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div> <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script> 
+  </body>
+</html>
