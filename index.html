@@ -26,9 +26,9 @@
 			</div>
 			<div class="row" style="text-align: center">
 				<div class="col-md-6 col-md-offset-5 col-sm-4 col-sm-offset-4 col-xs-7 col-xs-offset-4" style="margin-top:3.5em;margin-bottom:13px;" role="navigation">
-					<ul class="nav nav-pills" >
-						<li class="active"><a href="#home" data-toggle="tab">Home</a></li>
-						<li><a href="#works" data-toggle="tab">Works</a></li>
+					<ul class="nav nav-pills" id="maintab">
+						<li role="presentation" class="active"><a href="#home" data-toggle="tab" aria-controls="home" role="tab">Home</a></li>
+						<li role="presentation"><a href="#works" data-toggle="tab"  aria-controls="works" role="tab">Works</a></li>
 					</ul>
 				</div>
 			</div>
@@ -36,9 +36,9 @@
 	</header>
 	<hr>
 	<div class="main" >
-		<div class="container">
+		<div class="container tab-content">
 			<div class="row" id="home">
-				<div class="col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2" style="font-size:1.3em;">
+				<div class="col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-8 col-xs-offset-2 tab-pane active fade in" role="tabpanel"  style="font-size:1.3em;">
 					<p>Salut! My name is Ankush Chadda. Im 26 years old and living in Agra, India.</p>
 					<p>I am a Computer Science Enginnering Graduate from UIET, Kurukshetra University.
 						I work as a <strong>Freelance Web Developer</strong>.I have experience of providing end to end solutions, both on my own and in collaboration with a team.
@@ -56,19 +56,78 @@
 								<li><a href="">Angular JS</a></li>
 								<li><a href="">BackBone JS</a></li>
 							</ul>
-							<li><a href="">Redis, MongoDb</a></li>
-							<li><a href="">Mysql, Postgres</a></li>
+							<li><a href="">Redis</a></li>
+							<li><a href="">MongoDb</a></li>
+							<li><a href="">Mysql</a></li>
+							<li><a href="">Postgres</a></li>
 							<li><a href="">Heroku</a></li>
 							<li><a href="">PhoneGap</a></li>
 						</ul>
 					</p>
 				</div>
 			</div>
-			<div class="row" id="works">
-			</div>
+			<div class="row tab-pane fade" id="works" role="tabpanel">
+				<div class="col-sm-6 col-md-4">
+					<div class="thumbnail">
+      					<img src="artport.png" alt="...">
+  						<div class="caption">
+					        <h3>Artport.me</h3>
+					        <p>...</p>
+					        <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+  						</div>
+    				</div>
+				</div>
+				<div class="col-sm-6 col-md-4">
+					<div class="thumbnail">
+      					<img src="artport.png" alt="...">
+  						<div class="caption">
+					        <h3>Thumbnail label</h3>
+					        <p>...</p>
+					        <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+  						</div>
+    				</div>
+				</div>
+				<div class="col-sm-6 col-md-4">
+					<div class="thumbnail">
+      					<img src="artport.png" alt="...">
+  						<div class="caption">
+					        <h3>Thumbnail label</h3>
+					        <p>...</p>
+					        <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+  						</div>
+    				</div>
+				</div>
+				<div class="col-sm-6 col-md-4">
+					<div class="thumbnail">
+      					<img src="artport.png" alt="...">
+  						<div class="caption">
+					        <h3>Thumbnail label</h3>
+					        <p>...</p>
+					        <p><a href="#" class="btn btn-primary" role="button">Button</a> <a href="#" class="btn btn-default" role="button">Button</a></p>
+  						</div>
+    				</div>
+				</div>
+
+
+			</div>	
 		</div>
 	</div>
 	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 	<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<script>
+  	$(function () {
+    	$('a[href="#works"]').click(function(e){
+    	 	e.preventDefault();
+    	 	$('#works').show();
+    	 	$('#home').hide();
+    	 });
+    	$('a[href="#home"]').click(function(e){
+
+    	 	e.preventDefault();
+    	 	$('#home').show();
+    	 	$('#works').hide();
+    	 });
+  	})
+</script>
 </body>
 </html>
