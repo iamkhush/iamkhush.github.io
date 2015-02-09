@@ -32,7 +32,23 @@
 </head>
 
 <body id="page-top" class="index">
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '1625266361018206',
+          xfbml      : true,
+          version    : 'v2.2'
+        });
+      };
 
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+       }(document, 'script', 'facebook-jssdk'));
+    </script>
     <!-- Navigation -->
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container">
@@ -67,7 +83,7 @@
                     </li>
                 </ul>
             </div>
-            <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Fwww.facebook.com%2Fpages%2FAnkush-Web-Development-Solutions%2F895369540493805&amp;width&amp;layout=standard&amp;action=like&amp;show_faces=true&amp;share=true&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; height:80px;" allowTransparency="true"></iframe>
+            <div class="fb-like" data-href="https://www.facebook.com/pages/Ankush-Web-Development-Solutions/895369540493805" data-layout="standard" data-action="like" data-show-faces="true" data-share="true"></div>
         </div>
     </nav>
 
