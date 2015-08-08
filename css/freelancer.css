@@ -448,3 +448,7 @@ footer .footer-below {
     display: none;
     opacity: 0;
 }
+
+.portfolio-images {
+    height: 257px;
+}
