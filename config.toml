@@ -11,15 +11,10 @@ pygmentscodefences = true
 pygmentscodefencesguesssyntax = true
 
 googleAnalytics = "UA-56883493-1"
-disqusShortname = "Ankush Chadda's HomeSite"
+disqusShortname = "ankushchaddablog"
 
 [params]
 	description = "Occassional Coder"
-	
-	# Optional 64x64 avatar image.
-	avatar = "/profile.png"
-
-	disqus_shortname = 'ankushchaddablog'
 
 	# Content types to disable Disqus on.
 	disableDisqusTypes = ["page"]
