@@ -1,10 +1,9 @@
 baseURL = "https://ankushchadda.in/"
 languageCode = "en-us"
 title = "Ankush Chadda"
-theme = "hugo-ink"
+theme = "hyde"
 paginate = 5
-
-copyright = "© Copyright notice"
+copyright = "©"
 
 # Enable syntax highlighting
 pygmentsstyle = "vs"
@@ -15,8 +14,8 @@ googleAnalytics = "UA-56883493-1"
 disqusShortname = "Ankush Chadda's HomeSite"
 
 [params]
-	subtitle = "Wanderer, Occassional Coder"
-
+	description = "Seeker; Wanderer; Occassional Coder"
+	
 	# Optional 64x64 avatar image.
 	avatar = "/profile.png"
 
@@ -24,54 +23,24 @@ disqusShortname = "Ankush Chadda's HomeSite"
 
 	# Content types to disable Disqus on.
 	disableDisqusTypes = ["page"]
-	
-	featherIconsCDN = true
 
-	mode = "auto" # "dark" or "auto"
-	# customCSS = "css/custom.css"  # Custom CSS applied to default styles.
-	# customDarkCSS = "css/custom-dark.css"  # Custom styles applied to dark mode css.
-	# customJS = ["js/custom.js", "js/custom1.js"]  # Custom JS scripts.
+	themeColor = "theme-base-08"
+	github = "https://github.com/iamkhush/"
+	twitter = "http://twitter.com/iamkhush"
+	linkedin = "https://www.linkedin.com/in/iamkhush/"
 
 # Nav.
-[[menu.main]]
-name = "Home"
-url = "/"
-weight = 1
-
-[[menu.main]]
-name = "All posts"
-url = "/posts"
-weight = 2
-
-[[menu.main]]
-name = "About"
-url = "/about"
-weight = 3
+[Menus]
+main = [
+	  {Name = "About", URL = "/about"},
+	  {Name = "All Posts", URL = "/posts"}
+  ]
 
 [[menu.main]]
 name = "Tags"
 url = "/tags"
 weight = 4
 
-[[params.social]]
-name = "Github"
-icon = "github"
-url = "https://github.com/iamkhush"
-
-[[params.social]]
-name = "Facebook"
-icon = "facebook"
-url = "http://facebook.com/iamkhush"
-
-[[params.social]]
-name = "Twitter"
-icon = "twitter"
-url = "http://twitter.com/iamkhush"
-
-[[params.social]]
-name = "Linkedin"
-icon = "linkedin"
-url = "http://linkedin.com/in/iamkhush"
 
 [[params.social]]
 name = "RSS"

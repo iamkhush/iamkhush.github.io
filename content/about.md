@@ -1,5 +1,9 @@
+---
+title: "About me"
+date: 2016-02-02T01:30:01+05:30
+type: "main menu page"
+---
 Namaste! My name is Ankush Chadda.
-
 
 I am a Computer Science Enginnering Graduate from [UIET, Kurukshetra University](https://www.uietkuk.ac.in/). I consult and develop complex and exciting applications. I have expertise in providing end to end technical solutions to complex business applications.
 
