@@ -16,9 +16,6 @@ disqusShortname = "ankushchaddablog"
 	description = "Occassional Coder"
 	copyright = "© Ankush Chadda. All rights reserved"
 
-	# Content types to disable Disqus on.
-	disableDisqusTypes = ["page"]
-
 	themeColor = "theme-base-08"
 	github = "https://github.com/iamkhush/"
 	twitter = "http://twitter.com/iamkhush"
