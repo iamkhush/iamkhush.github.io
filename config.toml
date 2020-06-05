@@ -13,7 +13,7 @@ googleAnalytics = "UA-56883493-1"
 disqusShortname = "ankushchaddablog"
 
 [params]
-	description = "Occassional Coder"
+	description = "Almost Geek"
 	copyright = "© Ankush Chadda. All rights reserved"
 
 	themeColor = "theme-base-08"
