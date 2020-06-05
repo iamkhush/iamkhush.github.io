@@ -3,7 +3,6 @@ languageCode = "en-us"
 title = "Ankush Chadda"
 theme = "hyde"
 paginate = 5
-copyright = "©"
 
 # Enable syntax highlighting
 pygmentsstyle = "vs"
@@ -15,6 +14,7 @@ disqusShortname = "ankushchaddablog"
 
 [params]
 	description = "Occassional Coder"
+	copyright = "© Ankush Chadda. All rights reserved"
 
 	# Content types to disable Disqus on.
 	disableDisqusTypes = ["page"]
