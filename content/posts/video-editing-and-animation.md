@@ -2,6 +2,7 @@
 title: "Video Editing and Animation"
 date: 2020-06-05T23:02:08+02:00
 tags: ['2D animations', 'Adobe After Effects', 'Adobe Premiere Pro']
+type: 'post'
 ---
 
 #### Animations
