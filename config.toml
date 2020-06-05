@@ -33,20 +33,11 @@ disqusShortname = "Ankush Chadda's HomeSite"
 # Nav.
 [Menus]
 main = [
-	  {Name = "About", URL = "/about"},
-	  {Name = "All Posts", URL = "/posts"}
+	  {Name = "About me", URL = "/about"},
+	  {Name = "All Posts", URL = "/posts"},
+	  {Name = "Tags", URL = "/tags"},
+	  {Name = "Feed", URL = "/index.xml"}
   ]
-
-[[menu.main]]
-name = "Tags"
-url = "/tags"
-weight = 4
-
-
-[[params.social]]
-name = "RSS"
-icon = "rss"
-url = "/index.xml"
 
 [taxonomies]
    tag = "tags"
