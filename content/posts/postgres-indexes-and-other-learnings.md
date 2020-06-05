@@ -1,8 +1,7 @@
 ---
 title: "Postgres Indexes, PL/pgSQL and other learnings"
 date: 2016-02-02T01:30:01+05:30
-tags: [postgres, databases, plsql]
-disqus_url: "http://blog.ankushchadda.in/posts/02-02-2016-postgres-indexes-and-other-learnings.html"
+tags: [Postgres, Database, PLSQL]
 type: "post"
 ---
 
