@@ -14,7 +14,7 @@ googleAnalytics = "UA-56883493-1"
 disqusShortname = "Ankush Chadda's HomeSite"
 
 [params]
-	description = "Seeker; Wanderer; Occassional Coder"
+	description = "Occassional Coder"
 	
 	# Optional 64x64 avatar image.
 	avatar = "/profile.png"
