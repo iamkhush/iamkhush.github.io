@@ -3,7 +3,7 @@ FROM gitpod/workspace-full
 USER gitpod
 
 RUN sudo apt-get -q update && \
-    sudo apt-get install hugo
+    sudo apt-get install -y hugo 
 
 # Install custom tools, runtime, etc. using apt-get
 # For example, the command below would install "bastet" - a command line tetris clone:
