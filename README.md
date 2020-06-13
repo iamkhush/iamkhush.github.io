@@ -1,8 +1,8 @@
-## This is my home site repo
+## This is repo for my home site - ankushchadda.in  ![](https://github.com/iamkhush/iamkhush.github.io/workflows/Build%20homesite/badge.svg)
 
 ### Requirements
 - Hugo
-    - install hugo - `sudo apt-get install hugo` - `https://gohugo.io/` 
+    - install hugo https://gohugo.io/ - `sudo apt-get install hugo`
 
 ### Workflow
 - run server - `hugo server`
