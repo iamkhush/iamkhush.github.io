@@ -3,6 +3,7 @@ title: "Scala Introduction"
 date: 2020-06-13T11:45:32Z
 draft: true
 type: 'post'
+tags: ['scala', 'programming-language']
 ---
 
 ### Significant points of Scala
@@ -21,10 +22,37 @@ type: 'post'
 - `Blocks` are expressions combined together within a `{}`
     - Resukt of last expression in block is the result of the block as well.
 - `Functions` are expressions that have params
-    - Anonymous functions - `(x) => x + 1`
-    - Names functions - `val add1 = (x) = x + 1`
-    
+    - Anonymous functions - `(x: Int) => x + 1`
+    - Names functions - `val add1 = (x: Int) = x + 1`
+- `Methods` are similar to `functions` with slight variation in syntax
+    - `def add1(x: Int): Int = x + 1`
+- `Classes` are defined by using `class` keyword.
 
+      class Abc(name: String) {
+            def say(): Unit = println(name)
+      }
+      val abc = new Abc("Ankush")
+      abc.say() // Ankush
+    - Instances of classes get compared with reference
+    - Can inherit only one other class.
+- `Case Class` is special case of class , instances of which are compared with value.
+
+      case class Point(x: Int, y: Int)
+    - No `new` is required to instantiate case class.
+- `Object` are single instances of their own defination. For example- 
+
+      object ResourceFactory {
+          def create() : Int = {
+             return 1 // random new resource id
+          }
+      }
+
+      val newResourceId = ResourceFactory.create()
+-  `Traits` are abstract data types containing fields and methods.
+    - `Class` can extend multiple traits, but only one other class.
+    
+- `Main` method is required by JVM, which acts are entry point of Scala program.
+   - Accepts a list of multiple strings.
 
 ### Data structures
 - Int
