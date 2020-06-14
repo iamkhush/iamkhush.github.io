@@ -1,7 +1,6 @@
 ---
-title: "Scala Introduction"
+title: "Scala Introduction - The Basics"
 date: 2020-06-13T11:45:32Z
-draft: true
 type: 'post'
 tags: ['scala', 'programming-language']
 ---
@@ -53,16 +52,6 @@ tags: ['scala', 'programming-language']
     
 - `Main` method is required by JVM, which acts are entry point of Scala program.
    - Accepts a list of multiple strings.
-
-### Data structures
-- Int
-- Boolean
-- Double
-- String
-
-### Good practice for functions 
-- When functions have no parameters, but have side-effects, you should declare it and call it with empty brackets ()
-
 
 
 Source - https://docs.scala-lang.org/tour/basics.html
