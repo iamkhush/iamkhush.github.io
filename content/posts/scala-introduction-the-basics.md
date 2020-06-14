@@ -23,7 +23,7 @@ series: 'Learning Scala'
     - Result of last expression in block is the result of the block as well.
 - `Functions` are expressions that have params
     - Anonymous functions - `(x: Int) => x + 1`
-    - Names functions - `val add1 = (x: Int) = x + 1`
+    - Named functions - `val add1 = (x: Int) = x + 1`
 - `Methods` are similar to `functions` with slight variation in syntax
     - `def add1(x: Int): Int = x + 1`
 - `Classes` are defined by using `class` keyword.
