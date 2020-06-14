@@ -12,8 +12,8 @@ Some of technologies I have worked in are  -
 
 |||
 |:---:|:---:|
-| **Languages** | Django, Flask  |
-| **Frameworks**  | Node.Js, ReactJs  |
+| **Languages** | Python, Javascript |
+| **Frameworks**  | Django, Flask, Node.Js, ReactJs  |
 | **Databases**  |  Redis, MongoDb, Mysql, Postgres |
 | **Cloud/DevOps** | Nginx, Heroku, Ansible |
 | **Misc** | BlockChain, AR/VR , Unity, Video Editing |
