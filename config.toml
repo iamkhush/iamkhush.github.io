@@ -28,8 +28,10 @@ main = [
 	  {Name = "About me", URL = "/about"},
 	  {Name = "All Posts", URL = "/posts"},
 	  {Name = "Tags", URL = "/tags"},
+      {Name = "Series", URL = "/series"},
 	  {Name = "Feed", URL = "/index.xml"}
   ]
 
 [taxonomies]
    tag = "tags"
+   series = "series"

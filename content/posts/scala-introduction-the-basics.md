@@ -3,6 +3,7 @@ title: "Scala Introduction - The Basics"
 date: 2020-06-13T11:45:32Z
 type: 'post'
 tags: ['scala', 'programming-language']
+series: 'Learning Scala'
 ---
 
 ### Significant points of Scala
@@ -19,7 +20,7 @@ tags: ['scala', 'programming-language']
    - These are immutable
 - `Variables` are mutable names for expression results. Example `var x = 1 + 1`
 - `Blocks` are expressions combined together within a `{}`
-    - Resukt of last expression in block is the result of the block as well.
+    - Result of last expression in block is the result of the block as well.
 - `Functions` are expressions that have params
     - Anonymous functions - `(x: Int) => x + 1`
     - Names functions - `val add1 = (x: Int) = x + 1`
@@ -52,6 +53,8 @@ tags: ['scala', 'programming-language']
     
 - `Main` method is required by JVM, which acts are entry point of Scala program.
    - Accepts a list of multiple strings.
+
+
 
 
 Source - https://docs.scala-lang.org/tour/basics.html
