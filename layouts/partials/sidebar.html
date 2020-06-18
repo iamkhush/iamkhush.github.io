@@ -14,12 +14,13 @@
             <li><a href="{{.URL}}"> {{ .Name }} </a></li>
           {{- end }}
         </ul>
-        {{ with .Site.Params.twitter }}<a href="{{.}}"><i class="fab fa-twitter-square"></i></a>&nbsp;&nbsp;{{end}}
-        {{ with .Site.Params.linkedin}}<a href="{{.}}"><i class="fab fa-linkedin"></i></a>&nbsp;&nbsp;{{end}}
-        {{ with .Site.Params.facebook }}<a href="{{.}}"><i class="fab fa-facebook-square"></i></a>&nbsp;&nbsp;{{end}}
-        {{ with .Site.Params.github }} <a href="{{.}}"><i class="fab fa-github-square"></i></a>&nbsp;&nbsp;{{end}}
-        {{ with .Site.Params.email }} <a href="{{.}}"><i class="fas fa-at"></i></a>&nbsp;&nbsp;{{end}}
-        <a href="/index.xml"><i class="fa fa-rss"></i></a>
+        {{ with .Site.Params.twitter }}<a href="{{.}}" title="Twiiter"><i class="fab fa-twitter-square"></i></a>&nbsp;&nbsp;{{end}}
+        {{ with .Site.Params.linkedin}}<a href="{{.}}" title="Linkedin"><i class="fab fa-linkedin"></i></a>&nbsp;&nbsp;{{end}}
+        {{ with .Site.Params.facebook }}<a href="{{.}}" title="Facebook"><i class="fab fa-facebook-square"></i></a>&nbsp;&nbsp;{{end}}
+        {{ with .Site.Params.github }} <a href="{{.}}" title="Github"><i class="fab fa-github-square"></i></a>&nbsp;&nbsp;{{end}}
+        {{ with .Site.Params.email }} <a href="{{.}}" title="Send me an email"><i class="fas fa-at"></i></a>&nbsp;&nbsp;{{end}}
+        <a href="/index.xml" title="RSS"><i class="fa fa-rss"></i></a>&nbsp;&nbsp;
+        <a href="{{.}}" title="Subscribe to newsletter"><i class="fas fa-envelope-open-text"></i></a>
       </nav>
       
       <p>{{ with .Site.Params.copyright }}{{.}}{{ else }}&copy; {{ now.Format "2006"}}. All rights reserved. {{end}}</p>
