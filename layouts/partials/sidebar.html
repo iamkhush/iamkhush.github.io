@@ -20,7 +20,7 @@
         {{ with .Site.Params.github }} <a href="{{.}}" title="Github"><i class="fab fa-github-square"></i></a>&nbsp;&nbsp;{{end}}
         {{ with .Site.Params.email }} <a href="{{.}}" title="Send me an email"><i class="fas fa-at"></i></a>&nbsp;&nbsp;{{end}}
         <a href="/index.xml" title="RSS"><i class="fa fa-rss"></i></a>&nbsp;&nbsp;
-        <a href="{{.}}" title="Subscribe to newsletter"><i class="fas fa-envelope-open-text"></i></a>
+        <!-- <a href="#" title="Subscribe to newsletter" id="open-popup"><i class="fas fa-envelope-open-text"></i></a> -->
       </nav>
       
       <p>{{ with .Site.Params.copyright }}{{.}}{{ else }}&copy; {{ now.Format "2006"}}. All rights reserved. {{end}}</p>
