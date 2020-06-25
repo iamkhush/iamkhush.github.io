@@ -1,7 +1,6 @@
 ---
 title: "Introduction to Javascript"
 date: 2020-06-20T22:56:35Z
-draft: true
 type: 'post'
 tags: ['javascript', 'programming-language', 'Data Types']
 series: 'Learning Javascript'
