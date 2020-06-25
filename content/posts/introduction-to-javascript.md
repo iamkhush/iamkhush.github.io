@@ -37,5 +37,11 @@ If a `value` is a functon, its called as a `method`
 
 ## Functions
 
-Use `function` keyword to define a function. **Primatives passed in the function are passed by value but Objects are passed by reference.**
+Use `function` keyword to define a function. 
+- You may provide a name, if not, its called `anonymous`
+- **Primatives passed in the function are passed by value but Objects are passed by reference.**
 
+Functions( Both named or anonymous) can be assigned to a variable.
+
+Source: 
+- https://www.educative.io/courses/complete-guide-to-modern-javascript/
