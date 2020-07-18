@@ -19,11 +19,11 @@ Javascript has 6 primitive data types
 
 ## Objects
 
-`Objects` can store collection of data types, called `properties`.
-Each property has a `key` and `value`
-`key` is of `string` data types and `value` can be of `any data type`.
-
-If a `value` is a functon, its called as a `method`
+- `Objects` can store a collection of data types, which are then called `properties`.
+- Each property has a `key` and `value`
+    - `key` is of `string` data types
+    - `value` can be of `any data type`.
+- If a `value` is a functon, its called as a `method`
 
 ### Equality in Objects
 
@@ -33,12 +33,11 @@ If a `value` is a functon, its called as a `method`
 
 `Objects` that store values in order.
 
-
 ## Functions
 
 Use `function` keyword to define a function. 
-- You may provide a name, if not, its called `anonymous`
-- **Primatives passed in the function are passed by value but Objects are passed by reference.**
+- You may provide a name, if not, its called an `anonymous` function.
+- **Primatives data types passed in the function are passed by value but Objects are passed by reference.**
 
 Functions( Both named or anonymous) can be assigned to a variable.
 
