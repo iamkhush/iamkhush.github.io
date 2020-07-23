@@ -11,14 +11,13 @@ series: 'Learning Javascript'
 The scope of a variable controls where it can be accessed from in the program.
 It can be of 
 - Global Scope
-- Curly Bracket Scope
-    - Function scope
-    - Block scope ( if / for etc )
+- Function scope
+- Block scope ( if / for etc )
 
 
 ### Variable defination
 Variables can be defined with `var`, `const` and `let` keywords.
-- `var` keyword is globally scoped or function scoped where ever it is defined in.
+- `var` keyword is function scoped
 - `let` and `const` keyword are block scoped.
 
 
