@@ -28,6 +28,13 @@ Variables can be defined with `var`, `const` and `let` keywords.
    - the difference is in the way the arguments are provided
    - `apply` takes a array of arguments whereas `call` takes in individual arguments.
 
+### Hoisting
+ - All variable declarations are hoisted on the top of their scope.
+ - Hence they are processed before the code gets executed.
+ - `var` is set as undefined and can be accessed before declaration.
+ - `let` and `const` cannot be accessed and throws a referenceError if tried.
 
-Source - https://www.freecodecamp.org/news/var-let-and-const-whats-the-difference/
-    and  https://www.educative.io/courses/complete-guide-to-modern-javascript/m2vkA419vVG
+Sources
+- https://www.freecodecamp.org/news/var-let-and-const-whats-the-difference/
+- https://www.educative.io/courses/complete-guide-to-modern-javascript/m2vkA419vVG
+- https://www.educative.io/courses/complete-guide-to-modern-javascript/g76wvk6D9M9
