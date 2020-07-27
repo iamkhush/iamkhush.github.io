@@ -14,3 +14,9 @@ type: 'post'
         - It will however iterate on keys not value of objects.
 
  
+## Symbols
+- New primitive added in ES6
+- Always unique
+- Useful for keys with same names but different values
+- Not enumarable
+
