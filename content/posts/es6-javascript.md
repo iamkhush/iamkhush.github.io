@@ -20,3 +20,7 @@ type: 'post'
 - Useful for keys with same names but different values
 - Not enumarable
 
+## Classes
+- Just a wrapper around prototype inheritence.
+- Can have `static` method, `setters` and `getters`.
+
