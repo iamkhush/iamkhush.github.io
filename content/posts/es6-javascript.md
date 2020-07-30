@@ -24,3 +24,9 @@ type: 'post'
 - Just a wrapper around prototype inheritence.
 - Can have `static` method, `setters` and `getters`.
 
+## Generators
+- Similar to Python's syntax for generators.
+- Use the `yield` keyword to temporarily hald the program and return the `yield`ed values
+- Use the `next` method to continue execution where it was left of
+
+
