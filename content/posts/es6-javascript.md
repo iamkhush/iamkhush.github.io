@@ -1,8 +1,9 @@
 ---
 title: "Es6 Javascript"
 date: 2020-07-25T22:14:11Z
-draft: true
 type: 'post'
+tags: ['javascript', 'programming-language', 'ES6']
+series: 'Learning Javascript'
 ---
 
 ## Iterables and Looping
@@ -29,4 +30,7 @@ type: 'post'
 - Use the `yield` keyword to temporarily hald the program and return the `yield`ed values
 - Use the `next` method to continue execution where it was left of
 
+## Proxy objects
+- Helps to define custom behaviour for operations like assignment, function invocations etc.
+- Can be helpful to write reusable validation methods.
 
