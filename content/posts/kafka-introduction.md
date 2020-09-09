@@ -42,12 +42,12 @@ Both are concepts of Kafka’s processing layer, which work on "raw" data in top
 - Machines that actually store and serve the data
 - Has no idea about the content of the messages since its encoded.
 
-# Kafka Consumer group
+## Kafka Consumer group
 - Bunch of consumers listening to a topic parallely.
 - Can rebalance load between consumers within the group, when some of them fails or more are added.
 - Operates within a Consumer group protocol
 
-# Kafka Stream Task
+## Kafka Stream Task
 - Unit of processing parallelism
 - One Stream Task is created for each partition in topic
 - Stream task is distributed across app instances
