@@ -28,7 +28,10 @@ Streams | KTables
 Provides immutable Data | Provides mutable data
 Supports only inserts for new data | Supports insert, update and delete
 
-Both are concepts of Kafka’s processing layer, which work on "raw" data in topics.
+- Both are concepts of Kafka’s processing layer, which work on "raw" data in topics.
+- Both can be partitioned and so it the processing on it. 
+  - For streams, processing raw events in a topic for a partition is simple.
+  - For tables, to do aggregates, each partition may be associated with a light database. By default its RocksDB.
 
 
 ## Kafka Topics
@@ -53,8 +56,9 @@ Both are concepts of Kafka’s processing layer, which work on "raw" data in top
 - Stream task is distributed across app instances
 
 
-
-
+## Global Tables
+- Provides data on global events.
+- Cannot be partitioned.
   
 
 Source - 
