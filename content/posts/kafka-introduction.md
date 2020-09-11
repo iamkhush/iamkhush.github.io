@@ -31,7 +31,7 @@ Supports only inserts for new data | Supports insert, update and delete
 - Both are concepts of Kafka’s processing layer, which work on "raw" data in topics.
 - Both can be partitioned and so it the processing on it. 
   - For streams, processing raw events in a topic for a partition is simple.
-  - For tables, to do aggregates, each partition may be associated with a light database. By default its RocksDB.
+  - For tables, to do aggregates, each partition may be associated with a light database. By default its RocksDB. It is stored within the application instance consuming the topic.
 
 
 ## Kafka Topics
@@ -60,8 +60,16 @@ Supports only inserts for new data | Supports insert, update and delete
 - Provides data on global events.
 - Cannot be partitioned.
   
+## Fault Tolerance
+- Streams are fault tolearant since data is already stored in Kafka.
+- Its a bit special for tables, since they store data on the application instance. They do it by sending the changes to a new Kafka topic. So just like a REDO log in Postgres, they can rebuild the table using the logs in case of any failure.
+
+## Scaling
+- When scaling up or scaling down, kafka needs to transfer the data for Tables to new application using the changelog kafka topic.
+
 
 Source - 
 - https://www.confluent.io/blog/kafka-streams-tables-part-1-event-streaming/
 - https://www.confluent.io/blog/kafka-streams-tables-part-2-topics-partitions-and-storage-fundamentals/
 - https://www.confluent.io/blog/kafka-streams-tables-part-3-event-processing-fundamentals/
+- https://www.confluent.io/blog/kafka-streams-tables-part-4-elasticity-fault-tolerance-advanced-concepts/
