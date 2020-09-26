@@ -2,7 +2,7 @@
 title: "Scala Introduction - The Basics"
 date: 2020-06-13T11:45:32Z
 type: 'post'
-tags: ['scala', 'programming-language']
+tags: ['Scala', 'programming-language']
 series: 'Learning Scala'
 ---
 
