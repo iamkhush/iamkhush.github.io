@@ -52,9 +52,6 @@ I will try to summarize some aspects of the protocol.
     - For response of *Execute* step, `CommandComplete` response is sent.
     - For response of *Sync* step, `ReadyForQuery` response is sent.
     - Important to note that it cannot parse multiple SQL statements, unlike Simple Query protocol.
-    - 
-- It would be interesting to know what happens on server side when query is to be evaluated.
-- 
 
 ### Termination Phase
 - Normally initiated by client
