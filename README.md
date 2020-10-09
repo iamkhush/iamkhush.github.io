@@ -2,7 +2,9 @@
 
 ### Requirements
 - Hugo
-    - install hugo https://gohugo.io/ - `sudo apt-get install hugo`
+    - install hugo https://gohugo.io/ - `sudo apt install hugo`
+    - `git submodule init`
+    - `git submodule update`
 
 ### Workflow
 - run server - `hugo server`
