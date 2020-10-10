@@ -61,7 +61,7 @@ I will try to summarize some aspects of the protocol.
 
 ### Termination Phase
 - Normally initiated by client
-- Server responds and roll backs any incomplete transactions
+- Server responds and roll backs any incomplete transactions.
 
 Source - 
 - https://www.postgresql.org/docs/12/protocol-overview.html
