@@ -19,19 +19,19 @@ I will try to summarize some aspects of the protocol.
 ![Connection Phases between Client and PG server](/postgres/conn-phases.png) 
 
 ### Startup Phase
-- Client opens connection by sending startup message.
-- The structure of a startup message is as follows - 
+- Client opens connection by sending startup message ( See 1 in the figure above )
+    - The structure of a startup message is as follows - 
 
 |4 byte|4 bytes| |
 |---|---|---|
 | Length of message | Protocol Version | Message Data like username, database name etc 
 - Server checks the message data from above and also its own config files, to determine the response, which can be one of the following - 
-  - A success response (`AuthenticationOk`)
-  - An error response (`ErrorResponse`)
+  - A success response (`AuthenticationOk`) ( 3a in the figure )
+  - An error response (`ErrorResponse`) ( 3b in the figure )
   - Authentication related messages( like `AuthenticationMD5Password`)
   - Protocol negotiation response (`NegotiateProtocolVersion`)
-- If the response was `AuthenticationOk` then server sends some more messages, but the most important of them is `ReadyForQuery` message. Once sent, the next phase (Normal phase) is initiated.
-- Interesting to note, server launches a new process for each client connection.
+- If the response was `AuthenticationOk` then server sends some more messages( 4 in the figure ), but the most important of them is `ReadyForQuery` message( 5 in the figure ). Once sent, the next phase (Normal phase) is initiated.
+- Server launches a new process for each client connection.
 - Also interestingly, other than the startup message, the message format is 
 
 |1 byte|4 bytes| |
@@ -58,6 +58,7 @@ I will try to summarize some aspects of the protocol.
     - For response of *Execute* step, `CommandComplete` response is sent.
     - For response of *Sync* step, `ReadyForQuery` response is sent.
     - Important to note that it cannot parse multiple SQL statements, unlike Simple Query protocol.
+    - A *Sync* needs to be sent everytime to end a transaction. However, one can send multiple *Bind* and *Execute* messages, for same portal without waiting for `ReadyForQuery`.
 
 ### Termination Phase
 - Normally initiated by client
