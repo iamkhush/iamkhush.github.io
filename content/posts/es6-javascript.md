@@ -4,6 +4,7 @@ date: 2020-07-25T22:14:11Z
 type: 'post'
 tags: ['javascript', 'programming-language', 'ES6']
 series: 'Learning Javascript'
+summary: 'Just some notes about ES6. Will try to keep these updated.'
 ---
 
 ## Iterables and Looping

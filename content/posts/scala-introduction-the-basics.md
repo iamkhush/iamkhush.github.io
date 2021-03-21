@@ -4,6 +4,7 @@ date: 2020-06-13T11:45:32Z
 type: 'post'
 tags: ['Scala', 'programming-language']
 series: 'Learning Scala'
+summary: 'Notes on basics of Scala. Topics like classes, case classes and traits will be defined.'
 ---
 
 ### Significant points of Scala

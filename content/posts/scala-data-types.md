@@ -4,6 +4,8 @@ date: 2020-06-14T19:07:10Z
 type: 'post'
 tags: ['scala', 'programming-language', 'Data Types']
 series: 'Learning Scala'
+summary: 'Going through Scala Data types'
+
 ---
 
 ### Scala's unified type system

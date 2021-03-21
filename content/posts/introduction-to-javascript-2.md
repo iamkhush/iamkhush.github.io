@@ -4,6 +4,7 @@ date: 2020-07-23T21:46:21Z
 type: 'post'
 tags: ['javascript', 'programming-language', 'Scope', 'variables']
 series: 'Learning Javascript'
+summary: 'Some notes about Javacript part 2, covering scope, hoisting etc'
 ---
 
 ## Understanding Scope

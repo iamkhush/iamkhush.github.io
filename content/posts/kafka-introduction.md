@@ -4,6 +4,7 @@ date: 2020-08-08T23:45:17+02:00
 type: 'post'
 tags: ["kafka"]
 series: ["Kafka"]
+summary: "Very basic introduction to Kafka. We will try to understand what events are made of, what are KTables, streams, topics and consumer groups and much more."
 ---
 
 ### Introduction

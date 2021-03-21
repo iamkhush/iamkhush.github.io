@@ -4,6 +4,7 @@ date: 2020-06-20T22:56:35Z
 type: 'post'
 tags: ['javascript', 'programming-language', 'Data Types']
 series: 'Learning Javascript'
+summary: 'Some notes Javascript basics part 1, convering basic data types and functions.'
 ---
 
 ## Data Types

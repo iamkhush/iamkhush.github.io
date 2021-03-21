@@ -3,6 +3,7 @@ title: "Postgres Indexes, PL/pgSQL and other learnings"
 date: 2016-02-02T01:30:01+05:30
 tags: [Postgres, Database, PLSQL]
 type: "post"
+summary: 'Learn about different types of indexes present in Postgres. Trigram / Bigram Indexes, Partial Indexes'
 ---
 
 Recently I had to do a bit of reading on building Indexes in Postgres. Intrestingly I found some striking features about indexing types in Postgres
