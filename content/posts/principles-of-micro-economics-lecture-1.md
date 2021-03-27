@@ -21,11 +21,12 @@ But behind tradeoffs there is an *opportunity costs*.
 ### Supply and Demand Model
 
 Adam Smith - Father of economics
+
 Paul Samuelson - Father of modern economics
 
-The Supply and Demand model was brought by Adam Smith. It brings up 2 important analysis - positive and normalitive.
-Positive analysis is study of what things are.
-Nomalitive analysis is what things should be.
+The Supply and Demand model was brought by Adam Smith. It brings up 2 important analysis -
+- Positive analysis is study of what things are.
+- Nomalitive analysis is what things should be.
 
 Example of normalitive question - should we be allowed to sell kidneys on an online auction ?
 
