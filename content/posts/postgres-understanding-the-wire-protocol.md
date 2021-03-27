@@ -59,8 +59,11 @@ I will try to summarize some aspects of the protocol.
     - For response of *Execute* step, `CommandComplete` response is sent.
     - For response of *Sync* step, `ReadyForQuery` response is sent.
     - Important to note that it cannot parse multiple SQL statements, unlike Simple Query protocol.
-    - A *Sync* needs to be sent everytime to end a transaction. However, one can send multiple *Bind* and *Execute* messages, for same portal without waiting for `ReadyForQuery`.
-
+    - A *Sync* needs to be sent everytime to end a transaction. 
+    - However, one can send multiple *Bind* and *Execute* messages, for same portal without waiting for `ReadyForQuery`.
+      - A web application can use this feature to get async responses of its queries.
+- One important caveat is that a prepared statement cannot be shared between different processes / connections. It only lives for 1 session. 
+- Checkout my pg-client implementation script [here](https://gist.github.com/iamkhush/8612c62be915e554d9430b65fcd7d2d9)
 
 ### Termination Phase
 - Normally initiated by client
