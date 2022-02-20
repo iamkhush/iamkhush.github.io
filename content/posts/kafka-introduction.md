@@ -4,23 +4,36 @@ date: 2020-08-08T23:45:17+02:00
 type: 'post'
 tags: ["kafka"]
 series: ["Kafka"]
-summary: "Very basic introduction to Kafka. We will try to understand what events are made of, what are KTables, streams, topics and consumer groups and much more."
+summary: "Very basic introduction to Kafka. We will try to understand where Kafka is useful and go a little in depth of its uses"
 ---
 
 ### Introduction
 
-Kafka is an `event streaming platform`, which provides following functionalities
+Kafka is an `event streaming platform`, which provides following possible functionalities
 - `publish` and `subscribe` events
-- `store` events indefinitely
+- `store` events [indefinitely](https://www.confluent.io/blog/publishing-apache-kafka-new-york-times/)
 - `process` and `analyze` events
 
-## Event
-An event has 3 main properties
+### Wait, but what is an event ?
+An event is any meaning information that needs to be sent across network.
+Basically it has 3 main properties
 - key
 - value
 - timestamp
 
-Each event is a part of a stream, which stores its sequence for [hundreds of years](https://www.confluent.io/blog/publishing-apache-kafka-new-york-times/). They are encoded commonly using AVRO by Kafka Clients
+Each event is a part of a stream, called a Topic. We can think of a topic a sequence of updates for a specific purpose. For example price updates for stocks.
+It is encoded commonly using AVRO format.
+
+### Uses
+Lets dissect thes uses in detail -
+
+1. Publish and Subscribe Events
+
+Basics of a PubSub pattern can be seen anywhere on internet. We will not go into detail into it.
+
+In Kafka world, publishers are called `Prodcers` and subscribers are called `Consumers`. Producers publish events on a Kafka topic and the same topic is subscribed by consumers.
+
+![Kafka Topics](/kafka/kafka-topic.png) 
 
 ## Streams and KTables
 
